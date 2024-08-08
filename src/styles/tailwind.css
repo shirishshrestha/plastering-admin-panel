@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: "Raleway", sans-serif;
+  color: #182c3a;
+}
+
+.admin_container {
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+.main_container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 30px;
+}
+
+.sidebar-menu svg path {
+  stroke: #182c3a !important;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sidebar-nav:hover::-webkit-scrollbar-thumb {
+  background-color: #e8eaeb;
+}
+
+.table__container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.table__container::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #182c3a;
+}
