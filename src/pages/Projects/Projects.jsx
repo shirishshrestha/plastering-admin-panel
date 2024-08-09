@@ -3,8 +3,14 @@ import { SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-cards";
 import { EffectCards } from "swiper/modules";
-import { ProjectsSvg } from "../../assets/icons/SvgIcons";
-import { DoughnutChart } from "../../components";
+import {
+  EditIcon,
+  EyeIcon,
+  PlusIcon,
+  ProjectsSvg,
+  TrashIcon,
+} from "../../assets/icons/SvgIcons";
+import { DoughnutChart, Pagination } from "../../components";
 
 export const Projects = () => {
   const doughnutData = [
@@ -63,6 +69,54 @@ export const Projects = () => {
       status: "pending",
       description:
         "High-end Venetian plaster finishes were used throughout the villa. The client praised the elegant and refined results.",
+    },
+  ];
+
+  const tableHead = [
+    "Project Name",
+    "Client Name",
+    "Start Date",
+    "End Date",
+    "Status",
+    "Action",
+  ];
+
+  // dummy table data
+  const tableData = [
+    {
+      projectName: "Residential Plastering",
+      clientName: "John Doe",
+      startDate: "2024-01-15",
+      endDate: "2024-02-10",
+      status: "Completed",
+    },
+    {
+      projectName: "Commercial Office Plastering",
+      clientName: "ACME Corp",
+      startDate: "2024-03-01",
+      endDate: "2024-04-15",
+      status: "In Progress",
+    },
+    {
+      projectName: "Retail Store Renovation",
+      clientName: "Jane Smith",
+      startDate: "2024-02-20",
+
+      status: "Pending",
+    },
+    {
+      projectName: "Warehouse Plastering",
+      clientName: "Logistics Co",
+      startDate: "2024-04-01",
+
+      status: "Scheduled",
+    },
+    {
+      projectName: "Luxury Villa Plastering",
+      clientName: "Mr. Brown",
+      startDate: "2024-01-05",
+      endDate: "2024-01-25",
+      status: "Completed",
     },
   ];
 
@@ -148,6 +202,54 @@ export const Projects = () => {
             ))}
           </SwiperComponent>
         </div>
+      </div>
+      <div className="pt-[2rem] pb-[1rem]">
+        <div className="flex items-center pb-[0.5rem] justify-between">
+          <h2 className="font-bold text-[1.4rem] text-start">
+            List of Projects
+          </h2>
+          <button className="bg-primary flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
+            Add New Project <PlusIcon svgColor={"#f0fbff"} />
+          </button>
+        </div>
+        <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <thead className="bg-primary text-white  ">
+            {tableHead.map((item) => (
+              <th className="py-[1rem] font-semibold text-start first:pl-[0.5rem]">
+                {item}
+              </th>
+            ))}
+          </thead>
+          <tbody className="">
+            {tableData.map((item) => (
+              <tr className=" last:border-none  ">
+                <td className="py-[1rem] pl-[0.5rem]">{item.projectName}</td>
+                <td className="py-[1rem]">{item.clientName}</td>
+                <td className="py-[1rem]">{item.startDate}</td>
+                <td className="py-[1rem]">
+                  {item.endDate ? item.endDate : "-"}
+                </td>
+                <td className="py-[1rem] ">{item.status}</td>
+                <td>
+                  <div className="flex gap-[0.7rem]">
+                    <button className="p-[5px] rounded-md bg-viewBackground">
+                      <EyeIcon />
+                    </button>
+                    <button className="p-[5px] rounded-md bg-editBackground">
+                      <EditIcon />
+                    </button>
+                    <button className="p-[5px] rounded-md bg-deleteBackground">
+                      <TrashIcon />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mb-[1rem] flex items-center justify-end">
+        <Pagination />
       </div>
     </section>
   );
