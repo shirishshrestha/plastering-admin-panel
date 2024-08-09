@@ -5,7 +5,12 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const DoughnutChart = ({ dealData, datasets }) => {
+export const DoughnutChart = ({
+  dealData,
+  datasets,
+  legendPosition,
+  legendTextColor,
+}) => {
   const data = {
     labels: dealData.map((dataset) => dataset.type),
     datasets: datasets.map((dataset) => ({
@@ -20,14 +25,14 @@ export const DoughnutChart = ({ dealData, datasets }) => {
     responsive: true,
     plugins: {
       legend: {
-        position: "bottom",
+        position: legendPosition,
         labels: {
           usePointStyle: true,
           font: {
             size: 14,
           },
           padding: 20,
-          color: "#fff",
+          color: legendTextColor,
         },
         padding: {
           top: 20,

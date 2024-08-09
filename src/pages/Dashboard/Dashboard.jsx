@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { CompletedProjects, TotalProjects } from "../../assets/icons/SvgIcons";
 import { BarChart, DoughnutChart, LineChart } from "../../components";
 
@@ -8,11 +9,12 @@ export const Dashboard = () => {
     { quarter: "Q3", value: 1800 },
     { quarter: "Q4", value: 2000 },
   ];
-  const salesData = [
-    { quarter: "Goal", value: 40 },
-    { quarter: "Pending Forcast", value: 15 },
-    { quarter: "Revenue", value: 18 },
-  ];
+
+  // const salesData = [
+  //   { quarter: "Goal", value: 40 },
+  //   { quarter: "Pending Forcast", value: 15 },
+  //   { quarter: "Revenue", value: 18 },
+  // ];
 
   const lineData = [
     { month: "Jan", revenue: 12000, expense: 4000 },
@@ -213,6 +215,7 @@ export const Dashboard = () => {
               <DoughnutChart
                 dealData={doughnutData}
                 datasets={doughnutDatasets}
+                legendPosition={"bottom"}
               />
             </div>
           </div>
@@ -220,8 +223,8 @@ export const Dashboard = () => {
       </div>
       <div>
         <h2 className="font-bold text-[1.4rem]">Recent Projects</h2>
-        <div className="overflow-x-scroll table__container rounded-lg mt-[1rem]">
-          <table className="w-full">
+        <div className="overflow-x-scroll table__container  mt-[1rem]">
+          <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">
               {tableHead.map((item) => (
                 <th className="py-[1rem] font-semibold text-start first:pl-[0.5rem]">
@@ -229,20 +232,27 @@ export const Dashboard = () => {
                 </th>
               ))}
             </thead>
-            <tbody>
+            <tbody className="">
               {tableData.map((item) => (
-                <tr className="border-b border-[#ddd] ">
+                <tr className=" last:border-none  ">
                   <td className="py-[1rem] pl-[0.5rem]">{item.projectName}</td>
                   <td className="py-[1rem]">{item.clientName}</td>
                   <td className="py-[1rem]">{item.startDate}</td>
                   <td className="py-[1rem]">
                     {item.endDate ? item.endDate : "-"}
                   </td>
-                  <td className="py-[1rem]">{item.status}</td>
+                  <td className="py-[1rem] ">{item.status}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <div className="mt-[1rem] ">
+            <Link to="/projects">
+              <button className="bg-primary font-semibold px-[30px] py-[10px] text-light rounded-lg hover:bg-secondary transition-all ease-in-out duration-200 hover:text-primary ">
+                See More
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

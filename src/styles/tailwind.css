@@ -57,5 +57,27 @@ body {
   background-color: transparent;
   border-radius: 5px;
   cursor: pointer;
-  color: #182c3a;
+  color: rgb(255, 99, 132);
+}
+
+.swiper {
+  width: 70%;
+  height: auto;
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.swiper-slide:nth-child(odd) {
+  background-color: #182c3a;
+}
+.swiper-slide:nth-child(even) {
+  background-color: #8bb4c8;
 }
