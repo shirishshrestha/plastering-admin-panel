@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
-import { CompletedProjects, TotalProjects } from "../../assets/icons/SvgIcons";
+import {
+  Calendar,
+  CompletedProjects,
+  TotalProjects,
+} from "../../assets/icons/SvgIcons";
 import { BarChart, DoughnutChart, LineChart } from "../../components";
 
 export const Dashboard = () => {
@@ -166,7 +170,7 @@ export const Dashboard = () => {
             <div className="p-[1rem] bg-[#fff] w-full h-[167px] rounded-lg shadow-lg text-primary">
               <div className="flex gap-[0.8rem] items-center">
                 <div className="p-[0.5rem]  text-light bg-primary rounded-lg backdrop-blur-lg ">
-                  <TotalProjects />
+                  <Calendar />
                 </div>
                 <p className="font-semibold capitalize">Running Projects</p>
               </div>
@@ -216,6 +220,7 @@ export const Dashboard = () => {
                 dealData={doughnutData}
                 datasets={doughnutDatasets}
                 legendPosition={"bottom"}
+                legendTextColor={"#fff"}
               />
             </div>
           </div>
