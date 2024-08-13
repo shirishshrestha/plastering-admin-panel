@@ -134,7 +134,7 @@ export const Dashboard = () => {
   ];
 
   return (
-    <section className="py-[1rem]">
+    <section className="pt-[1rem]">
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-3 w-full h-full">
         <div className="w-full h-full">
           <div className="grid grid-cols-3 gap-[0.5rem] justify-center">
@@ -231,15 +231,18 @@ export const Dashboard = () => {
         <div className="overflow-x-scroll table__container  mt-[1rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">
-              {tableHead.map((item) => (
-                <th className="py-[1rem] font-semibold text-start first:pl-[0.5rem]">
+              {tableHead.map((item, index) => (
+                <th
+                  key={index}
+                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                >
                   {item}
                 </th>
               ))}
             </thead>
             <tbody className="">
-              {tableData.map((item) => (
-                <tr className=" last:border-none  ">
+              {tableData.map((item, index) => (
+                <tr key={index} className=" last:border-none  ">
                   <td className="py-[1rem] pl-[0.5rem]">{item.projectName}</td>
                   <td className="py-[1rem]">{item.clientName}</td>
                   <td className="py-[1rem]">{item.startDate}</td>

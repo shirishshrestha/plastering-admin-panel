@@ -6,12 +6,12 @@ const App = () => {
   const [sidebarToggle, setSidebarToggle] = useState(true);
 
   return (
-    <main className="flex bg-[#f0fbff] min-h-[100vh] admin_container lg:max-w-[1280px] xl:max-w-full">
+    <main className="flex bg-[#f0fbff] min-h-[100vh] admin_container">
       <Sidebar
         sidebarToggle={sidebarToggle}
         setSidebarToggle={setSidebarToggle}
       />
-      <div className="px-[2.5rem] w-full ">
+      <div className="px-[2.5rem] w-full pb-[1rem]">
         <ProfileTab
           sidebarToggle={sidebarToggle}
           setSidebarToggle={setSidebarToggle}

@@ -34,7 +34,7 @@ export const Input = ({
         name={name}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        className={`${className} w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
+        className={`${className} w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
           hasError ? "focus:ring-red-500 border-red-500" : ""
         }`}
         {...register(name, {

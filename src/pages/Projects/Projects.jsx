@@ -143,6 +143,7 @@ export const Projects = () => {
                   <div className="p-[2rem] flex flex-col gap-[1rem] ">
                     {doughnutData.map((item, index) => (
                       <p
+                        key={index}
                         className={`flex gap-[0.7rem] items-center py-[0.1rem] px-[0.5rem] rounded-lg  ${
                           item.type === "Pending" ? "bg-[#ffce56]  " : ""
                         } ${item.type === "Completed" ? "bg-[#ff6384]" : ""}
@@ -224,9 +225,9 @@ export const Projects = () => {
             </div>
             <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
               <thead className="bg-primary text-white  ">
-                {tableHead.map((item) => (
+                {tableHead.map((item, index) => (
                   <th
-                    key={item.id}
+                    key={index}
                     className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
                   >
                     {item}
@@ -234,8 +235,8 @@ export const Projects = () => {
                 ))}
               </thead>
               <tbody className="">
-                {tableData.map((item) => (
-                  <tr key={item.id} className=" last:border-none  ">
+                {tableData.map((item, index) => (
+                  <tr key={index} className=" last:border-none  ">
                     <td className="py-[1rem] pl-[0.5rem]">
                       {item.projectName}
                     </td>
