@@ -81,3 +81,7 @@ body {
 .swiper-slide:nth-child(even) {
   background-color: #8bb4c8;
 }
+
+.button {
+  @apply bg-primary flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg;
+}

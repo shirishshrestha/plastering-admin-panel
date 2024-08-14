@@ -11,10 +11,11 @@ import {
   TrashIcon,
 } from "../../assets/icons/SvgIcons";
 import { DoughnutChart, Pagination } from "../../components";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export const Projects = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const doughnutData = [
     { type: "Pending", value: 10 },
     { type: "Scheduled", value: 50 },
@@ -91,6 +92,7 @@ export const Projects = () => {
       startDate: "2024-01-15",
       endDate: "2024-02-10",
       status: "Completed",
+      id: 0,
     },
     {
       projectName: "Commercial Office Plastering",
@@ -98,20 +100,21 @@ export const Projects = () => {
       startDate: "2024-03-01",
       endDate: "2024-04-15",
       status: "In Progress",
+      id: 1,
     },
     {
       projectName: "Retail Store Renovation",
       clientName: "Jane Smith",
       startDate: "2024-02-20",
-
       status: "Pending",
+      id: 2,
     },
     {
       projectName: "Warehouse Plastering",
       clientName: "Logistics Co",
       startDate: "2024-04-01",
-
       status: "Scheduled",
+      id: 3,
     },
     {
       projectName: "Luxury Villa Plastering",
@@ -119,8 +122,13 @@ export const Projects = () => {
       startDate: "2024-01-05",
       endDate: "2024-01-25",
       status: "Completed",
+      id: 4,
     },
   ];
+
+  const handleViewProject = (id) => {
+    navigate(`/projects/viewProject/${id}`);
+  };
 
   return (
     <>
@@ -235,8 +243,8 @@ export const Projects = () => {
                 ))}
               </thead>
               <tbody className="">
-                {tableData.map((item, index) => (
-                  <tr key={index} className=" last:border-none  ">
+                {tableData.map((item) => (
+                  <tr key={item.id} className=" last:border-none  ">
                     <td className="py-[1rem] pl-[0.5rem]">
                       {item.projectName}
                     </td>
@@ -248,7 +256,10 @@ export const Projects = () => {
                     <td className="py-[1rem] ">{item.status}</td>
                     <td>
                       <div className="flex gap-[0.7rem]">
-                        <button className="p-[5px] rounded-md bg-viewBackground">
+                        <button
+                          className="p-[5px] rounded-md bg-viewBackground"
+                          onClick={() => handleViewProject(item.id)}
+                        >
                           <EyeIcon />
                         </button>
                         <button className="p-[5px] rounded-md bg-editBackground">

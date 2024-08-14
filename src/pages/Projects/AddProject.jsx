@@ -26,7 +26,7 @@ export const AddProject = () => {
   const handleToast = () => {};
 
   const handleProjectCancel = () => {
-    navigate(-1);
+    navigate("/projects");
   };
 
   return (
