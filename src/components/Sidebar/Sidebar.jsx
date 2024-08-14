@@ -3,6 +3,7 @@ import { logo } from "../../assets/images";
 import {
   ChevronRight,
   DashboardSvg,
+  Logout,
   ProjectsSvg,
 } from "../../assets/icons/SvgIcons";
 import { NavLink } from "react-router-dom";
@@ -46,7 +47,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
             <ChevronRight />
           </button>
         </div> */}
-        <nav className="mt-[1.5rem] max-h-[80%] overflow-y-scroll w-full flex flex-col items-center gap-[1rem] sidebar-nav">
+        <nav className="mt-[1.5rem] h-full overflow-y-scroll w-full flex flex-col items-center gap-[1rem] sidebar-nav">
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -87,6 +88,32 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
               Projects
             </span>
           </NavLink>
+          <div
+            className={`
+              cursor-pointer flex gap-[0.5rem] items-center p-[0.7rem] ${
+                sidebarToggle ? "w-full" : "w-fit"
+              } `}
+            title="Logout"
+          >
+            <Logout />
+            <span
+              className={`transition-all duration-300 w-fit ${
+                showText ? "block" : "hidden"
+              }`}
+            >
+              Logout
+            </span>
+          </div>
+
+          <div className="">
+            <h2 className="mb-[1rem]">Go to login (for now)</h2>
+            <NavLink
+              to="/login"
+              className="text-primary bg-light px-[30px] py-[10px]  "
+            >
+              Login
+            </NavLink>
+          </div>
         </nav>
       </div>
     </section>

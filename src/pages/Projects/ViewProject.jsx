@@ -41,7 +41,7 @@ const ViewProject = () => {
           </p>
           <div
             className="list-disc font-[500] focus:ring-2 focus:ring-blue-500 rounded-lg focus:outline-none"
-            contentEditable
+            // contentEditable
             spellCheck="false"
           >
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora
