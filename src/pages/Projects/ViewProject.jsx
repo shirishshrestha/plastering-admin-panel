@@ -1,5 +1,10 @@
-import { useParams } from "react-router-dom";
-import { Document, Download, Folder } from "../../assets/icons/SvgIcons";
+import { Link, useParams } from "react-router-dom";
+import {
+  Document,
+  Download,
+  Folder,
+  GoBack,
+} from "../../assets/icons/SvgIcons";
 
 const ViewProject = () => {
   const { id } = useParams();
@@ -30,6 +35,15 @@ const ViewProject = () => {
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
+      <div className="mb-[0.5rem] text-[12px] font-[500]">
+        <Link
+          to="/projects"
+          className="flex items-center gap-[0.2rem] text-[14px]"
+        >
+          <GoBack />
+          Go Back
+        </Link>
+      </div>
       <h2 className="font-bold text-[1.2rem]">
         Project Name -{" "}
         <span className="font-semibold text-[14px]">Address</span>

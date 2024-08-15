@@ -46,6 +46,21 @@ export const AddProject = () => {
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
             <div className="flex flex-col gap-[0.4rem]">
+              <label className="font-bold">Registered Client</label>
+              <select
+                name="registered-client"
+                className="cursor-pointer p-2 focus:outline-none border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-600 focus:border-transparent text-[14px]"
+              >
+                <option value="" hidden selected>
+                  Select a registered client
+                </option>
+                <option value="Client 1">Client 1</option>
+                <option value="Client 2">Client 2</option>
+                <option value="Client 3">Client 3</option>
+                <option value="Client 4">Client 4</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-[0.4rem]">
               <label className="font-bold">Project Name</label>
               <Input
                 placeholder={Model.projectName.placeholder}
@@ -86,88 +101,90 @@ export const AddProject = () => {
                 required={Model.cloudLink.required}
               />
             </div>
-            <div className="flex flex-col ">
-              <div className="flex flex-col gap-[0.4rem]">
-                <label className="font-bold">Start Date</label>
-                <input
-                  type="date"
-                  name="start-date"
-                  className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
-                    errors["date"] ? "focus:ring-red-500 border-red-500" : ""
-                  }`}
-                  {...register("date", {
-                    required: "Please select the date",
-                  })}
-                  min={
-                    new Date(new Date().setDate(new Date().getDate() + 6))
-                      .toISOString()
-                      .split("T")[0]
-                  }
+            <div className="flex flex-col gap-[1rem]">
+              <div className="flex flex-col ">
+                <div className="flex flex-col gap-[0.4rem]">
+                  <label className="font-bold">Start Date</label>
+                  <input
+                    type="date"
+                    name="start-date"
+                    className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
+                      errors["date"] ? "focus:ring-red-500 border-red-500" : ""
+                    }`}
+                    {...register("date", {
+                      required: "Please select the date",
+                    })}
+                    min={
+                      new Date(new Date().setDate(new Date().getDate() + 6))
+                        .toISOString()
+                        .split("T")[0]
+                    }
+                  />
+                </div>
+                <ErrorMessage
+                  errors={errors}
+                  name="date"
+                  render={() => (
+                    <p
+                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                      key="date"
+                    >
+                      Please select the date
+                    </p>
+                  )}
                 />
               </div>
-              <ErrorMessage
-                errors={errors}
-                name="date"
-                render={() => (
-                  <p
-                    className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                    key="date"
-                  >
-                    Please select the date
-                  </p>
-                )}
-              />
-            </div>
-            <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Upload Files</label>
-              <input
-                type="file"
-                name="project-file"
-                {...register("project-file", {
-                  required: "Please select the date",
-                  onChange: (e) => {
-                    setSelectedFiles(e.target.files);
-                  },
-                })}
-                id="fileInput"
-                className="hidden"
-                multiple
-              />
-              <label
-                htmlFor="fileInput"
-                className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] ${
-                  errors["project-file"]
-                    ? "focus:ring-red-500 !border-red-500"
-                    : ""
-                } `}
-              >
+              <div className="flex flex-col gap-[0.4rem]">
+                <label className="font-bold">Upload Files</label>
+                <input
+                  type="file"
+                  name="project-file"
+                  {...register("project-file", {
+                    required: "Please select the date",
+                    onChange: (e) => {
+                      setSelectedFiles(e.target.files);
+                    },
+                  })}
+                  id="fileInput"
+                  className="hidden"
+                  multiple
+                />
                 <label
-                  className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
                   htmlFor="fileInput"
+                  className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] ${
+                    errors["project-file"]
+                      ? "focus:ring-red-500 !border-red-500"
+                      : ""
+                  } `}
                 >
-                  Upload
-                </label>
-                Select Multiple Files at once
-              </label>
-
-              <ErrorMessage
-                errors={errors}
-                name="project-file"
-                render={() => (
-                  <p
-                    className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                    key="file"
+                  <label
+                    className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
+                    htmlFor="fileInput"
                   >
-                    Please select the file
-                  </p>
-                )}
-              />
-              <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                <span>Uploaded Files:</span>
-                {selectedFiles.length > 0 &&
-                  Array.from(selectedFiles).map((file, index) => (
-                    <p key={index}>{file.name}</p>
-                  ))}
+                    Upload
+                  </label>
+                  Select Multiple Files at once
+                </label>
+
+                <ErrorMessage
+                  errors={errors}
+                  name="project-file"
+                  render={() => (
+                    <p
+                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                      key="file"
+                    >
+                      Please select the file
+                    </p>
+                  )}
+                />
+                <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                  <span>Uploaded Files:</span>
+                  {selectedFiles.length > 0 &&
+                    Array.from(selectedFiles).map((file, index) => (
+                      <p key={index}>{file.name}</p>
+                    ))}
+                </div>
               </div>
             </div>
             <div className="flex flex-col gap-[0.4rem]">
@@ -177,10 +194,11 @@ export const AddProject = () => {
               <textarea
                 name="additional-info"
                 id="additional-req"
-                className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[90px] max-h-[400px]"
+                className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[90px] max-h-[350px]"
                 {...register("additional-req", {})}
               ></textarea>
             </div>
+
             <div className="w-full  col-span-2  ">
               <div className="mb-[0.5rem]">
                 <div className="flex items-center gap-[0.5rem] justify-end  ">

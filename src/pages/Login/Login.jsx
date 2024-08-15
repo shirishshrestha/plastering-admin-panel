@@ -25,7 +25,7 @@ const Login = () => {
           <div className="w-[70%] grid grid-cols-[0.8fr,1fr] rounded-2xl overflow-hidden shadow-xl bg-white">
             <div className="w-full">
               <figure className="relative h-full">
-                <div className="w-full h-full px-[2rem] flex items-center justify-center absolute top-0 left-0 bg-[#182C3A]/70">
+                <div className="w-full h-full px-[2rem] flex items-center justify-center absolute top-0 left-0 bg-primary/70">
                   <figure className="flex flex-col items-center gap-[0.5rem]">
                     <img src={logo} alt="logo" className="h-[50px]" />
                     <figcaption>
@@ -48,7 +48,7 @@ const Login = () => {
                 <h2 className="text-[1rem] text-[#71a8c4] font-semibold text-center leading-[150%]">
                   Welcome To
                 </h2>
-                <h1 className="text-[1.6rem] text-[#182C3A] font-bold text-center leading-[150%]">
+                <h1 className="text-[1.6rem] text-primary font-bold text-center leading-[150%]">
                   Plastering Estimates & Insights
                 </h1>
                 <p className="font-[500] text-[12px] w-[75%] text-center leading-[150%]">
@@ -107,20 +107,24 @@ const Login = () => {
                 </div>
                 <button
                   type=" button"
-                  className="w-full bg-[#182C3A] hover:bg-[#182C3A]/90 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all ease-in-out duration-200"
+                  className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all ease-in-out duration-200"
                 >
                   Login
                 </button>
                 <div className="text-[12px] text-center mt-[0.5rem]">
-                  <Link to="" className="">
+                  <div className="">
                     Don't have an account?{" "}
-                    <span className="text-[#71a8c4]">Register</span>
-                  </Link>
+                    <Link to="/signup">
+                      {" "}
+                      <span className="text-[#71a8c4]">Register</span>
+                    </Link>
+                  </div>
                 </div>
-
-                <div className="mt-[1rem] px-[30px] py-[10px] bg-primary w-fit text-light rounded-lg">
+                <div className="w-full flex items-center justify-center">
                   <Link to="/">
-                    <h2 className="">Go To Dashboard (for now)</h2>
+                    <div className="mt-[1rem] px-[30px] py-[10px] bg-primary w-fit text-light rounded-lg">
+                      <h2 className="">Go To Dashboard (demo)</h2>
+                    </div>
                   </Link>
                 </div>
               </form>

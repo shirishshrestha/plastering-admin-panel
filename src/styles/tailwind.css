@@ -92,3 +92,8 @@ input:-webkit-autofill:focus {
 .button {
   @apply bg-primary flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg;
 }
+
+.clip-custom {
+  height: 300px;
+  clip-path: polygon(0 0, 100% 0%, 99% 50%, 50% 100%, 0% 50%);
+}

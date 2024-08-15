@@ -106,7 +106,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
           </div>
 
           <div className="">
-            <h2 className="mb-[1rem]">Go to login (for now)</h2>
+            <h2 className="mb-[1rem]">Go to login (demo)</h2>
             <NavLink
               to="/login"
               className="text-primary bg-light px-[30px] py-[10px]  "
