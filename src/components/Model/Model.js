@@ -70,9 +70,46 @@ export const Model = {
     },
     pattern: {
       value:
-        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&~#^+])[A-Za-z\\d@$!%*?&~#^+]+$",
       message:
         "Must include uppercase, lowercase, number, and special character",
+    },
+  },
+  email: {
+    type: "email",
+    required: "Please enter your email",
+    name: "email",
+    placeholder: "Enter email",
+    minLength: {
+      value: 5,
+      message: "Email should be at least 5 characters long",
+    },
+    maxLength: {
+      value: 64,
+      message: "Email should be no more than 64 characters long",
+    },
+    pattern: {
+      value: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$",
+      message: "Please enter a valid email address",
+    },
+  },
+
+  Name: {
+    type: "string",
+    required: "Please enter your name",
+    placeholder: "Enter your name",
+    name: "fullname",
+    minLength: {
+      value: 2,
+      message: "Name must be at least 2 characters long",
+    },
+    maxLength: {
+      value: 64,
+      message: "Name should be less than 64 characters",
+    },
+    pattern: {
+      value: "^[a-zA-Z ]+$",
+      message: "Invalid name. Name must contain only alphabetic characters",
     },
   },
 };

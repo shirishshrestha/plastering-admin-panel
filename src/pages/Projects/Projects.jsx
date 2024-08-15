@@ -260,7 +260,7 @@ export const Projects = () => {
                           className="p-[5px] rounded-md bg-viewBackground"
                           onClick={() => handleViewProject(item.id)}
                         >
-                          <EyeIcon />
+                          <EyeIcon strokeColor={"#3e84f4"} />
                         </button>
                         <button className="p-[5px] rounded-md bg-editBackground">
                           <EditIcon />

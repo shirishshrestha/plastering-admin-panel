@@ -102,7 +102,13 @@ const Login = () => {
                     message={Model.password.pattern.message}
                     required={Model.password.required}
                     handlePasswordToggle={handlePasswordToggle}
-                    sufix={showPassword ? <EyeIcon /> : <EyeSlash />}
+                    sufix={
+                      showPassword ? (
+                        <EyeIcon strokeColor={"#8BB4C8"} />
+                      ) : (
+                        <EyeSlash />
+                      )
+                    }
                   />
                 </div>
                 <button
@@ -121,8 +127,8 @@ const Login = () => {
                   </div>
                 </div>
                 <div className="w-full flex items-center justify-center">
-                  <Link to="/">
-                    <div className="mt-[1rem] px-[30px] py-[10px] bg-primary w-fit text-light rounded-lg">
+                  <Link to="/" className="mt-[1rem]">
+                    <div className=" px-[30px] py-[10px] bg-primary w-fit text-light rounded-lg">
                       <h2 className="">Go To Dashboard (demo)</h2>
                     </div>
                   </Link>

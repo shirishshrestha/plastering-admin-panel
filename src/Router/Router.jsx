@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import {
   AddProject,
+  ClientDashboard,
   Dashboard,
   Login,
   Projects,
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
             element: <ViewProject />,
           },
         ],
+      },
+      {
+        path: "/client",
+        element: <ClientDashboard />,
       },
     ],
   },
