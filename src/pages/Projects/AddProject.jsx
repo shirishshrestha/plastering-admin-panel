@@ -49,7 +49,7 @@ export const AddProject = () => {
               <label className="font-bold">Registered Client</label>
               <select
                 name="registered-client"
-                className="cursor-pointer p-2 focus:outline-none border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-600 focus:border-transparent text-[14px]"
+                className="cursor-pointer p-[9p`x] focus:outline-none border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-600 focus:border-transparent text-[14px]"
               >
                 <option value="" hidden selected>
                   Select a registered client
