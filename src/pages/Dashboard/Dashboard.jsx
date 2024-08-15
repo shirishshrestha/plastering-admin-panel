@@ -226,7 +226,7 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div>
+      <div className="mt-[1rem]">
         <h2 className="font-bold text-[1.4rem]">Recent Projects</h2>
         <div className="overflow-x-scroll table__container  mt-[1rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
