@@ -88,6 +88,26 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
               Projects
             </span>
           </NavLink>
+          <NavLink
+            to="/client"
+            className={({ isActive }) =>
+              `${
+                isActive ? "bg-light text-primary sidebar-menu " : ""
+              } flex gap-[0.5rem] items-center rounded-lg p-[0.7rem] ${
+                sidebarToggle ? "w-full" : "w-fit"
+              } `
+            }
+            title="Projects"
+          >
+            <DashboardSvg />
+            <span
+              className={`transition-all duration-300 w-fit ${
+                showText ? "block" : "hidden"
+              }`}
+            >
+              Client Dashboard
+            </span>
+          </NavLink>
           <div
             className={`
               cursor-pointer flex gap-[0.5rem] items-center p-[0.7rem] ${

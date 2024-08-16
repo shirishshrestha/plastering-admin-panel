@@ -17,11 +17,13 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
 export const BarChart = ({
   barData,
   legendBool,
   legendPosition,
   datasets,
+  yBool = false,
 }) => {
   const data = {
     labels: barData.map((item) => item.quarter),
@@ -63,6 +65,10 @@ export const BarChart = ({
         },
         ticks: {
           beginAtZero: true,
+        },
+        title: {
+          display: yBool,
+          text: "Time",
         },
       },
     },

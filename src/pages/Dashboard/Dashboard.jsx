@@ -135,9 +135,9 @@ export const Dashboard = () => {
 
   return (
     <section className="pt-[1rem]">
-      <div className="grid grid-cols-[1.3fr,0.7fr] gap-3 w-full h-full">
+      <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1.2rem] w-full h-full">
         <div className="w-full h-full">
-          <div className="grid grid-cols-3 gap-[0.5rem] justify-center">
+          <div className="grid grid-cols-3 gap-[0.8rem] justify-center">
             <div className="p-[1rem] bg-primary w-full h-[167px] rounded-lg shadow-lg text-light">
               <div className="flex gap-[0.8rem] items-center">
                 <div className="p-[0.5rem]  text-light bg-white/30 rounded-lg backdrop-blur-lg ">
