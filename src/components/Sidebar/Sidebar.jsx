@@ -88,7 +88,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
               Projects
             </span>
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/client"
             className={({ isActive }) =>
               `${
@@ -107,7 +107,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
             >
               Client Dashboard
             </span>
-          </NavLink>
+          </NavLink> */}
           <div
             className={`
               cursor-pointer flex gap-[0.5rem] items-center p-[0.7rem] ${

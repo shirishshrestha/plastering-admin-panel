@@ -4,6 +4,8 @@ import { EyeIcon, EyeSlash, Lock, Username } from "../../assets/icons/SvgIcons";
 import { LoginSignupInput, Model } from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { notifySuccess } from "../../components/Toast/Toast";
+import CustomToastContainer from "../../components/Toast/ToastContainer";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +19,10 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLoginForm = (data) => {};
+  const handleLoginForm = (data) => {
+    notifySuccess("Login Successful (demo)");
+  };
+
   return (
     <section className="bg-[#f1f1e6] h-full w-full">
       <div className="main_container mx-auto">
@@ -138,6 +143,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <CustomToastContainer />
     </section>
   );
 };

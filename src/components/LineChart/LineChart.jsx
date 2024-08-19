@@ -20,7 +20,7 @@ ChartJS.register(
   Legend
 );
 
-export const LineChart = ({ lineData, LineFunction, datasets }) => {
+export const LineChart = ({ lineData, datasets }) => {
   const data = {
     labels: lineData.map((item) => item.month),
     datasets: datasets.map((dataset, index) => ({
@@ -79,17 +79,16 @@ export const LineChart = ({ lineData, LineFunction, datasets }) => {
         },
         title: {
           display: true,
-          text: "Amount",
+          text: "Weight (kg)",
           font: {
             size: 12,
             weight: "semibold",
           },
         },
         min: 0,
-        max: 320,
+        max: 3000,
         ticks: {
-          callback: LineFunction,
-          stepSize: 40,
+          stepSize: 400,
           font: {
             weight: 500,
           },

@@ -21,38 +21,32 @@ export const Dashboard = () => {
   // ];
 
   const lineData = [
-    { month: "Jan", revenue: 12000, expense: 4000 },
-    { month: "Feb", revenue: 15000, expense: 8500 },
-    { month: "Mar", revenue: 17000, expense: 9000 },
-    { month: "Apr", revenue: 16000, expense: 9500 },
-    { month: "May", revenue: 18000, expense: 12000 },
-    { month: "Jun", revenue: 20000, expense: 16000 },
-    { month: "Jul", revenue: 21000, expense: 14000 },
-    { month: "Aug", revenue: 22000, expense: 13000 },
-    { month: "Sep", revenue: 23000, expense: 14000 },
-    { month: "Oct", revenue: 20000, expense: 15000 },
-    { month: "Nov", revenue: 20000, expense: 16000 },
-    { month: "Dec", revenue: 21000, expense: 17000 },
+    { month: "Jan", plaster: 1200, sand: 800 },
+    { month: "Feb", plaster: 1500, sand: 1000 },
+    { month: "Mar", plaster: 1400, sand: 950 },
+    { month: "Apr", plaster: 1600, sand: 1100 },
+    { month: "May", plaster: 1700, sand: 1200 },
+    { month: "Jun", plaster: 1800, sand: 1300 },
+    { month: "Jul", plaster: 1900, sand: 1350 },
+    { month: "Aug", plaster: 2100, sand: 1400 },
+    { month: "Sep", plaster: 2200, sand: 1450 },
+    { month: "Oct", plaster: 2300, sand: 1500 },
+    { month: "Nov", plaster: 2400, sand: 1550 },
+    { month: "Dec", plaster: 2500, sand: 1600 },
   ];
-
-  const LineFunction = (value) => {
-    value = value + "K";
-    return value;
-  };
 
   const lineDatasets = [
     {
-      label: "Revenue",
-      data: lineData.map((item) => item.revenue / 100),
-      borderColor: "rgba(75, 192, 192, 1)",
-
-      pointBackgroundColor: "rgba(75, 192, 192, 1)",
+      label: "Plaster Usage (kg)",
+      data: lineData.map((item) => item.plaster),
+      borderColor: "rgba(54, 162, 235, 1)", // Blue
+      pointBackgroundColor: "rgba(54, 162, 235, 1)",
     },
     {
-      label: "Expenses",
-      data: lineData.map((item) => item.expense / 100),
-      borderColor: "rgba(255, 99, 132, 1)",
-      pointBackgroundColor: "rgba(255, 99, 132, 1)",
+      label: "Sand Usage (kg)",
+      data: lineData.map((item) => item.sand),
+      borderColor: "rgba(255, 159, 64, 1)", // Orange
+      pointBackgroundColor: "rgba(255, 159, 64, 1)",
     },
   ];
 
@@ -185,14 +179,10 @@ export const Dashboard = () => {
           </div>
           <div className="flex flex-col justify-center items-center p-[1rem] mt-[1.5rem] bg-white w-full  rounded-lg shadow-lg">
             <div className="mb-[1.8rem] text-center">
-              <h4 className="font-bold text-[1.2rem] ">Balance Overview</h4>
+              <h4 className="font-bold text-[1.2rem] ">Material Usage Rate</h4>
               <p className="text-[12px]">Last 1 year</p>
             </div>
-            <LineChart
-              lineData={lineData}
-              LineFunction={LineFunction}
-              datasets={lineDatasets}
-            />
+            <LineChart lineData={lineData} datasets={lineDatasets} />
           </div>
         </div>
         <div>

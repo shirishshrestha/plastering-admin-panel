@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import { ProfileTab, Sidebar } from "./components";
+import CustomToastContainer from "./components/Toast/ToastContainer";
 
 const App = () => {
   const [sidebarToggle, setSidebarToggle] = useState(true);
 
   return (
     <main className="flex bg-[#f0fbff] min-h-[100vh] admin_container">
+      <ScrollRestoration />
       <Sidebar
         sidebarToggle={sidebarToggle}
         setSidebarToggle={setSidebarToggle}
@@ -18,6 +20,7 @@ const App = () => {
         />
         <Outlet />
       </div>
+      <CustomToastContainer />
     </main>
   );
 };
