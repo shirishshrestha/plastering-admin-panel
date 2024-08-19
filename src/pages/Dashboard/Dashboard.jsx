@@ -179,7 +179,7 @@ export const Dashboard = () => {
           </div>
           <div className="flex flex-col justify-center items-center p-[1rem] mt-[1.5rem] bg-white w-full  rounded-lg shadow-lg">
             <div className="mb-[1.8rem] text-center">
-              <h4 className="font-bold text-[1.2rem] ">Material Usage Rate</h4>
+              <h4 className="font-bold text-[1.2rem] ">Material Usage</h4>
               <p className="text-[12px]">Last 1 year</p>
             </div>
             <LineChart lineData={lineData} datasets={lineDatasets} />

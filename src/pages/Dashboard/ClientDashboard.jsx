@@ -183,7 +183,7 @@ export const ClientDashboard = () => {
                   <CompletedProjects />
                 </div>
                 <p className="font-semibold capitalize">
-                  Completed projects - 3
+                  Completed projects - 2
                 </p>
               </div>
             </div>
@@ -192,7 +192,7 @@ export const ClientDashboard = () => {
                 <div className="p-[0.2rem]  text-light bg-primary rounded-lg backdrop-blur-lg ">
                   <Calendar />
                 </div>
-                <p className="font-semibold capitalize">Running Projects - 1</p>
+                <p className="font-semibold capitalize">Running Projects - 2</p>
               </div>
             </div>
           </div>
