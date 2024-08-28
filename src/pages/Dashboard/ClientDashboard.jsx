@@ -4,7 +4,7 @@ import {
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
-import { BarChart, DoughnutChart, LineChart } from "../../components";
+import { BarChart, DoughnutChart } from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
 
 export const ClientDashboard = () => {
