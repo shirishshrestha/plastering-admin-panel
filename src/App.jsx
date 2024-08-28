@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import { ProfileTab, Sidebar } from "./components";
-import CustomToastContainer from "./components/Toast/ToastContainer";
 
 const App = () => {
   const [sidebarToggle, setSidebarToggle] = useState(true);
@@ -20,7 +19,6 @@ const App = () => {
         />
         <Outlet />
       </div>
-      <CustomToastContainer />
     </main>
   );
 };

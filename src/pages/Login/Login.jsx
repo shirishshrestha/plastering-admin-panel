@@ -1,11 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { loginBg, logo } from "../../assets/images";
 import { EyeIcon, EyeSlash, Lock, Username } from "../../assets/icons/SvgIcons";
 import { LoginSignupInput, Model } from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { notifySuccess } from "../../components/Toast/Toast";
+import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../../api/Login/LoginApiSlice";
+import {
+  setRoleToLocalStorage,
+  setTokenToLocalStorage,
+} from "../../utils/Storage/StorageUtils";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,18 +21,35 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  const navigate = useNavigate();
+
+  const Login = useMutation({
+    mutationFn: (formData) => login(formData),
+    onSuccess: (data) => {
+      setTokenToLocalStorage(data.access_token);
+      setRoleToLocalStorage(data.role);
+      notifySuccess("Login Successful");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    },
+    onError: (error) => {
+      notifyError("Incorrect Username or Password");
+    },
+  });
+
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
 
   const handleLoginForm = (data) => {
-    notifySuccess("Login Successful (demo)");
+    Login.mutate(data);
   };
 
   return (
     <section className="bg-[#f1f1e6] h-full w-full">
       <div className="main_container mx-auto">
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-col justify-center items-center h-screen">
           <div className="w-[70%] grid grid-cols-[0.8fr,1fr] rounded-2xl overflow-hidden shadow-xl bg-white">
             <div className="w-full">
               <figure className="relative h-full">
@@ -116,10 +139,7 @@ const Login = () => {
                     }
                   />
                 </div>
-                <button
-                  type=" button"
-                  className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all ease-in-out duration-200"
-                >
+                <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all ease-in-out duration-200">
                   Login
                 </button>
                 <div className="text-[12px] text-center mt-[0.5rem]">
@@ -131,15 +151,28 @@ const Login = () => {
                     </Link>
                   </div>
                 </div>
-                <div className="w-full flex items-center justify-center">
+                {/* <div className="w-full flex items-center justify-center">
                   <Link to="/" className="mt-[1rem]">
                     <div className=" px-[30px] py-[10px] bg-primary w-fit text-light rounded-lg">
                       <h2 className="">Go To Dashboard (demo)</h2>
                     </div>
                   </Link>
-                </div>
+                </div> */}
               </form>
             </div>
+          </div>
+          <div className="text-[12px] text-center mt-[2rem] text-primary">
+            <p>
+              Please contact the admin at{" "}
+              <a
+                href="mailto:admin@plasteringestimatesandinsights.com"
+                target="_blank"
+                className="text-secondary"
+              >
+                admin@plasteringestimatesandinsights.com
+              </a>{" "}
+              for help.
+            </p>
           </div>
         </div>
       </div>

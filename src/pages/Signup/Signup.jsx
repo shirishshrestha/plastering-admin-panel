@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signup, logo } from "../../assets/images";
 import {
   Email,
@@ -10,16 +10,50 @@ import {
 import { LoginSignupInput, Model } from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { signupClient } from "../../api/Register/RegisterApiSlice";
+import { useMutation } from "@tanstack/react-query";
+import CustomToastContainer from "../../components/Toast/ToastContainer";
+import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
+
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    reset,
   } = useForm();
+
+  const Register = useMutation({
+    mutationFn: (formData) => signupClient(formData),
+    onSuccess: () => {
+      reset({
+        fullname: "",
+        username: "",
+        email: "",
+        password: "",
+        retype_password: "",
+      });
+      notifySuccess("Registered Successfully");
+      setTimeout(() => {
+        reset();
+        navigate("/login");
+      }, 3000);
+    },
+    onError: (error) => {
+      if (error.response.data.errors.email) {
+        notifyError(error.response.data.errors.email[0]);
+      }
+      if (error.response.data.errors.username) {
+        notifyError(error.response.data.errors.username[0]);
+      }
+    },
+  });
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -28,8 +62,9 @@ const Signup = () => {
     setShowRetypePassword(!showRetypePassword);
   };
 
-  const handleLoginForm = (data) => {
-    console.log(data);
+  const handleSignupForm = (data) => {
+    // console.log(data);
+    Register.mutate(data);
   };
   return (
     <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem]">
@@ -56,7 +91,7 @@ const Signup = () => {
               </h1>
               <p className="font-[500] text-[12px] w-[75%] text-center leading-[150%]"></p>
             </div>
-            <form onSubmit={handleSubmit(handleLoginForm)} className="w-[80%]">
+            <form onSubmit={handleSubmit(handleSignupForm)} className="w-[80%]">
               <div className="mb-4">
                 <label
                   for="password"
@@ -161,7 +196,7 @@ const Signup = () => {
                 </label>
                 <div
                   className={`border px-2 py-2 border-gray-300 shadow-sm rounded-md focus-within:ring-indigo-500 transition-all duration-75 ease-in-out focus-within:border-indigo-500 flex gap-3 items-center text-[14px] ${
-                    errors["retype-password"]
+                    errors["retype_password"]
                       ? "focus-within:ring-red-500 focus-within:border-red-500 border-red-500"
                       : ""
                   }`}
@@ -169,11 +204,12 @@ const Signup = () => {
                   <Lock />
                   <input
                     type={showRetypePassword ? "text" : "password"}
-                    name="retype-password"
+                    name="retype_password"
                     placeholder="Retype Password"
                     autoComplete="off"
-                    className={`block w-full rounded-md focus:outline-none `}
-                    {...register("retype-password", {
+                    className={`block w-full rounded-md focus:outline-none
+                      `}
+                    {...register("retype_password", {
                       required: "Please retype your password",
                       validate: (value) =>
                         value === watch("password") ||
@@ -188,7 +224,7 @@ const Signup = () => {
                     )}
                   </button>
                 </div>
-                {errors["retype-password"] && (
+                {errors["retype_password"] && (
                   <p
                     className="text-[12px] text-red-500 pt-[0.3rem] pl-[0.5rem]"
                     key="retype-password"
@@ -197,10 +233,7 @@ const Signup = () => {
                   </p>
                 )}
               </div>
-              <button
-                type=" button"
-                className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all ease-in-out duration-200"
-              >
+              <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all ease-in-out duration-200">
                 Signup
               </button>
               <div className="text-[12px] text-center mt-[0.5rem]">
@@ -229,6 +262,7 @@ const Signup = () => {
           </p>
         </div>
       </div>
+      <CustomToastContainer />
     </section>
   );
 };

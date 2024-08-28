@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import {
   AddProject,
@@ -9,15 +9,23 @@ import {
   Signup,
   ViewProject,
 } from "../pages";
+import ProtectedRoute from "./ProtectedRoute";
+import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
+
+const role = getRoleFromLocalStorage();
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <ProtectedRoute>
+        <App />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/",
-        element: <Dashboard />,
+        element: role === "admin" ? <Dashboard /> : <ClientDashboard />,
       },
       {
         path: "/projects",
