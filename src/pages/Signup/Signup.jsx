@@ -8,16 +8,18 @@ import {
   Username,
 } from "../../assets/icons/SvgIcons";
 import { LoginSignupInput, Model } from "../../components";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useState } from "react";
 import { signupClient } from "../../api/Register/RegisterApiSlice";
 import { useMutation } from "@tanstack/react-query";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,11 +43,13 @@ const Signup = () => {
       });
       notifySuccess("Registered Successfully");
       setTimeout(() => {
+        setLoading(false);
         reset();
         navigate("/login");
       }, 3000);
     },
     onError: (error) => {
+      setLoading(false);
       if (error.response.data.errors.email) {
         notifyError(error.response.data.errors.email[0]);
       }
@@ -64,10 +68,21 @@ const Signup = () => {
 
   const handleSignupForm = (data) => {
     // console.log(data);
+    setLoading(true);
     Register.mutate(data);
   };
   return (
-    <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem]">
+    <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem] relative">
+      {loading && (
+        <div className="h-full w-full bg-primary/80 absolute z-20 top-0 left-0 flex items-center justify-center">
+          <DotLottieReact
+            autoplay
+            loop
+            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
+            style={{ height: "300px", width: "300px" }}
+          />
+        </div>
+      )}
       <div className="!pb-[4rem]">
         <figure className="w-full clip-custom relative overflow-hidden">
           <div className="absolute h-full w-full bg-primary/80 flex items-center justify-center "></div>

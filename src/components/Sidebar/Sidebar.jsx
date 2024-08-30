@@ -7,6 +7,7 @@ import {
   ProjectsSvg,
 } from "../../assets/icons/SvgIcons";
 import { NavLink } from "react-router-dom";
+import { LogoutComp } from "../../utils/Logout/Logout";
 
 export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
   const [showText, setShowText] = useState(false);
@@ -108,22 +109,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
               Client Dashboard
             </span>
           </NavLink> */}
-          <div
-            className={`
-              cursor-pointer flex gap-[0.5rem] items-center p-[0.7rem] ${
-                sidebarToggle ? "w-full" : "w-fit"
-              } `}
-            title="Logout"
-          >
-            <Logout />
-            <span
-              className={`transition-all duration-300 w-fit ${
-                showText ? "block" : "hidden"
-              }`}
-            >
-              Logout
-            </span>
-          </div>
+          <LogoutComp sidebarToggle={sidebarToggle} showText={showText} />
         </nav>
       </div>
     </section>

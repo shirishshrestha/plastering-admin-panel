@@ -6,8 +6,11 @@ import {
 } from "../../assets/icons/SvgIcons";
 import { BarChart, DoughnutChart } from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
+import { getNameFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
 export const ClientDashboard = () => {
+  const userName = getNameFromLocalStorage();
+
   const performanceData = [
     { quarter: "Plan", value: 3 },
     { quarter: "Procure", value: 4 },
@@ -131,7 +134,7 @@ export const ClientDashboard = () => {
                 <h3 className="font-bold text-[2rem] leading-[150%]">
                   Welcome Back!
                 </h3>
-                <h4>James Smith</h4>
+                <h4 className="capitalize">{userName}</h4>
               </div>
               <figure className="w-[150px] relative z-10">
                 <img

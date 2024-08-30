@@ -4,19 +4,23 @@ import { EyeIcon, EyeSlash, Lock, Username } from "../../assets/icons/SvgIcons";
 import { LoginSignupInput, Model } from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { notifyError, notifySuccess } from "../../components/Toast/Toast";
+import { notifyError } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../api/Login/LoginApiSlice";
+import useAuth from "../../hooks/useAuth";
 import {
+  setIdToLocalStorage,
+  setNameToLocalStorage,
   setRoleToLocalStorage,
   setTokenToLocalStorage,
 } from "../../utils/Storage/StorageUtils";
-import useAuth from "../../hooks/useAuth";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Login = () => {
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -30,19 +34,23 @@ const Login = () => {
   const Login = useMutation({
     mutationFn: (formData) => login(formData),
     onSuccess: (data) => {
-      notifySuccess("Login Successful");
       setTokenToLocalStorage(data.access_token);
       setRoleToLocalStorage(data.user.role);
+      setNameToLocalStorage(data.user.name);
+      setIdToLocalStorage(data.user.id);
+
       const role = data.user.role;
       const id = data.user.id;
       const token = data.access_token;
-      setAuth({ role, id, token });
-      setTimeout(() => {
-        navigate(from, { replace: true });
-      }, 2000);
+      const userName = data.user.name;
+      setAuth({ role, id, token, userName });
+
+      setLoading(false);
+      navigate(from, { replace: true });
     },
     onError: (error) => {
       notifyError("Incorrect Username or Password");
+      setLoading(false);
     },
   });
 
@@ -51,11 +59,22 @@ const Login = () => {
   };
 
   const handleLoginForm = (data) => {
+    setLoading(true);
     Login.mutate(data);
   };
 
   return (
-    <section className="bg-[#f1f1e6] h-full w-full">
+    <section className="bg-[#f1f1e6] h-full w-full relative">
+      {loading && (
+        <div className="h-screen w-full bg-primary/80 absolute z-10 top-0 left-0 flex items-center justify-center">
+          <DotLottieReact
+            autoplay
+            loop
+            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
+            style={{ height: "300px", width: "300px" }}
+          />
+        </div>
+      )}
       <div className="main_container mx-auto">
         <div className="flex flex-col justify-center items-center h-screen">
           <div className="w-[70%] grid grid-cols-[0.8fr,1fr] rounded-2xl overflow-hidden shadow-xl bg-white">
@@ -180,6 +199,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+
       <CustomToastContainer />
     </section>
   );
