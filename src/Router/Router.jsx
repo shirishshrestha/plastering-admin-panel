@@ -9,10 +9,19 @@ import {
   Signup,
   ViewProject,
 } from "../pages";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute, { ProtectedLoginSignupRoute } from "./ProtectedRoute";
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
+import useAuth from "../hooks/useAuth";
 
-const role = getRoleFromLocalStorage();
+const DashboardPriority = () => {
+  const role = getRoleFromLocalStorage();
+  const { auth } = useAuth();
+  return auth?.role === "admin" || (role && role === "admin") ? (
+    <Dashboard />
+  ) : (
+    <ClientDashboard />
+  );
+};
 
 export const router = createBrowserRouter([
   {
@@ -25,7 +34,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: role === "admin" ? <Dashboard /> : <ClientDashboard />,
+        element: <DashboardPriority />,
       },
       {
         path: "/projects",
@@ -49,10 +58,18 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <ProtectedLoginSignupRoute>
+        <Login />
+      </ProtectedLoginSignupRoute>
+    ),
   },
   {
     path: "/signup",
-    element: <Signup />,
+    element: (
+      <ProtectedLoginSignupRoute>
+        <Signup />
+      </ProtectedLoginSignupRoute>
+    ),
   },
 ]);

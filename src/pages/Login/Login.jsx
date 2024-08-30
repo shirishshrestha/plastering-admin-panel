@@ -1,4 +1,4 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { loginBg, logo } from "../../assets/images";
 import { EyeIcon, EyeSlash, Lock, Username } from "../../assets/icons/SvgIcons";
 import { LoginSignupInput, Model } from "../../components";
@@ -12,8 +12,10 @@ import {
   setRoleToLocalStorage,
   setTokenToLocalStorage,
 } from "../../utils/Storage/StorageUtils";
+import useAuth from "../../hooks/useAuth";
 
 const Login = () => {
+  const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -22,15 +24,21 @@ const Login = () => {
   } = useForm();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.pathname || "/";
 
   const Login = useMutation({
     mutationFn: (formData) => login(formData),
     onSuccess: (data) => {
-      setTokenToLocalStorage(data.access_token);
-      setRoleToLocalStorage(data.role);
       notifySuccess("Login Successful");
+      setTokenToLocalStorage(data.access_token);
+      setRoleToLocalStorage(data.user.role);
+      const role = data.user.role;
+      const id = data.user.id;
+      const token = data.access_token;
+      setAuth({ role, id, token });
       setTimeout(() => {
-        navigate("/");
+        navigate(from, { replace: true });
       }, 2000);
     },
     onError: (error) => {
@@ -105,8 +113,6 @@ const Login = () => {
                     errors={errors}
                     minLength={Model.username.minLength.value}
                     minMessage={Model.username.minLength.message}
-                    regValue={Model.username.pattern.value}
-                    message={Model.username.pattern.message}
                     required={Model.username.required}
                   />
                 </div>
@@ -126,8 +132,6 @@ const Login = () => {
                     errors={errors}
                     minLength={Model.password.minLength.value}
                     minMessage={Model.password.minLength.message}
-                    regValue={Model.password.pattern.value}
-                    message={Model.password.pattern.message}
                     required={Model.password.required}
                     handlePasswordToggle={handlePasswordToggle}
                     sufix={

@@ -124,16 +124,6 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
               Logout
             </span>
           </div>
-
-          <div className="">
-            <h2 className="mb-[1rem]">Go to login (demo)</h2>
-            <NavLink
-              to="/login"
-              className="text-primary bg-light px-[30px] py-[10px]  "
-            >
-              Login
-            </NavLink>
-          </div>
         </nav>
       </div>
     </section>
