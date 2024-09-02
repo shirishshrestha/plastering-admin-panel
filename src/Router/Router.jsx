@@ -3,6 +3,7 @@ import App from "../App";
 import {
   AddProject,
   ClientDashboard,
+  ClientProjects,
   Dashboard,
   Login,
   Projects,
@@ -23,6 +24,16 @@ const DashboardPriority = () => {
   );
 };
 
+const ProjectsPriority = () => {
+  const role = getRoleFromLocalStorage();
+  const { auth } = useAuth();
+  return auth?.role === "admin" || (role && role === "admin") ? (
+    <Projects />
+  ) : (
+    <ClientProjects />
+  );
+};
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -38,7 +49,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/projects",
-        element: <Projects />,
+        element: <ProjectsPriority />,
         children: [
           {
             path: "addProject",

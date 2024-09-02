@@ -12,17 +12,14 @@ import {
 } from "../../assets/icons/SvgIcons";
 import { DoughnutChart, Pagination } from "../../components";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/Projects/ProjectsApiSlice";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
-export const Projects = () => {
+export const ClientProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const doughnutData = [
-    { type: "Pending", value: 10 },
-    { type: "Scheduled", value: 50 },
-    { type: "Completed", value: 40 },
+    { type: "Pending", value: 1 },
+    { type: "Scheduled", value: 5 },
+    { type: "Completed", value: 4 },
   ];
 
   const doughnutDatasets = [
@@ -82,6 +79,7 @@ export const Projects = () => {
     "Project Name",
     "Client Name",
     "Start Date",
+    "End Date",
     "Status",
     "Action",
   ];
@@ -128,12 +126,6 @@ export const Projects = () => {
     },
   ];
 
-  const {
-    isLoading,
-    error,
-    data: ProjectData,
-  } = useQuery({ queryKey: ["projects"], queryFn: () => getProjects() });
-
   const handleViewProject = (id) => {
     navigate(`/projects/viewProject/${id}`);
   };
@@ -142,16 +134,6 @@ export const Projects = () => {
     <>
       {location.pathname === "/projects" ? (
         <section>
-          {isLoading && (
-            <div className="h-screen w-full bg-primary/80 absolute z-10 top-0 left-0 flex items-center justify-center">
-              <DotLottieReact
-                autoplay
-                loop
-                src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-                style={{ height: "300px", width: "300px" }}
-              />
-            </div>
-          )}
           <div className="grid grid-cols-2">
             <div>
               <div className=" mx-auto  bg-white shadow-lg rounded-lg">
@@ -261,44 +243,35 @@ export const Projects = () => {
                 ))}
               </thead>
               <tbody className="">
-                {isLoading
-                  ? [...Array(5)].map((_, index) => (
-                      <tr key={index} className="h-[1.5rem]">
-                        {/* Render 5 cells to match the table columns */}
-                        {[...Array(5)].map((_, index) => (
-                          <td
-                            key={index}
-                            className="py-[1.5rem] first:pl-[0.5rem]"
-                          >
-                            <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  : ProjectData?.map((item) => (
-                      <tr key={item.id} className=" last:border-none  ">
-                        <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
-                        <td className="py-[1rem]">{item.user.name}</td>
-                        <td className="py-[1rem]">{item.start_date}</td>
-                        <td className="py-[1rem] ">{item.status}</td>
-                        <td>
-                          <div className="flex gap-[0.7rem]">
-                            <button
-                              className="p-[5px] rounded-md bg-viewBackground"
-                              onClick={() => handleViewProject(item.id)}
-                            >
-                              <EyeIcon strokeColor={"#3e84f4"} />
-                            </button>
-                            <button className="p-[5px] rounded-md bg-editBackground">
-                              <EditIcon />
-                            </button>
-                            <button className="p-[5px] rounded-md bg-deleteBackground">
-                              <TrashIcon />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                {tableData.map((item) => (
+                  <tr key={item.id} className=" last:border-none  ">
+                    <td className="py-[1rem] pl-[0.5rem]">
+                      {item.projectName}
+                    </td>
+                    <td className="py-[1rem]">{item.clientName}</td>
+                    <td className="py-[1rem]">{item.startDate}</td>
+                    <td className="py-[1rem]">
+                      {item.endDate ? item.endDate : "-"}
+                    </td>
+                    <td className="py-[1rem] ">{item.status}</td>
+                    <td>
+                      <div className="flex gap-[0.7rem]">
+                        <button
+                          className="p-[5px] rounded-md bg-viewBackground"
+                          onClick={() => handleViewProject(item.id)}
+                        >
+                          <EyeIcon strokeColor={"#3e84f4"} />
+                        </button>
+                        <button className="p-[5px] rounded-md bg-editBackground">
+                          <EditIcon />
+                        </button>
+                        <button className="p-[5px] rounded-md bg-deleteBackground">
+                          <TrashIcon />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

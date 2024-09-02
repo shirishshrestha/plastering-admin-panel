@@ -38,7 +38,7 @@ const ViewProject = () => {
       <div className="mb-[0.5rem] text-[12px] font-[500]">
         <Link
           to="/projects"
-          className="flex items-center gap-[0.2rem] text-[14px]"
+          className="flex w-fit items-center gap-[0.2rem] text-[14px]"
         >
           <GoBack />
           Go Back

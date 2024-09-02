@@ -5,8 +5,20 @@ import {
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
 import { BarChart, DoughnutChart, LineChart } from "../../components";
+import { useQuery } from "@tanstack/react-query";
+import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 
 export const Dashboard = () => {
+  const {
+    isLoading: projectLoading,
+    error,
+    data: ProjectData,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => getProjects(),
+    staleTime: 6000,
+  });
+
   const performanceData = [
     { quarter: "Q1", value: 1200 },
     { quarter: "Q2", value: 2200 },
@@ -80,13 +92,7 @@ export const Dashboard = () => {
     },
   ];
 
-  const tableHead = [
-    "Project Name",
-    "Client Name",
-    "Start Date",
-    "End Date",
-    "Status",
-  ];
+  const tableHead = ["Project Name", "Client Name", "Start Date", "Status"];
 
   // dummy table data
   const tableData = [
@@ -231,17 +237,31 @@ export const Dashboard = () => {
               ))}
             </thead>
             <tbody className="">
-              {tableData.map((item, index) => (
-                <tr key={index} className=" last:border-none  ">
-                  <td className="py-[1rem] pl-[0.5rem]">{item.projectName}</td>
-                  <td className="py-[1rem]">{item.clientName}</td>
-                  <td className="py-[1rem]">{item.startDate}</td>
-                  <td className="py-[1rem]">
-                    {item.endDate ? item.endDate : "-"}
-                  </td>
-                  <td className="py-[1rem] ">{item.status}</td>
-                </tr>
-              ))}
+              {projectLoading
+                ? [...Array(5)].map((_, index) => (
+                    <tr key={index} className="h-[1.5rem]">
+                      {/* Render 5 cells to match the table columns */}
+                      {[...Array(4)].map((_, index) => (
+                        <td
+                          key={index}
+                          className="py-[1.5rem] first:pl-[0.5rem]"
+                        >
+                          <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                : ProjectData?.map((item) => (
+                    <tr key={item.id} className=" last:border-none  ">
+                      <td className="py-[1rem] first:pl-[0.5rem]">
+                        {item.name}
+                      </td>
+                      <td className="py-[1rem]">{item.user.name}</td>
+                      <td className="py-[1rem]">{item.start_date}</td>
+
+                      <td className="py-[1rem] ">{item.status}</td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
           <div className="mt-[1rem] ">

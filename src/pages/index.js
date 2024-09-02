@@ -2,6 +2,7 @@ import { ClientDashboard } from "./Dashboard/ClientDashboard";
 import { Dashboard } from "./Dashboard/Dashboard";
 import Login from "./Login/Login";
 import { AddProject } from "./Projects/AddProject";
+import { ClientProjects } from "./Projects/ClientProjects";
 import { Projects } from "./Projects/Projects";
 import ViewProject from "./Projects/ViewProject";
 import Signup from "./Signup/Signup";
@@ -13,5 +14,6 @@ export {
   AddProject,
   ViewProject,
   Signup,
+  ClientProjects,
   ClientDashboard,
 };

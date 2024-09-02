@@ -48,7 +48,7 @@ const Login = () => {
       setLoading(false);
       navigate(from, { replace: true });
     },
-    onError: (error) => {
+    onError: () => {
       notifyError("Incorrect Username or Password");
       setLoading(false);
     },
