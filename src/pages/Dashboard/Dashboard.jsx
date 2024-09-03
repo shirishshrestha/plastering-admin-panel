@@ -10,13 +10,12 @@ import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 
 export const Dashboard = () => {
   const {
-    isLoading: projectLoading,
+    isPending: projectPending,
     error,
     data: ProjectData,
   } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(),
-    staleTime: 6000,
   });
 
   const performanceData = [
@@ -92,7 +91,13 @@ export const Dashboard = () => {
     },
   ];
 
-  const tableHead = ["Project Name", "Client Name", "Start Date", "Status"];
+  const tableHead = [
+    "Project Name",
+    "Client Name",
+    "Address",
+    "Start Date",
+    "Status",
+  ];
 
   // dummy table data
   const tableData = [
@@ -237,11 +242,11 @@ export const Dashboard = () => {
               ))}
             </thead>
             <tbody className="">
-              {projectLoading
+              {projectPending
                 ? [...Array(5)].map((_, index) => (
                     <tr key={index} className="h-[1.5rem]">
                       {/* Render 5 cells to match the table columns */}
-                      {[...Array(4)].map((_, index) => (
+                      {[...Array(5)].map((_, index) => (
                         <td
                           key={index}
                           className="py-[1.5rem] first:pl-[0.5rem]"
@@ -257,6 +262,7 @@ export const Dashboard = () => {
                         {item.name}
                       </td>
                       <td className="py-[1rem]">{item.user.name}</td>
+                      <td className="py-[1rem]">{item.address}</td>
                       <td className="py-[1rem]">{item.start_date}</td>
 
                       <td className="py-[1rem] ">{item.status}</td>

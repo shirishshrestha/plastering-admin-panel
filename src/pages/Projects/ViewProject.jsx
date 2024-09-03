@@ -1,13 +1,28 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Document,
   Download,
   Folder,
   GoBack,
 } from "../../assets/icons/SvgIcons";
+import { getProjectById } from "../../api/Projects/ProjectsApiSlice";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useQuery } from "@tanstack/react-query";
+import { queryClient } from "../../utils/Query/Query";
 
 const ViewProject = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
+
+  const {
+    isPending: viewProjectPending,
+    error,
+    data: SingleProjectData,
+  } = useQuery({
+    queryKey: ["singleProject", id],
+    queryFn: () => getProjectById(id),
+    enabled: !!id,
+    });
 
   const files = [
     {
@@ -35,18 +50,32 @@ const ViewProject = () => {
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
+      {viewProjectPending && (
+        <div className="h-full w-full bg-primary fixed z-10 top-0 left-0 flex items-center justify-center">
+          <DotLottieReact
+            autoplay
+            loop
+            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
+            style={{ height: "300px", width: "300px" }}
+          />
+        </div>
+      )}
       <div className="mb-[0.5rem] text-[12px] font-[500]">
-        <Link
-          to="/projects"
-          className="flex w-fit items-center gap-[0.2rem] text-[14px]"
+        <div
+          className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+          onClick={() => {
+            navigate("/projects");
+          }}
         >
           <GoBack />
           Go Back
-        </Link>
+        </div>
       </div>
       <h2 className="font-bold text-[1.2rem]">
-        Project Name -{" "}
-        <span className="font-semibold text-[14px]">Address</span>
+        {SingleProjectData?.name} -{" "}
+        <span className="font-semibold text-[14px]">
+          {SingleProjectData?.address}
+        </span>
       </h2>
       <div className="mt-[1rem] flex flex-col gap-[1rem] text-[14px]">
         <div className="border-[2px] border-gray-300 rounded-lg p-[1rem]">

@@ -203,14 +203,14 @@ export const EyeIcon = ({ strokeColor }) => {
   );
 };
 
-export const EditIcon = () => {
+export const EditIcon = ({ color }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="#8c62ff"
+      stroke={color}
       className="size-5"
     >
       <path

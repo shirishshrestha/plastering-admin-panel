@@ -5,10 +5,11 @@ import { Input, Model } from "../../components";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useRef, useState } from "react";
+import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
 export const AddProject = () => {
   const navigate = useNavigate();
-
+  const role = getRoleFromLocalStorage();
   const {
     register,
     formState: { errors },
@@ -45,21 +46,23 @@ export const AddProject = () => {
             onSubmit={handleSubmit(addProjectForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
-            <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Registered Client</label>
-              <select
-                name="registered-client"
-                className="cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-600 focus:border-transparent text-[14px]"
-              >
-                <option value="" hidden selected>
-                  Select a registered client
-                </option>
-                <option value="Client 1">Client 1</option>
-                <option value="Client 2">Client 2</option>
-                <option value="Client 3">Client 3</option>
-                <option value="Client 4">Client 4</option>
-              </select>
-            </div>
+            {role && role === "admin" && (
+              <div className="flex flex-col gap-[0.4rem]">
+                <label className="font-bold">Registered Client</label>
+                <select
+                  name="registered-client"
+                  className="cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-600 focus:border-transparent text-[14px]"
+                >
+                  <option value="" hidden selected>
+                    Select a registered client
+                  </option>
+                  <option value="Client 1">Client 1</option>
+                  <option value="Client 2">Client 2</option>
+                  <option value="Client 3">Client 3</option>
+                  <option value="Client 4">Client 4</option>
+                </select>
+              </div>
+            )}
             <div className="flex flex-col gap-[0.4rem]">
               <label className="font-bold">Project Name</label>
               <Input
@@ -134,7 +137,63 @@ export const AddProject = () => {
                   )}
                 />
               </div>
-              <div className="flex flex-col gap-[0.4rem]">
+              {role && role === "admin" && (
+                <div className="flex flex-col gap-[0.4rem] ">
+                  <label className="font-bold">Upload Files</label>
+                  <input
+                    type="file"
+                    name="project-file"
+                    {...register("project-file", {
+                      required: "Please select the date",
+                      onChange: (e) => {
+                        setSelectedFiles(e.target.files);
+                      },
+                    })}
+                    id="fileInput"
+                    className="hidden"
+                    multiple
+                  />
+                  <label
+                    htmlFor="fileInput"
+                    className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] ${
+                      errors["project-file"]
+                        ? "focus:ring-red-500 !border-red-500"
+                        : ""
+                    } `}
+                  >
+                    <label
+                      className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
+                      htmlFor="fileInput"
+                    >
+                      Upload
+                    </label>
+                    Select Multiple Files at once
+                  </label>
+
+                  <ErrorMessage
+                    errors={errors}
+                    name="project-file"
+                    render={() => (
+                      <p
+                        className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                        key="file"
+                      >
+                        Please select the file
+                      </p>
+                    )}
+                  />
+                  <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                    <span>Uploaded Files:</span>
+                    {selectedFiles.length > 0 &&
+                      Array.from(selectedFiles).map((file, index) => (
+                        <p key={index}>{file.name}</p>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {role && role === "client" && (
+              <div className="flex flex-col gap-[0.4rem] ">
                 <label className="font-bold">Upload Files</label>
                 <input
                   type="file"
@@ -186,7 +245,7 @@ export const AddProject = () => {
                     ))}
                 </div>
               </div>
-            </div>
+            )}
             <div className="flex flex-col gap-[0.4rem]">
               <label htmlFor="additional-req" className="font-bold">
                 Additional Requirements (Optional)

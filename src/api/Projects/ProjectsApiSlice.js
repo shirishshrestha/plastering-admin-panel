@@ -8,3 +8,21 @@ export const getProjects = async () => {
     throw error;
   }
 };
+
+export const getProjectById = async (id) => {
+  try {
+    const response = await instance.get(`/projects/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteProject = async (id) => {
+  try {
+    const response = await instance.delete(`/projects/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -74,7 +74,7 @@ const Signup = () => {
   return (
     <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem] relative">
       {loading && (
-        <div className="h-full w-full bg-primary/80 absolute z-20 top-0 left-0 flex items-center justify-center">
+        <div className="h-full w-full bg-primary/80 fixed z-20 top-0 left-0 flex items-center justify-center">
           <DotLottieReact
             autoplay
             loop

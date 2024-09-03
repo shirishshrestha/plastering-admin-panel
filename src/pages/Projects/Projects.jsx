@@ -12,13 +12,26 @@ import {
 } from "../../assets/icons/SvgIcons";
 import { DoughnutChart, Pagination } from "../../components";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/Projects/ProjectsApiSlice";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  deleteProject,
+  getProjects,
+} from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
+import { useState } from "react";
+import { notifyError, notifySuccess } from "../../components/Toast/Toast";
+import CustomToastContainer from "../../components/Toast/ToastContainer";
+import { queryClient } from "../../utils/Query/Query";
 
 export const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [projectName, setProjectName] = useState("");
+  const [projectId, setProjectId] = useState();
+  const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+
   const doughnutData = [
     { type: "Pending", value: 10 },
     { type: "Scheduled", value: 50 },
@@ -40,6 +53,7 @@ export const Projects = () => {
       ],
     },
   ];
+
   const recentProjects = [
     {
       projectName: "Residential Plastering",
@@ -81,69 +95,100 @@ export const Projects = () => {
   const tableHead = [
     "Project Name",
     "Client Name",
+    "Address",
     "Start Date",
     "Status",
     "Action",
   ];
 
   // dummy table data
-  const tableData = [
-    {
-      projectName: "Residential Plastering",
-      clientName: "John Doe",
-      startDate: "2024-01-15",
-      endDate: "2024-02-10",
-      status: "Completed",
-      id: 0,
-    },
-    {
-      projectName: "Commercial Office Plastering",
-      clientName: "ACME Corp",
-      startDate: "2024-03-01",
-      endDate: "2024-04-15",
-      status: "In Progress",
-      id: 1,
-    },
-    {
-      projectName: "Retail Store Renovation",
-      clientName: "Jane Smith",
-      startDate: "2024-02-20",
-      status: "Pending",
-      id: 2,
-    },
-    {
-      projectName: "Warehouse Plastering",
-      clientName: "Logistics Co",
-      startDate: "2024-04-01",
-      status: "Scheduled",
-      id: 3,
-    },
-    {
-      projectName: "Luxury Villa Plastering",
-      clientName: "Mr. Brown",
-      startDate: "2024-01-05",
-      endDate: "2024-01-25",
-      status: "Completed",
-      id: 4,
-    },
-  ];
+  // const tableData = [
+  //   {
+  //     projectName: "Residential Plastering",
+  //     clientName: "John Doe",
+  //     startDate: "2024-01-15",
+  //     endDate: "2024-02-10",
+  //     status: "Completed",
+  //     id: 0,
+  //   },
+  //   {
+  //     projectName: "Commercial Office Plastering",
+  //     clientName: "ACME Corp",
+  //     startDate: "2024-03-01",
+  //     endDate: "2024-04-15",
+  //     status: "In Progress",
+  //     id: 1,
+  //   },
+  //   {
+  //     projectName: "Retail Store Renovation",
+  //     clientName: "Jane Smith",
+  //     startDate: "2024-02-20",
+  //     status: "Pending",
+  //     id: 2,
+  //   },
+  //   {
+  //     projectName: "Warehouse Plastering",
+  //     clientName: "Logistics Co",
+  //     startDate: "2024-04-01",
+  //     status: "Scheduled",
+  //     id: 3,
+  //   },
+  //   {
+  //     projectName: "Luxury Villa Plastering",
+  //     clientName: "Mr. Brown",
+  //     startDate: "2024-01-05",
+  //     endDate: "2024-01-25",
+  //     status: "Completed",
+  //     id: 4,
+  //   },
+  // ];
 
   const {
-    isLoading,
+    isPending,
     error,
     data: ProjectData,
-  } = useQuery({ queryKey: ["projects"], queryFn: () => getProjects() });
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+    keepPreviousData: true,
+    staleTime: 6000,
+  });
+
+  const DeleteProject = useMutation({
+    mutationFn: () => deleteProject(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries("projects");
+      notifySuccess("Project deleted successfully");
+      setDeleteConfirationShow(false);
+    },
+    onError: (error) => {
+      notifyError("Failed to delete project, please try again");
+      console.log(error);
+    },
+  });
 
   const handleViewProject = (id) => {
     navigate(`/projects/viewProject/${id}`);
+  };
+
+  const handleProceedClick = () => {
+    console.log("Deleting project with id: ", projectId);
+    DeleteProject.mutate();
   };
 
   return (
     <>
       {location.pathname === "/projects" ? (
         <section>
-          {isLoading && (
-            <div className="h-screen w-full bg-primary/80 absolute z-10 top-0 left-0 flex items-center justify-center">
+          {deleteConfirationShow && (
+            <DeleteConfirmation
+              deleteName={projectName}
+              setDeleteConfirationShow={setDeleteConfirationShow}
+              handleProceedClick={handleProceedClick}
+            />
+          )}
+          {isPending && (
+            <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
               <DotLottieReact
                 autoplay
                 loop
@@ -249,7 +294,7 @@ export const Projects = () => {
                 </button>
               </Link>
             </div>
-            <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
               <thead className="bg-primary text-white  ">
                 {tableHead.map((item, index) => (
                   <th
@@ -261,7 +306,7 @@ export const Projects = () => {
                 ))}
               </thead>
               <tbody className="">
-                {isLoading
+                {isPending
                   ? [...Array(5)].map((_, index) => (
                       <tr key={index} className="h-[1.5rem]">
                         {/* Render 5 cells to match the table columns */}
@@ -279,6 +324,8 @@ export const Projects = () => {
                       <tr key={item.id} className=" last:border-none  ">
                         <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
                         <td className="py-[1rem]">{item.user.name}</td>
+                        <td className="py-[1rem]">{item.address}</td>
+
                         <td className="py-[1rem]">{item.start_date}</td>
                         <td className="py-[1rem] ">{item.status}</td>
                         <td>
@@ -290,9 +337,16 @@ export const Projects = () => {
                               <EyeIcon strokeColor={"#3e84f4"} />
                             </button>
                             <button className="p-[5px] rounded-md bg-editBackground">
-                              <EditIcon />
+                              <EditIcon color="#8c62ff" />
                             </button>
-                            <button className="p-[5px] rounded-md bg-deleteBackground">
+                            <button
+                              className="p-[5px] rounded-md bg-deleteBackground"
+                              onClick={() => {
+                                setDeleteConfirationShow(true);
+                                setProjectName(item.name);
+                                setProjectId(item.id);
+                              }}
+                            >
                               <TrashIcon />
                             </button>
                           </div>
@@ -305,6 +359,7 @@ export const Projects = () => {
           <div className="mb-[1rem] flex items-center justify-end">
             <Pagination />
           </div>
+          <CustomToastContainer />
         </section>
       ) : (
         <Outlet />

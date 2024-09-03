@@ -39,11 +39,6 @@ export const ClientDashboard = () => {
     { month: "Dec", revenue: 21000, expense: 17000 },
   ];
 
-  const LineFunction = (value) => {
-    value = value + "K";
-    return value;
-  };
-
   const lineDatasets = [
     {
       label: "Revenue",
@@ -90,20 +85,18 @@ export const ClientDashboard = () => {
     },
   ];
 
-  const tableHead = ["Project Name", "Start Date", "End Date", "Status"];
+  const tableHead = ["Project Name", "Address", "Start Date", "Status"];
 
   // dummy table data
   const tableData = [
     {
       projectName: "Residential Plastering",
       startDate: "2024-01-15",
-      endDate: "2024-02-10",
       status: "Completed",
     },
     {
       projectName: "Commercial Office Plastering",
       startDate: "2024-03-01",
-      endDate: "2024-04-15",
       status: "In Progress",
     },
     {
@@ -119,7 +112,6 @@ export const ClientDashboard = () => {
     {
       projectName: "Luxury Villa Plastering",
       startDate: "2024-01-05",
-      endDate: "2024-01-25",
       status: "Completed",
     },
   ];
@@ -219,10 +211,9 @@ export const ClientDashboard = () => {
                       <td className="py-[1rem] pl-[0.5rem]">
                         {item.projectName}
                       </td>
+                      <td className="py-[1rem]">{item.address}</td>
                       <td className="py-[1rem]">{item.startDate}</td>
-                      <td className="py-[1rem]">
-                        {item.endDate ? item.endDate : "-"}
-                      </td>
+
                       <td className="py-[1rem] ">{item.status}</td>
                     </tr>
                   ))}
