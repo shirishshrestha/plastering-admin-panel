@@ -5,7 +5,13 @@ import { Input, Model } from "../../components";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useRef, useState } from "react";
-import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
+import {
+  getIdFromLocalStorage,
+  getRoleFromLocalStorage,
+} from "../../utils/Storage/StorageUtils";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getUsers } from "../../api/Register/RegisterApiSlice";
+import { addProject } from "../../api/Projects/ProjectsApiSlice";
 
 export const AddProject = () => {
   const navigate = useNavigate();
@@ -17,14 +23,50 @@ export const AddProject = () => {
     reset,
   } = useForm();
 
+  const {
+    isPending: userPending,
+    error,
+    data: RegisteredClients,
+  } = useQuery({
+    queryKey: ["Registered Clients"],
+    queryFn: getUsers,
+    enabled: role === "admin",
+  });
+
+  const AddProject = useMutation({
+    mutationFn: (data) => addProject(data),
+    onSuccess: (data) => {
+      notifySuccess("Project added successfully");
+    },
+    onError: (error) => {
+      notifyError("Error adding project");
+    },
+  });
+
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   const addProjectForm = (data) => {
-    console.log(data);
-    notifySuccess("Project added successfully");
-  };
+    const formData = new FormData();
 
-  const handleToast = () => {};
+    formData.append(
+      "user_id",
+      data.registered_client ? data.registered_client : getIdFromLocalStorage()
+    );
+    formData.append("name", data.project_name);
+    formData.append("address", data.address);
+    formData.append("cloud_link", data.cloud_link);
+    formData.append("start_date", data.date);
+    formData.append("status", "pending");
+    formData.append("additional_requirements", data.additional_info || "");
+
+    if (selectedFiles.length > 0) {
+      Array.from(selectedFiles).forEach((file) => {
+        formData.append("files[]", file);
+      });
+    }
+
+    AddProject.mutate(formData);
+  };
 
   const handleProjectCancel = () => {
     navigate("/projects");
@@ -50,17 +92,39 @@ export const AddProject = () => {
               <div className="flex flex-col gap-[0.4rem]">
                 <label className="font-bold">Registered Client</label>
                 <select
-                  name="registered-client"
-                  className="cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-600 focus:border-transparent text-[14px]"
+                  name="registered_client"
+                  className={`cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-[0.4px] focus:ring-blue-600 focus:border-transparent text-[14px] ${
+                    errors["registered_client"]
+                      ? "focus:ring-red-500 !border-red-500"
+                      : ""
+                  } `}
+                  {...register("registered_client", {
+                    required: "Please select a registered client",
+                  })}
                 >
                   <option value="" hidden selected>
                     Select a registered client
                   </option>
-                  <option value="Client 1">Client 1</option>
-                  <option value="Client 2">Client 2</option>
-                  <option value="Client 3">Client 3</option>
-                  <option value="Client 4">Client 4</option>
+                  {userPending && <option disabled>Loading...</option>}
+                  {error && <option disabled>Error Loading</option>}
+                  {RegisteredClients?.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.name}
+                    </option>
+                  ))}
                 </select>
+                <ErrorMessage
+                  errors={errors}
+                  name="registered_client"
+                  render={() => (
+                    <p
+                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                      key="registered-client"
+                    >
+                      Please select the a client
+                    </p>
+                  )}
+                />
               </div>
             )}
             <div className="flex flex-col gap-[0.4rem]">
@@ -110,7 +174,7 @@ export const AddProject = () => {
                   <label className="font-bold">Start Date</label>
                   <input
                     type="date"
-                    name="start-date"
+                    name="date"
                     className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
                       errors["date"] ? "focus:ring-red-500 border-red-500" : ""
                     }`}
@@ -139,12 +203,11 @@ export const AddProject = () => {
               </div>
               {role && role === "admin" && (
                 <div className="flex flex-col gap-[0.4rem] ">
-                  <label className="font-bold">Upload Files</label>
+                  <label className="font-bold">Upload Files (Optional)</label>
                   <input
                     type="file"
-                    name="project-file"
-                    {...register("project-file", {
-                      required: "Please select the date",
+                    name="project_file"
+                    {...register("project_file", {
                       onChange: (e) => {
                         setSelectedFiles(e.target.files);
                       },
@@ -155,11 +218,7 @@ export const AddProject = () => {
                   />
                   <label
                     htmlFor="fileInput"
-                    className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] ${
-                      errors["project-file"]
-                        ? "focus:ring-red-500 !border-red-500"
-                        : ""
-                    } `}
+                    className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
                   >
                     <label
                       className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
@@ -170,18 +229,6 @@ export const AddProject = () => {
                     Select Multiple Files at once
                   </label>
 
-                  <ErrorMessage
-                    errors={errors}
-                    name="project-file"
-                    render={() => (
-                      <p
-                        className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                        key="file"
-                      >
-                        Please select the file
-                      </p>
-                    )}
-                  />
                   <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
                     <span>Uploaded Files:</span>
                     {selectedFiles.length > 0 &&
@@ -194,12 +241,11 @@ export const AddProject = () => {
             </div>
             {role && role === "client" && (
               <div className="flex flex-col gap-[0.4rem] ">
-                <label className="font-bold">Upload Files</label>
+                <label className="font-bold">Upload Files (Optional)</label>
                 <input
                   type="file"
-                  name="project-file"
-                  {...register("project-file", {
-                    required: "Please select the date",
+                  name="project_file"
+                  {...register("project_file", {
                     onChange: (e) => {
                       setSelectedFiles(e.target.files);
                     },
@@ -210,11 +256,7 @@ export const AddProject = () => {
                 />
                 <label
                   htmlFor="fileInput"
-                  className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] ${
-                    errors["project-file"]
-                      ? "focus:ring-red-500 !border-red-500"
-                      : ""
-                  } `}
+                  className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] `}
                 >
                   <label
                     className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
@@ -225,18 +267,6 @@ export const AddProject = () => {
                   Select Multiple Files at once
                 </label>
 
-                <ErrorMessage
-                  errors={errors}
-                  name="project-file"
-                  render={() => (
-                    <p
-                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                      key="file"
-                    >
-                      Please select the file
-                    </p>
-                  )}
-                />
                 <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
                   <span>Uploaded Files:</span>
                   {selectedFiles.length > 0 &&
@@ -251,10 +281,10 @@ export const AddProject = () => {
                 Additional Requirements (Optional)
               </label>
               <textarea
-                name="additional-info"
+                name="additional_info"
                 id="additional-req"
                 className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[90px] max-h-[350px]"
-                {...register("additional-req", {})}
+                {...register("additional_info", {})}
               ></textarea>
             </div>
 

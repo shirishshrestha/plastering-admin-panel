@@ -2,7 +2,7 @@ export const Model = {
   projectName: {
     type: "text",
     required: "Please enter the project name",
-    name: "project-name",
+    name: "project_name",
     placeholder: "Enter project name",
     minLength: {
       value: 2,
@@ -19,7 +19,7 @@ export const Model = {
     name: "address",
     placeholder: "Enter your address",
     minLength: {
-      value: 4,
+      value: 3,
       message: "Address must be at least 4 characters long",
     },
     pattern: {
@@ -31,7 +31,7 @@ export const Model = {
   cloudLink: {
     type: "text",
     required: "Please enter the cloud link",
-    name: "cloud-link",
+    name: "cloud_link",
     placeholder: "Enter the cloud link",
   },
 

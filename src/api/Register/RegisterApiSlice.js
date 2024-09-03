@@ -11,7 +11,15 @@ export const signupClient = async (data) => {
     });
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw error;
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    const response = await instance.get("/register");
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };

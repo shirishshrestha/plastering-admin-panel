@@ -6,10 +6,18 @@ import {
 } from "../../assets/icons/SvgIcons";
 import { BarChart, DoughnutChart } from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
-import { getNameFromLocalStorage } from "../../utils/Storage/StorageUtils";
+import {
+  getIdFromLocalStorage,
+  getNameFromLocalStorage,
+} from "../../utils/Storage/StorageUtils";
+import { useQuery } from "@tanstack/react-query";
+import { getProjects } from "../../api/Projects/ProjectsApiSlice";
+import EmptyData from "../../components/EmptyData/EmptyData";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export const ClientDashboard = () => {
   const userName = getNameFromLocalStorage();
+  const user_id = getIdFromLocalStorage();
 
   const performanceData = [
     { quarter: "Plan", value: 3 },
@@ -23,6 +31,16 @@ export const ClientDashboard = () => {
   //   { quarter: "Pending Forcast", value: 15 },
   //   { quarter: "Revenue", value: 18 },
   // ];
+
+  const {
+    isPending: projectPending,
+    error,
+    data: ProjectData,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => getProjects(),
+    staleTime: 6000,
+  });
 
   const lineData = [
     { month: "Jan", revenue: 12000, expense: 4000 },
@@ -118,6 +136,16 @@ export const ClientDashboard = () => {
 
   return (
     <section className="pt-[1rem]">
+      {projectPending && (
+        <div className="h-full w-full bg-primary/80 fixed z-20 top-0 left-0 flex items-center justify-center">
+          <DotLottieReact
+            autoplay
+            loop
+            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
+            style={{ height: "300px", width: "300px" }}
+          />
+        </div>
+      )}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1rem] w-full h-full">
         <div className="w-full h-full">
           <div className="w-full bg-white rounded-lg shadow-lg py-[1rem] px-[2rem] relative overflow-hidden">
@@ -205,18 +233,35 @@ export const ClientDashboard = () => {
                     </th>
                   ))}
                 </thead>
-                <tbody className="">
-                  {tableData.map((item, index) => (
-                    <tr key={index} className=" last:border-none  ">
-                      <td className="py-[1rem] pl-[0.5rem]">
-                        {item.projectName}
-                      </td>
-                      <td className="py-[1rem]">{item.address}</td>
-                      <td className="py-[1rem]">{item.startDate}</td>
+                <tbody className="capitalize">
+                  {projectPending ? (
+                    [...Array(5)].map((_, index) => (
+                      <tr key={index} className="h-[1.5rem]">
+                        {[...Array(4)].map((_, index) => (
+                          <td
+                            key={index}
+                            className="py-[1.5rem] first:pl-[0.5rem]"
+                          >
+                            <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : ProjectData?.length > 0 ? (
+                    ProjectData?.filter((item) => user_id === item.user_id).map(
+                      (item) => (
+                        <tr key={item.id} className=" last:border-none  ">
+                          <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
+                          <td className="py-[1rem]">{item.address}</td>
+                          <td className="py-[1rem]">{item.start_date}</td>
 
-                      <td className="py-[1rem] ">{item.status}</td>
-                    </tr>
-                  ))}
+                          <td className="py-[1rem] ">{item.status}</td>
+                        </tr>
+                      )
+                    )
+                  ) : (
+                    <EmptyData />
+                  )}
                 </tbody>
               </table>
               <div className="mt-[1rem] ">

@@ -17,10 +17,14 @@ import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/Delet
 import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import EmptyData from "../../components/EmptyData/EmptyData";
+import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
 export const ClientProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const user_id = getIdFromLocalStorage();
 
   const {
     isPending,
@@ -29,12 +33,13 @@ export const ClientProjects = () => {
   } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(),
+    enabled: location.pathname === "/projects",
     staleTime: 6000,
   });
 
   const doughnutData = [
     { type: "Pending", value: 1 },
-    { type: "Scheduled", value: 5 },
+    { type: "Running", value: 5 },
     { type: "Completed", value: 4 },
   ];
 
@@ -53,6 +58,7 @@ export const ClientProjects = () => {
       ],
     },
   ];
+
   const recentProjects = [
     {
       projectName: "Residential Plastering",
@@ -102,44 +108,44 @@ export const ClientProjects = () => {
 
   // dummy table data
   const tableData = [
-    {
-      projectName: "Residential Plastering",
-      clientName: "John Doe",
-      startDate: "2024-01-15",
-      endDate: "2024-02-10",
-      status: "Completed",
-      id: 0,
-    },
-    {
-      projectName: "Commercial Office Plastering",
-      clientName: "ACME Corp",
-      startDate: "2024-03-01",
-      endDate: "2024-04-15",
-      status: "In Progress",
-      id: 1,
-    },
-    {
-      projectName: "Retail Store Renovation",
-      clientName: "Jane Smith",
-      startDate: "2024-02-20",
-      status: "Pending",
-      id: 2,
-    },
-    {
-      projectName: "Warehouse Plastering",
-      clientName: "Logistics Co",
-      startDate: "2024-04-01",
-      status: "Scheduled",
-      id: 3,
-    },
-    {
-      projectName: "Luxury Villa Plastering",
-      clientName: "Mr. Brown",
-      startDate: "2024-01-05",
-      endDate: "2024-01-25",
-      status: "Completed",
-      id: 4,
-    },
+    // {
+    //   projectName: "Residential Plastering",
+    //   clientName: "John Doe",
+    //   startDate: "2024-01-15",
+    //   endDate: "2024-02-10",
+    //   status: "Completed",
+    //   id: 0,
+    // },
+    // {
+    //   projectName: "Commercial Office Plastering",
+    //   clientName: "ACME Corp",
+    //   startDate: "2024-03-01",
+    //   endDate: "2024-04-15",
+    //   status: "In Progress",
+    //   id: 1,
+    // },
+    // {
+    //   projectName: "Retail Store Renovation",
+    //   clientName: "Jane Smith",
+    //   startDate: "2024-02-20",
+    //   status: "Pending",
+    //   id: 2,
+    // },
+    // {
+    //   projectName: "Warehouse Plastering",
+    //   clientName: "Logistics Co",
+    //   startDate: "2024-04-01",
+    //   status: "Scheduled",
+    //   id: 3,
+    // },
+    // {
+    //   projectName: "Luxury Villa Plastering",
+    //   clientName: "Mr. Brown",
+    //   startDate: "2024-01-05",
+    //   endDate: "2024-01-25",
+    //   status: "Completed",
+    //   id: 4,
+    // },
   ];
 
   const handleViewProject = (id) => {
@@ -181,7 +187,7 @@ export const ClientProjects = () => {
                         className={`flex gap-[0.7rem] items-center py-[0.1rem] px-[0.5rem] rounded-lg  ${
                           item.type === "Pending" ? "bg-[#ffce56]  " : ""
                         } ${item.type === "Completed" ? "bg-[#ff6384]" : ""}
-                       ${item.type === "Scheduled" ? "bg-[#4bc0c0]" : ""}`}
+                       ${item.type === "Running" ? "bg-[#4bc0c0]" : ""}`}
                       >
                         <span className="font-bold text-[1.4rem]">
                           {item.value}
@@ -203,7 +209,7 @@ export const ClientProjects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {recentProjects.map((project, index) => (
+                {ProjectData?.map((project, index) => (
                   <SwiperSlide key={index}>
                     <div className="flex flex-col p-4">
                       <div className="flex justify-between">
@@ -212,10 +218,10 @@ export const ClientProjects = () => {
                         </div>
                         <div className="flex flex-col items-end">
                           <h2 className="text-lg font-semibold text-end ">
-                            {project.projectName}
+                            {project.name}
                           </h2>
                           <p className="text-sm font-[500] text-end">
-                            {project.clientName}
+                            {project.user.name}
                           </p>
                           <div
                             className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
@@ -228,7 +234,7 @@ export const ClientProjects = () => {
                                 : ""
                             }
                            ${
-                             project.status === "scheduled" ? "bg-blue-600" : ""
+                             project.status === "running" ? "bg-blue-600" : ""
                            }`}
                           >
                             <p className="text-sm font-[500] text-center">
@@ -238,7 +244,13 @@ export const ClientProjects = () => {
                         </div>
                       </div>
                       <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                        {project.description}
+                        {project.address}
+                      </p>
+                      <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                        {project.cloud_link}
+                      </p>
+                      <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                        Start Date: {project.start_date}
                       </p>
                     </div>
                   </SwiperSlide>
@@ -269,21 +281,22 @@ export const ClientProjects = () => {
                 ))}
               </thead>
               <tbody className="">
-                {isPending
-                  ? [...Array(5)].map((_, index) => (
-                      <tr key={index} className="h-[1.5rem]">
-                        {/* Render 5 cells to match the table columns */}
-                        {[...Array(5)].map((_, index) => (
-                          <td
-                            key={index}
-                            className="py-[1.5rem] first:pl-[0.5rem]"
-                          >
-                            <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  : ProjectData?.map((item) => (
+                {isPending ? (
+                  [...Array(5)].map((_, index) => (
+                    <tr key={index} className="h-[1.5rem]">
+                      {[...Array(6)].map((_, index) => (
+                        <td
+                          key={index}
+                          className="py-[1.5rem] first:pl-[0.5rem]"
+                        >
+                          <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : ProjectData?.length > 0 ? (
+                  ProjectData?.filter((item) => user_id === item.user_id).map(
+                    (item) => (
                       <tr key={item.id} className=" last:border-none  ">
                         <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
                         <td className="py-[1rem]">{item.user.name}</td>
@@ -308,7 +321,11 @@ export const ClientProjects = () => {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    )
+                  )
+                ) : (
+                  <EmptyData />
+                )}
               </tbody>
             </table>
           </div>

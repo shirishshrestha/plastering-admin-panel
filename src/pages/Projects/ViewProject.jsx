@@ -5,10 +5,13 @@ import {
   Folder,
   GoBack,
 } from "../../assets/icons/SvgIcons";
-import { getProjectById } from "../../api/Projects/ProjectsApiSlice";
+import {
+  downloadFile,
+  getProjectById,
+} from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useQuery } from "@tanstack/react-query";
-import { queryClient } from "../../utils/Query/Query";
+import { useState } from "react";
 
 const ViewProject = () => {
   const navigate = useNavigate();
@@ -22,7 +25,8 @@ const ViewProject = () => {
     queryKey: ["singleProject", id],
     queryFn: () => getProjectById(id),
     enabled: !!id,
-    });
+    staleTime: 6000,
+  });
 
   const files = [
     {
@@ -48,6 +52,24 @@ const ViewProject = () => {
     duration: "72 hours",
   };
 
+  const [download, setDownload] = useState();
+  const [downloadId, setDownloadId] = useState();
+  const { data, isFetching: fetchingFile } = useQuery({
+    queryKey: ["downloadFile", download],
+    queryFn: () => downloadFile(download, setDownload),
+    enabled: !!download,
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+
+  const handleDownload = (name, index) => {
+    console.log(name);
+    setDownloadId(index);
+    setDownload(name);
+  };
+
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
       {viewProjectPending && (
@@ -60,6 +82,7 @@ const ViewProject = () => {
           />
         </div>
       )}
+
       <div className="mb-[0.5rem] text-[12px] font-[500]">
         <div
           className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
@@ -87,10 +110,7 @@ const ViewProject = () => {
             // contentEditable
             spellCheck="false"
           >
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora
-            quibusdam quidem doloremque quas quo praesentium corrupti, dolore
-            voluptatum quod obcaecati distinctio vel sit! Similique architecto
-            dolor nulla cum accusamus quam?
+            {SingleProjectData?.additional_requirements}
           </div>
         </div>
         <div className="border-[2px] border-gray-300 rounded-lg p-[1rem]">
@@ -98,18 +118,27 @@ const ViewProject = () => {
             Uploaded Files:
           </p>
           <div className="flex justify-evenly items-center flex-wrap">
-            {files.map((file) => (
-              <div key={file.id} className="flex gap-[0.5rem] items-center">
-                <Document />
-                <p className="font-[500]">{file.fileName}</p>
-                <button
-                  type="button"
-                  className="flex items-center text-[12px] font-[500] gap-[0.2rem] pl-[0.5rem]"
-                >
-                  <Download /> Download
-                </button>
-              </div>
-            ))}
+            {SingleProjectData?.files.length < 1 ? (
+              <p className="font-[500]">No files uploaded</p>
+            ) : (
+              SingleProjectData?.files.map((file, index) => (
+                <div key={file.id} className="flex gap-[0.5rem] items-center">
+                  <Document />
+                  <p className="font-[500]">{file.split("/").pop()}</p>
+
+                  <button
+                    type="button"
+                    className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                    onClick={() => handleDownload(file.split("/")[1], index)}
+                  >
+                    <Download />
+                    {fetchingFile && index === downloadId
+                      ? "Loading"
+                      : "Download"}
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
         <div className="border-[2px] border-gray-300 rounded-lg p-[1rem] hover:text-light hover:bg-primary hover:border-primary cursor-pointer transition-all ease-in-out duration-300 font-[500] text-[1rem] text-center ">
@@ -147,23 +176,25 @@ const ViewProject = () => {
                 </tr>
                 <tr>
                   <th className="text-start py-[5px] ">Submitted Date: </th>
-                  <td className="font-[500]">{projectDetails.dateSubmitted}</td>
+                  <td className="font-[500]">
+                    {SingleProjectData?.created_at
+                      ? SingleProjectData.created_at.split("T")[0]
+                      : "-"}
+                  </td>
                 </tr>
                 <tr>
                   <th className="text-start py-[5px] ">Started Date: </th>
-                  <td className="font-[500]">{projectDetails.dateStarted}</td>
+                  <td className="font-[500]">
+                    {SingleProjectData?.start_date}
+                  </td>
                 </tr>
                 <tr>
                   <th className="text-start py-[5px] ">Last Modified: </th>
-                  <td className="font-[500]">{projectDetails.lastModified}</td>
-                </tr>
-                <tr>
-                  <th className="text-start py-[5px] ">Completed Date: </th>
-                  <td className="font-[500]">{projectDetails.dateCompleted}</td>
-                </tr>
-                <tr>
-                  <th className="text-start py-[5px] ">Duration:</th>
-                  <td className="font-[500]">{projectDetails.duration}</td>
+                  <td className="font-[500]">
+                    {SingleProjectData?.updated_at
+                      ? SingleProjectData.updated_at.split("T")[0]
+                      : "-"}
+                  </td>
                 </tr>
               </table>
             </div>
