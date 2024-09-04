@@ -32,10 +32,43 @@ export const Projects = () => {
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
 
+  const {
+    isPending,
+    error,
+    data: ProjectData,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+    keepPreviousData: true,
+    enabled: location.pathname === "/projects",
+    staleTime: 6000,
+  });
+
   const doughnutData = [
-    { type: "Pending", value: 10 },
-    { type: "Scheduled", value: 50 },
-    { type: "Completed", value: 40 },
+    {
+      type: "Pending",
+      value:
+        ProjectData?.length > 0
+          ? ProjectData?.filter((project) => project.status === "pending")
+              .length
+          : 0,
+    },
+    {
+      type: "Running",
+      value:
+        ProjectData?.length > 0
+          ? ProjectData?.filter((project) => project.status === "running")
+              .length
+          : 0,
+    },
+    {
+      type: "Completed",
+      value:
+        ProjectData?.length > 0
+          ? ProjectData?.filter((project) => project.status === "completed")
+              .length
+          : 0,
+    },
   ];
 
   const doughnutDatasets = [
@@ -72,9 +105,9 @@ export const Projects = () => {
     {
       projectName: "Retail Store Renovation",
       clientName: "Jane Smith",
-      status: "scheduled",
+      status: "Running",
       description:
-        "Decorative plaster will be applied to the store's feature walls. The project is scheduled to start soon.",
+        "Decorative plaster will be applied to the store's feature walls. The project is Running to start soon.",
     },
     {
       projectName: "Warehouse Plastering",
@@ -130,7 +163,7 @@ export const Projects = () => {
   //     projectName: "Warehouse Plastering",
   //     clientName: "Logistics Co",
   //     startDate: "2024-04-01",
-  //     status: "Scheduled",
+  //     status: "Running",
   //     id: 3,
   //   },
   //   {
@@ -143,19 +176,7 @@ export const Projects = () => {
   //   },
   // ];
 
-  const {
-    isPending,
-    error,
-    data: ProjectData,
-  } = useQuery({
-    queryKey: ["projects"],
-    queryFn: getProjects,
-    keepPreviousData: true,
-    enabled: location.pathname === "/projects",
-    staleTime: 6000,
-  });
-
-  const DeleteProject = useMutation({
+  const { mutate: DeleteProject, isPending: deletePending } = useMutation({
     mutationFn: () => deleteProject(projectId),
     onSuccess: () => {
       queryClient.invalidateQueries("projects");
@@ -173,7 +194,7 @@ export const Projects = () => {
   };
 
   const handleProceedClick = () => {
-    DeleteProject.mutate();
+    DeleteProject();
   };
 
   return (
@@ -185,6 +206,7 @@ export const Projects = () => {
               deleteName={projectName}
               setDeleteConfirationShow={setDeleteConfirationShow}
               handleProceedClick={handleProceedClick}
+              deleteLoading={deletePending}
             />
           )}
           {isPending && (
@@ -218,7 +240,7 @@ export const Projects = () => {
                         className={`flex gap-[0.7rem] items-center py-[0.1rem] px-[0.5rem] rounded-lg  ${
                           item.type === "Pending" ? "bg-[#ffce56]  " : ""
                         } ${item.type === "Completed" ? "bg-[#ff6384]" : ""}
-                       ${item.type === "Scheduled" ? "bg-[#4bc0c0]" : ""}`}
+                       ${item.type === "Running" ? "bg-[#4bc0c0]" : ""}`}
                       >
                         <span className="font-bold text-[1.4rem]">
                           {item.value}
@@ -240,46 +262,65 @@ export const Projects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {recentProjects.map((project, index) => (
-                  <SwiperSlide key={index}>
+                {ProjectData?.length < 1 ? (
+                  <SwiperSlide>
                     <div className="flex flex-col p-4">
-                      <div className="flex justify-between">
-                        <div>
-                          <ProjectsSvg />
-                        </div>
-                        <div className="flex flex-col items-end">
-                          <h2 className="text-lg font-semibold text-end ">
-                            {project.projectName}
-                          </h2>
-                          <p className="text-sm font-[500] text-end">
-                            {project.clientName}
-                          </p>
-                          <div
-                            className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
-                              project.status === "pending"
-                                ? "bg-yellow-600  "
-                                : ""
-                            } ${
-                              project.status === "completed"
-                                ? "bg-green-600"
-                                : ""
-                            }
-                           ${
-                             project.status === "scheduled" ? "bg-blue-600" : ""
-                           }`}
-                          >
-                            <p className="text-sm font-[500] text-center">
-                              {project.status}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                        {project.description}
-                      </p>
+                      <p className="text-[1.2rem]">No recent projects</p>
                     </div>
                   </SwiperSlide>
-                ))}
+                ) : (
+                  ProjectData?.map((project) => (
+                    <SwiperSlide key={project.id}>
+                      <div className="flex flex-col p-4">
+                        <div className="flex justify-between">
+                          <div>
+                            <ProjectsSvg />
+                          </div>
+                          <div className="flex flex-col items-end">
+                            <h2 className="text-lg font-semibold text-end ">
+                              {project.name}
+                            </h2>
+                            <p className="text-sm font-[500] text-end">
+                              {project.user.name}
+                            </p>
+                            <div
+                              className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
+                                project.status === "pending"
+                                  ? "bg-yellow-600  "
+                                  : ""
+                              } ${
+                                project.status === "completed"
+                                  ? "bg-green-600"
+                                  : ""
+                              }
+                                ${
+                                  project.status === "running"
+                                    ? "bg-blue-600"
+                                    : ""
+                                }`}
+                            >
+                              <p className="text-sm font-[500] text-center">
+                                {project.status}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                          {project.address}
+                        </p>
+                        <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                          {project.additional_requirements
+                            ? project.additional_requirements
+                                .split(" ")
+                                .slice(0, 7)
+                                .join(" ")
+                            : ""}
+                          {project.additional_requirements ? "..." : ""}
+                        </p>
+                      </div>
+                    </SwiperSlide>
+                  ))
+                )}
               </SwiperComponent>
             </div>
           </div>
@@ -320,7 +361,7 @@ export const Projects = () => {
                       ))}
                     </tr>
                   ))
-                ) : ProjectData.length > 0 ? (
+                ) : ProjectData?.length > 0 ? (
                   ProjectData?.map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
                       <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
@@ -360,9 +401,9 @@ export const Projects = () => {
               </tbody>
             </table>
           </div>
-          <div className="mb-[1rem] flex items-center justify-end">
+          {/* <div className="mb-[1rem] flex items-center justify-end">
             <Pagination />
-          </div>
+          </div> */}
           <CustomToastContainer />
         </section>
       ) : (

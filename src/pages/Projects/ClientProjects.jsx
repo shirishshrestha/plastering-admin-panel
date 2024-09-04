@@ -38,9 +38,39 @@ export const ClientProjects = () => {
   });
 
   const doughnutData = [
-    { type: "Pending", value: 1 },
-    { type: "Running", value: 5 },
-    { type: "Completed", value: 4 },
+    {
+      type: "Pending",
+      value:
+        ProjectData?.filter((project) => project.user_id === user_id).filter(
+          (project) => project.status === "pending"
+        ).length > 0
+          ? ProjectData?.filter(
+              (project) => project.user_id === user_id
+            ).filter((project) => project.status === "pending").length
+          : 0,
+    },
+    {
+      type: "Running",
+      value:
+        ProjectData?.filter((project) => project.user_id === user_id).filter(
+          (project) => project.status === "running"
+        ).length > 0
+          ? ProjectData?.filter(
+              (project) => project.user_id === user_id
+            ).filter((project) => project.status === "running").length
+          : 0,
+    },
+    {
+      type: "Completed",
+      value:
+        ProjectData?.filter((project) => project.user_id === user_id).filter(
+          (project) => project.status === "completed"
+        ).length > 0
+          ? ProjectData?.filter(
+              (project) => project.user_id === user_id
+            ).filter((project) => project.status === "completed").length
+          : 0,
+    },
   ];
 
   const doughnutDatasets = [
@@ -99,13 +129,12 @@ export const ClientProjects = () => {
 
   const tableHead = [
     "Project Name",
-    "Client Name",
+    "Add. Requirements",
     "Address",
     "Start Date",
     "Status",
     "Action",
   ];
-
   // dummy table data
   const tableData = [
     // {
@@ -209,52 +238,68 @@ export const ClientProjects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {ProjectData?.map((project, index) => (
-                  <SwiperSlide key={index}>
-                    <div className="flex flex-col p-4">
-                      <div className="flex justify-between">
-                        <div>
-                          <ProjectsSvg />
-                        </div>
-                        <div className="flex flex-col items-end">
-                          <h2 className="text-lg font-semibold text-end ">
-                            {project.name}
-                          </h2>
-                          <p className="text-sm font-[500] text-end">
-                            {project.user.name}
-                          </p>
-                          <div
-                            className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
-                              project.status === "pending"
-                                ? "bg-yellow-600  "
-                                : ""
-                            } ${
-                              project.status === "completed"
-                                ? "bg-green-600"
-                                : ""
-                            }
-                           ${
-                             project.status === "running" ? "bg-blue-600" : ""
-                           }`}
-                          >
-                            <p className="text-sm font-[500] text-center">
-                              {project.status}
-                            </p>
+                {ProjectData?.filter((item) => user_id === item.user_id)
+                  .length >= 1 ? (
+                  ProjectData?.filter((item) => user_id === item.user_id).map(
+                    (project) => (
+                      <SwiperSlide key={project.id}>
+                        <div className="flex flex-col p-4">
+                          <div className="flex justify-between">
+                            <div>
+                              <ProjectsSvg />
+                            </div>
+                            <div className="flex flex-col items-end">
+                              <h2 className="text-lg font-semibold text-end ">
+                                {project.name}
+                              </h2>
+                              <p className="text-sm font-[500] text-end">
+                                {project.user.name}
+                              </p>
+                              <div
+                                className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
+                                  project.status === "pending"
+                                    ? "bg-yellow-600  "
+                                    : ""
+                                } ${
+                                  project.status === "completed"
+                                    ? "bg-green-600"
+                                    : ""
+                                }
+                                 ${
+                                   project.status === "running"
+                                     ? "bg-blue-600"
+                                     : ""
+                                 }`}
+                              >
+                                <p className="text-sm font-[500] text-center">
+                                  {project.status}
+                                </p>
+                              </div>
+                            </div>
                           </div>
+                          <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                            {project.address}
+                          </p>
+                          <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                            {project.additional_requirements
+                              ? project.additional_requirements
+                                  .split(" ")
+                                  .slice(0, 7)
+                                  .join(" ")
+                              : ""}
+                            {project.additional_requirements ? "..." : ""}
+                          </p>
                         </div>
-                      </div>
-                      <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                        {project.address}
-                      </p>
-                      <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                        {project.cloud_link}
-                      </p>
-                      <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                        Start Date: {project.start_date}
-                      </p>
+                      </SwiperSlide>
+                    )
+                  )
+                ) : (
+                  <SwiperSlide>
+                    <div className="flex flex-col p-4">
+                      <p className="text-[1.2rem]">No recent projects</p>
                     </div>
                   </SwiperSlide>
-                ))}
+                )}
               </SwiperComponent>
             </div>
           </div>
@@ -271,18 +316,20 @@ export const ClientProjects = () => {
             </div>
             <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
               <thead className="bg-primary text-white  ">
-                {tableHead.map((item, index) => (
-                  <th
-                    key={index}
-                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                  >
-                    {item}
-                  </th>
-                ))}
+                <tr>
+                  {tableHead.map((item, index) => (
+                    <th
+                      key={index}
+                      className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                    >
+                      {item}
+                    </th>
+                  ))}
+                </tr>
               </thead>
               <tbody className="">
                 {isPending ? (
-                  [...Array(5)].map((_, index) => (
+                  [...Array(4)].map((_, index) => (
                     <tr key={index} className="h-[1.5rem]">
                       {[...Array(6)].map((_, index) => (
                         <td
@@ -294,12 +341,25 @@ export const ClientProjects = () => {
                       ))}
                     </tr>
                   ))
-                ) : ProjectData?.length > 0 ? (
+                ) : ProjectData?.filter((item) => user_id === item.user_id)
+                    .length > 0 ? (
                   ProjectData?.filter((item) => user_id === item.user_id).map(
                     (item) => (
                       <tr key={item.id} className=" last:border-none  ">
                         <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
-                        <td className="py-[1rem]">{item.user.name}</td>
+                        <td className="py-[1rem]">
+                          {item.additional_requirements
+                            ? item.additional_requirements
+                                .split(" ")
+                                .slice(0, 4)
+                                .join(" ")
+                            : ""}
+                          {item.additional_requirements
+                            ? item.additional_requirements.split(" ").length > 4
+                              ? "..."
+                              : ""
+                            : "-"}
+                        </td>
                         <td className="py-[1rem]">{item.address}</td>
                         <td className="py-[1rem]">{item.start_date}</td>
 
@@ -329,9 +389,9 @@ export const ClientProjects = () => {
               </tbody>
             </table>
           </div>
-          <div className="mb-[1rem] flex items-center justify-end">
+          {/* <div className="mb-[1rem] flex items-center justify-end">
             <Pagination />
-          </div>
+          </div> */}
         </section>
       ) : (
         <Outlet />

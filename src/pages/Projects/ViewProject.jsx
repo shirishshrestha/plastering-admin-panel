@@ -65,7 +65,6 @@ const ViewProject = () => {
   });
 
   const handleDownload = (name, index) => {
-    console.log(name);
     setDownloadId(index);
     setDownload(name);
   };
@@ -168,34 +167,38 @@ const ViewProject = () => {
           <div className="flex items-center justify-center">
             <div className="p-[1rem] border-[2px] border-gray-300 w-[60%] h-fit rounded-lg ">
               <table className="text-start w-full">
-                <tr>
-                  <th className="text-start py-[5px] ">Assigned Estimator: </th>
-                  <td className="font-[500]">
-                    {projectDetails.assignedEstimator}
-                  </td>
-                </tr>
-                <tr>
-                  <th className="text-start py-[5px] ">Submitted Date: </th>
-                  <td className="font-[500]">
-                    {SingleProjectData?.created_at
-                      ? SingleProjectData.created_at.split("T")[0]
-                      : "-"}
-                  </td>
-                </tr>
-                <tr>
-                  <th className="text-start py-[5px] ">Started Date: </th>
-                  <td className="font-[500]">
-                    {SingleProjectData?.start_date}
-                  </td>
-                </tr>
-                <tr>
-                  <th className="text-start py-[5px] ">Last Modified: </th>
-                  <td className="font-[500]">
-                    {SingleProjectData?.updated_at
-                      ? SingleProjectData.updated_at.split("T")[0]
-                      : "-"}
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <th className="text-start py-[5px] ">
+                      Assigned Estimator:{" "}
+                    </th>
+                    <td className="font-[500]">
+                      {projectDetails.assignedEstimator}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th className="text-start py-[5px] ">Submitted Date: </th>
+                    <td className="font-[500]">
+                      {SingleProjectData?.created_at
+                        ? SingleProjectData?.created_at.split("T")[0]
+                        : "-"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th className="text-start py-[5px] ">Started Date: </th>
+                    <td className="font-[500]">
+                      {SingleProjectData?.start_date}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th className="text-start py-[5px] ">Last Modified: </th>
+                    <td className="font-[500]">
+                      {SingleProjectData?.updated_at
+                        ? SingleProjectData?.updated_at.split("T")[0]
+                        : "-"}
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>

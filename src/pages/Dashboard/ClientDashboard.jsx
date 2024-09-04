@@ -197,7 +197,15 @@ export const ClientDashboard = () => {
                 <div className="p-[0.2rem]  text-light bg-white/30 rounded-lg backdrop-blur-lg ">
                   <TotalProjects />
                 </div>
-                <p className="font-semibold capitalize">Total Projects - 4</p>
+                <p className="font-semibold capitalize">
+                  Total Projects -{" "}
+                  {ProjectData?.filter((project) => project.user_id === user_id)
+                    .length > 0
+                    ? ProjectData?.filter(
+                        (project) => project.user_id === user_id
+                      ).length
+                    : "0"}
+                </p>
               </div>
             </div>
             <div className="p-[1rem] bg-[#fff] w-full rounded-lg  text-primary shadow-lg">
@@ -206,7 +214,16 @@ export const ClientDashboard = () => {
                   <CompletedProjects />
                 </div>
                 <p className="font-semibold capitalize">
-                  Completed projects - 2
+                  Completed projects -{" "}
+                  {ProjectData?.filter(
+                    (project) => project.user_id === user_id
+                  ).filter((project) => project.status === "completed").length >
+                  0
+                    ? ProjectData?.filter(
+                        (project) => project.user_id === user_id
+                      ).filter((project) => project.status === "completed")
+                        .length
+                    : "0"}
                 </p>
               </div>
             </div>
@@ -215,7 +232,16 @@ export const ClientDashboard = () => {
                 <div className="p-[0.2rem]  text-light bg-primary rounded-lg backdrop-blur-lg ">
                   <Calendar />
                 </div>
-                <p className="font-semibold capitalize">Running Projects - 2</p>
+                <p className="font-semibold capitalize">
+                  Running Projects -{" "}
+                  {ProjectData?.filter(
+                    (project) => project.user_id === user_id
+                  ).filter((project) => project.status === "running").length > 0
+                    ? ProjectData?.filter(
+                        (project) => project.user_id === user_id
+                      ).filter((project) => project.status === "running").length
+                    : "0"}
+                </p>
               </div>
             </div>
           </div>
@@ -247,9 +273,11 @@ export const ClientDashboard = () => {
                         ))}
                       </tr>
                     ))
-                  ) : ProjectData?.length > 0 ? (
-                    ProjectData?.filter((item) => user_id === item.user_id).map(
-                      (item) => (
+                  ) : ProjectData?.filter((item) => user_id === item.user_id)
+                      .length > 0 ? (
+                    ProjectData?.filter((item) => user_id === item.user_id)
+                      .slice(0, 4)
+                      .map((item) => (
                         <tr key={item.id} className=" last:border-none  ">
                           <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
                           <td className="py-[1rem]">{item.address}</td>
@@ -257,8 +285,7 @@ export const ClientDashboard = () => {
 
                           <td className="py-[1rem] ">{item.status}</td>
                         </tr>
-                      )
-                    )
+                      ))
                   ) : (
                     <EmptyData />
                   )}

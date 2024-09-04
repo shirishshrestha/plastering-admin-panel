@@ -19,7 +19,6 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,7 +30,7 @@ const Signup = () => {
     reset,
   } = useForm();
 
-  const Register = useMutation({
+  const { mutate: Register, isPending: signupPending } = useMutation({
     mutationFn: (formData) => signupClient(formData),
     onSuccess: () => {
       reset({
@@ -43,13 +42,11 @@ const Signup = () => {
       });
       notifySuccess("Registered Successfully");
       setTimeout(() => {
-        setLoading(false);
         reset();
         navigate("/login");
-      }, 3000);
+      }, 2000);
     },
     onError: (error) => {
-      setLoading(false);
       if (error.response.data.errors.email) {
         notifyError(error.response.data.errors.email[0]);
       }
@@ -68,12 +65,11 @@ const Signup = () => {
 
   const handleSignupForm = (data) => {
     // console.log(data);
-    setLoading(true);
-    Register.mutate(data);
+    Register(data);
   };
   return (
     <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem] relative">
-      {loading && (
+      {signupPending && (
         <div className="h-full w-full bg-primary/80 fixed z-20 top-0 left-0 flex items-center justify-center">
           <DotLottieReact
             autoplay

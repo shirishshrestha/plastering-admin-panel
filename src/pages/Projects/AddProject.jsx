@@ -12,6 +12,8 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../api/Register/RegisterApiSlice";
 import { addProject } from "../../api/Projects/ProjectsApiSlice";
+import { queryClient } from "../../utils/Query/Query";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export const AddProject = () => {
   const navigate = useNavigate();
@@ -33,10 +35,14 @@ export const AddProject = () => {
     enabled: role === "admin",
   });
 
-  const AddProject = useMutation({
+  const { mutate: AddProject, isPending: addProjectPending } = useMutation({
     mutationFn: (data) => addProject(data),
     onSuccess: (data) => {
+      queryClient.invalidateQueries("projects");
       notifySuccess("Project added successfully");
+      setTimeout(() => {
+        navigate("/projects");
+      }, 2000);
     },
     onError: (error) => {
       notifyError("Error adding project");
@@ -65,7 +71,7 @@ export const AddProject = () => {
       });
     }
 
-    AddProject.mutate(formData);
+    AddProject(formData);
   };
 
   const handleProjectCancel = () => {
@@ -75,6 +81,16 @@ export const AddProject = () => {
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
+        {addProjectPending && (
+          <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
+            <DotLottieReact
+              autoplay
+              loop
+              src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
+              style={{ height: "300px", width: "300px" }}
+            />
+          </div>
+        )}
         <div>
           <h2 className="font-bold text-[1.2rem]">Add Project</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">
@@ -107,11 +123,21 @@ export const AddProject = () => {
                   </option>
                   {userPending && <option disabled>Loading...</option>}
                   {error && <option disabled>Error Loading</option>}
-                  {RegisteredClients?.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.name}
+                  {RegisteredClients?.filter(
+                    (client) => client.role !== "admin"
+                  ).length < 1 ? (
+                    <option value="" disabled>
+                      No data available
                     </option>
-                  ))}
+                  ) : (
+                    RegisteredClients?.filter(
+                      (client) => client.role !== "admin"
+                    ).map((client) => (
+                      <option key={client.id} value={client.id}>
+                        {client.name}
+                      </option>
+                    ))
+                  )}
                 </select>
                 <ErrorMessage
                   errors={errors}

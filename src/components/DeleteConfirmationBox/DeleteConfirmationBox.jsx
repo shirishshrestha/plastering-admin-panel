@@ -4,6 +4,7 @@ export const DeleteConfirmation = ({
   deleteName,
   handleProceedClick,
   setDeleteConfirationShow,
+  deleteLoading,
 }) => {
   const handleCancelClick = () => {
     setDeleteConfirationShow(false);
@@ -41,7 +42,7 @@ export const DeleteConfirmation = ({
             className="bg-primary rounded-lg px-[30px] py-[10px] text-light"
             onClick={handleProceedClick}
           >
-            Proceed
+            {deleteLoading ? "Processing" : "Proceed"}
           </button>
         </div>
       </div>

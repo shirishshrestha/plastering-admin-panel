@@ -7,6 +7,7 @@ import {
 import { BarChart, DoughnutChart, LineChart } from "../../components";
 import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/Projects/ProjectsApiSlice";
+import EmptyData from "../../components/EmptyData/EmptyData";
 
 export const Dashboard = () => {
   const {
@@ -70,9 +71,30 @@ export const Dashboard = () => {
   ];
 
   const doughnutData = [
-    { type: "Pending", value: 30 },
-    { type: "Won", value: 50 },
-    { type: "Loss", value: 20 },
+    {
+      type: "Pending",
+      value:
+        ProjectData?.length > 0
+          ? ProjectData?.filter((project) => project.status === "pending")
+              .length
+          : 0,
+    },
+    {
+      type: "Running",
+      value:
+        ProjectData?.length > 0
+          ? ProjectData?.filter((project) => project.status === "running")
+              .length
+          : 0,
+    },
+    {
+      type: "Completed",
+      value:
+        ProjectData?.length > 0
+          ? ProjectData?.filter((project) => project.status === "completed")
+              .length
+          : 0,
+    },
   ];
 
   const doughnutDatasets = [
@@ -151,7 +173,10 @@ export const Dashboard = () => {
                 <p className="font-semibold capitalize">Total Projects</p>
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
-                <p className="text-[2rem] font-bold">10,400</p>
+                <p className="text-[2rem] font-bold">
+                  {" "}
+                  {ProjectData?.length > 0 ? ProjectData?.length : "0"}
+                </p>
                 <p className="text-[12px]">
                   All running and completed projects
                 </p>
@@ -165,7 +190,13 @@ export const Dashboard = () => {
                 <p className="font-semibold capitalize">Completed projects</p>
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
-                <p className="text-[2rem] font-bold">9,020</p>
+                <p className="text-[2rem] font-bold">
+                  {ProjectData?.length > 0
+                    ? ProjectData?.filter(
+                        (project) => project.status === "completed"
+                      ).length
+                    : "0"}
+                </p>
                 <p className="text-[12px]">
                   <span className="text-secondary font-[700]">+12%</span>{" "}
                   Completion Rate this month
@@ -180,7 +211,13 @@ export const Dashboard = () => {
                 <p className="font-semibold capitalize">Running Projects</p>
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
-                <p className="text-[2rem] font-bold">1,380</p>
+                <p className="text-[2rem] font-bold">
+                  {ProjectData?.length > 0
+                    ? ProjectData?.filter(
+                        (project) => project.status === "running"
+                      ).length
+                    : "0"}
+                </p>
                 <p className="text-[12px]">
                   <span className="text-secondary font-[700]">+8% </span>{" "}
                   Running projects increases
@@ -212,10 +249,8 @@ export const Dashboard = () => {
             </div>
           </div>
           <div className="h-fit mt-[1.0rem] p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
-            <h4 className="font-bold text-start">Deal Type</h4>
-            <div className=" pb-[1.2rem] text-[12px] font-[500] pt-[0.2rem]">
-              <p>Monthly</p>
-            </div>
+            <h4 className="font-bold text-start pb-[1.2rem]">Project Status</h4>
+
             <div className="max-w-[340px] ">
               <DoughnutChart
                 dealData={doughnutData}
@@ -242,32 +277,30 @@ export const Dashboard = () => {
               ))}
             </thead>
             <tbody className="">
-              {projectPending
-                ? [...Array(5)].map((_, index) => (
-                    <tr key={index} className="h-[1.5rem]">
-                      {/* Render 5 cells to match the table columns */}
-                      {[...Array(5)].map((_, index) => (
-                        <td
-                          key={index}
-                          className="py-[1.5rem] first:pl-[0.5rem]"
-                        >
-                          <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                : ProjectData?.map((item) => (
-                    <tr key={item.id} className=" last:border-none  ">
-                      <td className="py-[1rem] first:pl-[0.5rem]">
-                        {item.name}
+              {projectPending ? (
+                [...Array(5)].map((_, index) => (
+                  <tr key={index} className="h-[1.5rem]">
+                    {[...Array(5)].map((_, index) => (
+                      <td key={index} className="py-[1.5rem] first:pl-[0.5rem]">
+                        <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
                       </td>
-                      <td className="py-[1rem]">{item.user.name}</td>
-                      <td className="py-[1rem]">{item.address}</td>
-                      <td className="py-[1rem]">{item.start_date}</td>
+                    ))}
+                  </tr>
+                ))
+              ) : ProjectData?.length < 1 ? (
+                <EmptyData />
+              ) : (
+                ProjectData?.slice(0, 4).map((item) => (
+                  <tr key={item.id} className=" last:border-none  ">
+                    <td className="py-[1rem] first:pl-[0.5rem]">{item.name}</td>
+                    <td className="py-[1rem]">{item.user.name}</td>
+                    <td className="py-[1rem]">{item.address}</td>
+                    <td className="py-[1rem]">{item.start_date}</td>
 
-                      <td className="py-[1rem] ">{item.status}</td>
-                    </tr>
-                  ))}
+                    <td className="py-[1rem] ">{item.status}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
           <div className="mt-[1rem] ">
