@@ -240,8 +240,9 @@ export const ClientProjects = () => {
               >
                 {ProjectData?.filter((item) => user_id === item.user_id)
                   .length >= 1 ? (
-                  ProjectData?.filter((item) => user_id === item.user_id).map(
-                    (project) => (
+                  ProjectData?.filter((item) => user_id === item.user_id)
+                    .slice(0, 5)
+                    .map((project) => (
                       <SwiperSlide key={project.id}>
                         <div className="flex flex-col p-4">
                           <div className="flex justify-between">
@@ -291,8 +292,7 @@ export const ClientProjects = () => {
                           </p>
                         </div>
                       </SwiperSlide>
-                    )
-                  )
+                    ))
                 ) : (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">

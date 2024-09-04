@@ -56,7 +56,7 @@ const Login = () => {
   };
 
   const handleLoginForm = (data) => {
-    Login.mutate(data);
+    Login(data);
   };
 
   return (
@@ -116,12 +116,12 @@ const Login = () => {
                     for="password"
                     className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                   >
-                    Username
+                    Email/Username
                   </label>
 
                   <LoginSignupInput
                     icon={<Username />}
-                    placeholder={Model.username.placeholder}
+                    placeholder={"Enter username or email"}
                     type={Model.username.type}
                     name={Model.username.name}
                     register={register}

@@ -210,7 +210,7 @@ export const Projects = () => {
             />
           )}
           {isPending && (
-            <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
+            <div className="h-full w-full bg-primary fixed z-10 top-0 left-0 flex items-center justify-center">
               <DotLottieReact
                 autoplay
                 loop
@@ -269,7 +269,7 @@ export const Projects = () => {
                     </div>
                   </SwiperSlide>
                 ) : (
-                  ProjectData?.map((project) => (
+                  ProjectData?.slice(0, 5).map((project) => (
                     <SwiperSlide key={project.id}>
                       <div className="flex flex-col p-4">
                         <div className="flex justify-between">
@@ -315,7 +315,7 @@ export const Projects = () => {
                                 .slice(0, 7)
                                 .join(" ")
                             : ""}
-                          {project.additional_requirements ? "..." : ""}
+                          {project.additional_requirements ? "..." : "-"}
                         </p>
                       </div>
                     </SwiperSlide>

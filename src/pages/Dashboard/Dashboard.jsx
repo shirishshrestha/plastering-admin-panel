@@ -8,6 +8,7 @@ import { BarChart, DoughnutChart, LineChart } from "../../components";
 import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export const Dashboard = () => {
   const {
@@ -162,6 +163,16 @@ export const Dashboard = () => {
 
   return (
     <section className="pt-[1rem]">
+      {projectPending && (
+        <div className="h-full w-full bg-primary fixed z-20 top-0 left-0 flex items-center justify-center">
+          <DotLottieReact
+            autoplay
+            loop
+            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
+            style={{ height: "300px", width: "300px" }}
+          />
+        </div>
+      )}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1.2rem] w-full h-full">
         <div className="w-full h-full">
           <div className="grid grid-cols-3 gap-[0.8rem] justify-center">
