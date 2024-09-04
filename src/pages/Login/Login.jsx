@@ -20,7 +20,6 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 const Login = () => {
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -31,7 +30,7 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.pathname || "/";
 
-  const Login = useMutation({
+  const { mutate: Login, isPending: loginPending } = useMutation({
     mutationFn: (formData) => login(formData),
     onSuccess: (data) => {
       setTokenToLocalStorage(data.access_token);
@@ -45,12 +44,10 @@ const Login = () => {
       const userName = data.user.name;
       setAuth({ role, id, token, userName });
 
-      setLoading(false);
       navigate(from, { replace: true });
     },
     onError: () => {
       notifyError("Incorrect Username or Password");
-      setLoading(false);
     },
   });
 
@@ -59,13 +56,12 @@ const Login = () => {
   };
 
   const handleLoginForm = (data) => {
-    setLoading(true);
     Login.mutate(data);
   };
 
   return (
     <section className="bg-[#f1f1e6] h-full w-full relative">
-      {loading && (
+      {loginPending && (
         <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
           <DotLottieReact
             autoplay
