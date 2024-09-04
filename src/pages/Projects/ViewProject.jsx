@@ -12,10 +12,13 @@ import {
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
 const ViewProject = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const role = getRoleFromLocalStorage();
 
   const {
     isPending: viewProjectPending,
@@ -147,21 +150,29 @@ const ViewProject = () => {
         <div className="grid grid-cols-2">
           <div className="flex items-center justify-center">
             <div className="flex flex-col items-start gap-[0.5rem] w-[70%]">
-              <button className="button w-full justify-center">
-                Accept Submission
-              </button>
+              {role === "admin" && (
+                <button className="button w-full justify-center">
+                  Accept Submission
+                </button>
+              )}
               <button className="button w-full justify-center">
                 Download Project
               </button>
-              <button className="button w-full justify-center">
-                Request Cancellation
-              </button>
-              <button className="button w-full justify-center">
-                Request Revision
-              </button>
-              <button className="button w-full justify-center">
-                Send Email
-              </button>
+              {role === "client" && (
+                <button className="button w-full justify-center">
+                  Request Cancellation
+                </button>
+              )}
+              {role === "client" && (
+                <button className="button w-full justify-center">
+                  Request Revision
+                </button>
+              )}
+              {role === "admin" && (
+                <button className="button w-full justify-center">
+                  Send Email
+                </button>
+              )}
             </div>
           </div>
           <div className="flex items-center justify-center">

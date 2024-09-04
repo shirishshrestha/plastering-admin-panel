@@ -9,8 +9,8 @@ export const Model = {
       message: "Project Name must be at least 2 characters long",
     },
     pattern: {
-      value: "^[a-zA-Z ]+$",
-      message: "Invalid project name. Only letters are allowed.",
+      value: "^[a-zA-Z0-9 ]+$",
+      message: "Invalid project name. Only letters and numbers are allowed.",
     },
   },
   address: {
