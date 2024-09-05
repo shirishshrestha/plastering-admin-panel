@@ -104,7 +104,7 @@ const Login = () => {
                 </h1>
                 <p className="font-[500] text-[12px] w-[75%] text-center leading-[150%]">
                   Log in to seamlessly track & analyze every aspect of your
-                  activities for enhanced eroductivity and ensight
+                  activities for enhanced productivity and ensight
                 </p>
               </div>
               <form

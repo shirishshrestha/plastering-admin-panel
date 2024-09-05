@@ -310,7 +310,7 @@ export const ClientProjects = () => {
               </h2>
               <Link to="/projects/addProject">
                 <button className="bg-primary flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
-                  Add New Project <PlusIcon svgColor={"#f0fbff"} />
+                  Add New Project <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>
               </Link>
             </div>

@@ -1,10 +1,5 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  Document,
-  Download,
-  Folder,
-  GoBack,
-} from "../../assets/icons/SvgIcons";
+import { useNavigate, useParams } from "react-router-dom";
+import { Document, Download, GoBack } from "../../assets/icons/SvgIcons";
 import {
   downloadFile,
   getProjectById,
@@ -13,12 +8,16 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
+import { AdminEstimation } from "../../components";
 
 const ViewProject = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const role = getRoleFromLocalStorage();
+
+  const [adminFlag, setAdminFlag] = useState(false);
+  const [clientFlag, setClientFlag] = useState(false);
 
   const {
     isPending: viewProjectPending,
@@ -85,6 +84,8 @@ const ViewProject = () => {
         </div>
       )}
 
+      {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} />}
+
       <div className="mb-[0.5rem] text-[12px] font-[500]">
         <div
           className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
@@ -143,9 +144,22 @@ const ViewProject = () => {
             )}
           </div>
         </div>
-        <div className="border-[2px] border-gray-300 rounded-lg p-[1rem] hover:text-light hover:bg-primary hover:border-primary cursor-pointer transition-all ease-in-out duration-300 font-[500] text-[1rem] text-center ">
-          Estimator Uploaded Files
-        </div>
+
+        {role === "admin" ? (
+          <div
+            className="border-[2px] border-gray-300 rounded-lg p-[1rem] hover:text-light hover:bg-primary hover:border-primary cursor-pointer transition-all ease-in-out duration-300 font-[500] text-[1rem] text-center"
+            onClick={() => setAdminFlag(true)}
+          >
+            Upload Estimation Files / View Estimation Files
+          </div>
+        ) : (
+          <div
+            className="border-[2px] border-gray-300 rounded-lg p-[1rem] hover:text-light hover:bg-primary hover:border-primary cursor-pointer transition-all ease-in-out duration-300 font-[500] text-[1rem] text-center "
+            onClick={() => setClientFlag(true)}
+          >
+            Estimator Uploaded Files
+          </div>
+        )}
 
         <div className="grid grid-cols-2">
           <div className="flex items-center justify-center">

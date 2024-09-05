@@ -1,5 +1,7 @@
 import { BarChart } from "./BarChart/BarChart";
 import { DoughnutChart } from "./DoughnutChart/DoughnutChart";
+import AdminEstimation from "./Estimation/AdminEstimation";
+import ClientEstimation from "./Estimation/ClientEstimation";
 import { Input } from "./Input/Input";
 import { LoginSignupInput } from "./Input/LoginSignupInput";
 import { LineChart } from "./LineChart/LineChart";
@@ -18,4 +20,6 @@ export {
   Input,
   Model,
   LoginSignupInput,
+  AdminEstimation,
+  ClientEstimation,
 };
