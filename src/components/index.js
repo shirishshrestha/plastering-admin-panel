@@ -5,6 +5,7 @@ import ClientEstimation from "./Estimation/ClientEstimation";
 import { Input } from "./Input/Input";
 import { LoginSignupInput } from "./Input/LoginSignupInput";
 import { LineChart } from "./LineChart/LineChart";
+import { LogoutConfirmation } from "./LogoutConfirmation/LogoutConfirmation";
 import { Model } from "./Model/Model";
 import { Pagination } from "./Pagination/Pagination";
 import ProfileTab from "./ProfileTab/ProfileTab";
@@ -22,4 +23,5 @@ export {
   LoginSignupInput,
   AdminEstimation,
   ClientEstimation,
+  LogoutConfirmation,
 };

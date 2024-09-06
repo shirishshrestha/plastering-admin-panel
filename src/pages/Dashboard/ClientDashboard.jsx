@@ -4,7 +4,7 @@ import {
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
-import { BarChart, DoughnutChart } from "../../components";
+import { DoughnutChart, LogoutConfirmation } from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
 import {
   getIdFromLocalStorage,
@@ -14,23 +14,24 @@ import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import useAuth from "../../hooks/useAuth";
 
 export const ClientDashboard = () => {
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
 
-  const performanceData = [
-    { quarter: "Plan", value: 3 },
-    { quarter: "Procure", value: 4 },
-    { quarter: "Execute", value: 6 },
-    { quarter: "Inspect", value: 2 },
-  ];
+  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
+    useAuth();
 
-  // const salesData = [
-  //   { quarter: "Goal", value: 40 },
-  //   { quarter: "Pending Forcast", value: 15 },
-  //   { quarter: "Revenue", value: 18 },
-  // ];
+  const handleLogout = () => {
+    setAuth({});
+    localStorage.clear();
+    setLogoutConfirationShow(false);
+
+    logout(() => {
+      navigate("/login");
+    });
+  };
 
   const {
     isPending: projectPending,
@@ -42,35 +43,11 @@ export const ClientDashboard = () => {
     staleTime: 6000,
   });
 
-  const lineData = [
-    { month: "Jan", revenue: 12000, expense: 4000 },
-    { month: "Feb", revenue: 15000, expense: 8500 },
-    { month: "Mar", revenue: 17000, expense: 9000 },
-    { month: "Apr", revenue: 16000, expense: 9500 },
-    { month: "May", revenue: 18000, expense: 12000 },
-    { month: "Jun", revenue: 20000, expense: 16000 },
-    { month: "Jul", revenue: 21000, expense: 14000 },
-    { month: "Aug", revenue: 22000, expense: 13000 },
-    { month: "Sep", revenue: 23000, expense: 14000 },
-    { month: "Oct", revenue: 20000, expense: 15000 },
-    { month: "Nov", revenue: 20000, expense: 16000 },
-    { month: "Dec", revenue: 21000, expense: 17000 },
-  ];
-
-  const lineDatasets = [
-    {
-      label: "Revenue",
-      data: lineData.map((item) => item.revenue / 100),
-      borderColor: "rgba(75, 192, 192, 1)",
-
-      pointBackgroundColor: "rgba(75, 192, 192, 1)",
-    },
-    {
-      label: "Expenses",
-      data: lineData.map((item) => item.expense / 100),
-      borderColor: "rgba(255, 99, 132, 1)",
-      pointBackgroundColor: "rgba(255, 99, 132, 1)",
-    },
+  const performanceData = [
+    { quarter: "Plan", value: 3 },
+    { quarter: "Procure", value: 4 },
+    { quarter: "Execute", value: 6 },
+    { quarter: "Inspect", value: 2 },
   ];
 
   const barDatasets = [
@@ -82,22 +59,52 @@ export const ClientDashboard = () => {
   ];
 
   const doughnutData = [
-    { type: "Material Costs", value: 60 },
-    { type: "Project Management Fees", value: 30 },
-    { type: "Miscellaneous Expenses", value: 10 },
+    {
+      type: "Pending",
+      value:
+        ProjectData?.filter((project) => project.user_id === user_id).filter(
+          (project) => project.status === "pending"
+        ).length > 0
+          ? ProjectData?.filter(
+              (project) => project.user_id === user_id
+            ).filter((project) => project.status === "pending").length
+          : 0,
+    },
+    {
+      type: "Running",
+      value:
+        ProjectData?.filter((project) => project.user_id === user_id).filter(
+          (project) => project.status === "running"
+        ).length > 0
+          ? ProjectData?.filter(
+              (project) => project.user_id === user_id
+            ).filter((project) => project.status === "running").length
+          : 0,
+    },
+    {
+      type: "Completed",
+      value:
+        ProjectData?.filter((project) => project.user_id === user_id).filter(
+          (project) => project.status === "completed"
+        ).length > 0
+          ? ProjectData?.filter(
+              (project) => project.user_id === user_id
+            ).filter((project) => project.status === "completed").length
+          : 0,
+    },
   ];
 
   const doughnutDatasets = [
     {
       data: doughnutData.map((item) => item.value),
       backgroundColor: [
-        "rgb(75, 192, 192)",
         "rgb(255, 206, 86)",
+        "rgb(75, 192, 192)",
         "rgb(255, 99, 132)",
       ],
       borderColor: [
-        "rgba(75, 192, 192, 1)",
         "rgba(255, 206, 86, 1)",
+        "rgba(75, 192, 192, 1)",
         "rgba(255, 99, 132, 1)",
       ],
     },
@@ -146,11 +153,18 @@ export const ClientDashboard = () => {
           />
         </div>
       )}
+
+      {logoutConfirationShow && (
+        <LogoutConfirmation
+          handleLogoutClick={handleLogout}
+          setLogoutConfirationShow={setLogoutConfirationShow}
+        />
+      )}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1rem] w-full h-full">
-        <div className="w-full h-full">
+        <div className="w-full h-full flex flex-col justify-center">
           <div className="w-full bg-white rounded-lg shadow-lg py-[1rem] px-[2rem] relative overflow-hidden">
             <div className="flex items-center gap-[2rem] justify-evenly ">
-              <div className="relative z-10 ">
+              <div className="relative z-10">
                 <h3 className="font-bold text-[2rem] leading-[150%]">
                   Welcome Back!
                 </h3>
@@ -192,12 +206,12 @@ export const ClientDashboard = () => {
             </div>
           </div>
           <div className="grid grid-cols-[0.82fr,1fr,0.9fr] gap-[0.5rem] justify-center mt-[1.5rem] text-[14px]">
-            <div className="p-[1rem] bg-primary w-full rounded-lg shadow-lg text-light">
-              <div className="flex gap-[0.8rem] items-center">
-                <div className="p-[0.2rem]  text-light bg-white/30 rounded-lg backdrop-blur-lg ">
+            <div className="px-[1rem] py-[1.4rem] bg-primary w-full rounded-lg shadow-lg text-light">
+              <div className="flex flex-col gap-[0.8rem] items-end">
+                <div className="p-[0.4rem] w-fit text-light bg-white/30 rounded-lg backdrop-blur-lg ">
                   <TotalProjects />
                 </div>
-                <p className="font-semibold capitalize">
+                <p className="font-semibold capitalize text-[1rem] ">
                   Total Projects -{" "}
                   {ProjectData?.filter((project) => project.user_id === user_id)
                     .length > 0
@@ -208,12 +222,12 @@ export const ClientDashboard = () => {
                 </p>
               </div>
             </div>
-            <div className="p-[1rem] bg-[#fff] w-full rounded-lg  text-primary shadow-lg">
-              <div className="flex gap-[0.8rem] items-center">
-                <div className="p-[0.2rem]  text-light bg-primary rounded-lg backdrop-blur-lg ">
+            <div className="px-[1rem] py-[1.4rem] bg-[#fff] w-full rounded-lg  text-primary shadow-lg">
+              <div className="flex flex-col gap-[0.8rem] items-end">
+                <div className="p-[0.4rem] w-fit  text-light bg-primary rounded-lg backdrop-blur-lg ">
                   <CompletedProjects />
                 </div>
-                <p className="font-semibold capitalize">
+                <p className="font-semibold capitalize text-[1rem] ">
                   Completed projects -{" "}
                   {ProjectData?.filter(
                     (project) => project.user_id === user_id
@@ -227,12 +241,12 @@ export const ClientDashboard = () => {
                 </p>
               </div>
             </div>
-            <div className="p-[1rem] bg-[#fff] w-full rounded-lg shadow-lg text-primary">
-              <div className="flex gap-[0.8rem] items-center">
-                <div className="p-[0.2rem]  text-light bg-primary rounded-lg backdrop-blur-lg ">
+            <div className="px-[1rem] py-[1.4rem] bg-[#fff] w-full rounded-lg shadow-lg text-primary">
+              <div className="flex flex-col gap-[0.8rem] items-end">
+                <div className="p-[0.4rem] w-fit text-light bg-primary rounded-lg backdrop-blur-lg ">
                   <Calendar />
                 </div>
-                <p className="font-semibold capitalize">
+                <p className="font-semibold capitalize text-[1rem]">
                   Running Projects -{" "}
                   {ProjectData?.filter(
                     (project) => project.user_id === user_id
@@ -245,75 +259,9 @@ export const ClientDashboard = () => {
               </div>
             </div>
           </div>
-          <div className="mt-[1rem]">
-            <h2 className="font-bold text-[1.4rem]">Recent Projects</h2>
-            <div className="overflow-x-scroll table__container  mt-[0.4rem]">
-              <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-                <thead className="bg-primary text-white  ">
-                  {tableHead.map((item, index) => (
-                    <th
-                      key={index}
-                      className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                    >
-                      {item}
-                    </th>
-                  ))}
-                </thead>
-                <tbody className="capitalize">
-                  {projectPending ? (
-                    [...Array(5)].map((_, index) => (
-                      <tr key={index} className="h-[1.5rem]">
-                        {[...Array(4)].map((_, index) => (
-                          <td
-                            key={index}
-                            className="py-[1.5rem] first:pl-[0.5rem]"
-                          >
-                            <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  ) : ProjectData?.filter((item) => user_id === item.user_id)
-                      .length > 0 ? (
-                    ProjectData?.filter((item) => user_id === item.user_id)
-                      .slice(0, 4)
-                      .map((item) => (
-                        <tr key={item.id} className=" last:border-none  ">
-                          <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
-                          <td className="py-[1rem]">{item.address}</td>
-                          <td className="py-[1rem]">{item.start_date}</td>
-
-                          <td className="py-[1rem] ">{item.status}</td>
-                        </tr>
-                      ))
-                  ) : (
-                    <EmptyData />
-                  )}
-                </tbody>
-              </table>
-              <div className="mt-[1rem] ">
-                <Link to="/projects">
-                  <button className="bg-primary font-semibold px-[30px] py-[10px] text-light rounded-lg hover:bg-secondary transition-all ease-in-out duration-200 hover:text-primary ">
-                    See More
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
-          {/* <div className="flex flex-col justify-center items-center p-[1rem] mt-[1.5rem] bg-white w-full  rounded-lg shadow-lg">
-            <div className="mb-[1.8rem] text-center">
-              <h4 className="font-bold text-[1.2rem] ">Balance Overview</h4>
-              <p className="text-[12px]">Last 1 year</p>
-            </div>
-            <LineChart
-              lineData={lineData}
-              LineFunction={LineFunction}
-              datasets={lineDatasets}
-            />
-          </div> */}
         </div>
         <div>
-          <div className=" h-fit p-[1rem] bg-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+          {/* <div className=" h-fit p-[1rem] bg-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start"> Project Milestone</h4>
             <div className=" pb-[1.2rem] text-[12px] font-[500] pt-[0.2rem]">
               <p>Per Project</p>
@@ -327,13 +275,11 @@ export const ClientDashboard = () => {
                 // borderColors="rgba(24, 44, 58, 0.668)"
               />
             </div>
-          </div>
-          <div className="h-fit mt-[1.0rem] p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
-            <h4 className="font-bold text-start">Cost Distribution</h4>
-            <div className=" pb-[1.2rem] text-[12px] font-[500] pt-[0.2rem]">
-              <p>Per Project</p>
-            </div>
-            <div className="max-w-[340px] ">
+          </div> */}
+          <div className="h-fit p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+            <h4 className="font-bold text-start text-[18px]">Project Status</h4>
+
+            <div className="max-w-[340px] mt-[0.5rem]">
               <DoughnutChart
                 dealData={doughnutData}
                 datasets={doughnutDatasets}
@@ -341,6 +287,58 @@ export const ClientDashboard = () => {
                 legendTextColor={"#fff"}
               />
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-[1rem]">
+        <h2 className="font-bold text-[1.4rem]">Recent Projects</h2>
+        <div className="overflow-x-scroll table__container  mt-[0.4rem]">
+          <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead className="bg-primary text-white  ">
+              {tableHead.map((item, index) => (
+                <th
+                  key={index}
+                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                >
+                  {item}
+                </th>
+              ))}
+            </thead>
+            <tbody className="capitalize">
+              {projectPending ? (
+                [...Array(5)].map((_, index) => (
+                  <tr key={index} className="h-[1.5rem]">
+                    {[...Array(4)].map((_, index) => (
+                      <td key={index} className="py-[1.5rem] first:pl-[0.5rem]">
+                        <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : ProjectData?.filter((item) => user_id === item.user_id)
+                  .length > 0 ? (
+                ProjectData?.filter((item) => user_id === item.user_id)
+                  .slice(0, 4)
+                  .map((item) => (
+                    <tr key={item.id} className=" last:border-none  ">
+                      <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
+                      <td className="py-[1rem]">{item.address}</td>
+                      <td className="py-[1rem]">{item.start_date}</td>
+
+                      <td className="py-[1rem] ">{item.status}</td>
+                    </tr>
+                  ))
+              ) : (
+                <EmptyData />
+              )}
+            </tbody>
+          </table>
+          <div className="mt-[1rem] ">
+            <Link to="/projects">
+              <button className="bg-primary font-semibold px-[30px] py-[10px] text-light rounded-lg hover:bg-secondary transition-all ease-in-out duration-200 hover:text-primary ">
+                See More
+              </button>
+            </Link>
           </div>
         </div>
       </div>

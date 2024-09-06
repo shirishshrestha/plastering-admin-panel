@@ -1,41 +1,56 @@
-import { Navigate, useNavigate } from "react-router-dom";
 import { Logout } from "../../assets/icons/SvgIcons";
-import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
+import { LogoutConfirmation } from "../../components";
+import { useNavigate } from "react-router-dom";
+import useLogout from "../../hooks/useLogout";
 
 export const LogoutComp = ({ sidebarToggle, showText }) => {
+  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
+    useAuth();
+
   const navigate = useNavigate();
   const { logout } = useLogout();
 
-  const { setAuth } = useAuth();
+  const handleLogoutPopup = () => {
+    setLogoutConfirationShow(true);
+  };
 
   const handleLogout = () => {
     setAuth({});
     localStorage.clear();
-
+    setLogoutConfirationShow(false);
     logout(() => {
-      navigate("/login"); 
+      navigate("/login");
     });
   };
+
   return (
-    <div
-      className={`
-      flex  items-center p-[0.7rem] ${sidebarToggle ? "w-full" : "w-fit"} `}
-      title="Logout"
-    >
+    <>
+      {logoutConfirationShow && (
+        <LogoutConfirmation
+          handleLogoutClick={handleLogout}
+          setLogoutConfirationShow={setLogoutConfirationShow}
+        />
+      )}
       <div
-        className="flex items-center gap-[0.5rem]  cursor-pointer"
-        onClick={handleLogout}
+        className={`
+        flex  items-center p-[0.7rem] ${sidebarToggle ? "w-full" : "w-fit"} `}
+        title="Logout"
       >
-        <Logout />
-        <span
-          className={`transition-all duration-300 w-fit ${
-            showText ? "block" : "hidden"
-          }`}
+        <div
+          className="flex items-center gap-[0.5rem]  cursor-pointer"
+          onClick={handleLogoutPopup}
         >
-          Logout
-        </span>
+          <Logout />
+          <span
+            className={`transition-all duration-300 w-fit ${
+              showText ? "block" : "hidden"
+            }`}
+          >
+            Logout
+          </span>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

@@ -10,7 +10,11 @@ import {
   ProjectsSvg,
   TrashIcon,
 } from "../../assets/icons/SvgIcons";
-import { DoughnutChart, Pagination } from "../../components";
+import {
+  DoughnutChart,
+  LogoutConfirmation,
+  Pagination,
+} from "../../components";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
@@ -23,14 +27,20 @@ import { useState } from "react";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
+import useAuth from "../../hooks/useAuth";
+import useLogout from "../../hooks/useLogout";
 
 export const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useLogout();
 
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+
+  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
+    useAuth();
 
   const {
     isPending,
@@ -43,6 +53,15 @@ export const Projects = () => {
     enabled: location.pathname === "/projects",
     staleTime: 6000,
   });
+
+  const handleLogout = () => {
+    setAuth({});
+    localStorage.clear();
+
+    logout(() => {
+      navigate("/login");
+    });
+  };
 
   const doughnutData = [
     {
@@ -87,44 +106,6 @@ export const Projects = () => {
     },
   ];
 
-  const recentProjects = [
-    {
-      projectName: "Residential Plastering",
-      clientName: "John Doe",
-      status: "completed",
-      description:
-        "Smooth plaster finish applied to a two-story home. The client was highly satisfied with the final results.",
-    },
-    {
-      projectName: "Commercial Office Plastering",
-      clientName: "ACME Corp",
-      status: "pending",
-      description:
-        "Acoustic plaster ceilings and durable finishes were installed. The team is focused on meeting the tight deadline.",
-    },
-    {
-      projectName: "Retail Store Renovation",
-      clientName: "Jane Smith",
-      status: "Running",
-      description:
-        "Decorative plaster will be applied to the store's feature walls. The project is Running to start soon.",
-    },
-    {
-      projectName: "Warehouse Plastering",
-      clientName: "Logistics Co",
-      status: "completed",
-      description:
-        "Durable plaster will be applied to the warehouse walls and ceilings. This will ensure longevity and resistance to wear.",
-    },
-    {
-      projectName: "Luxury Villa Plastering",
-      clientName: "Mr. Brown",
-      status: "pending",
-      description:
-        "High-end Venetian plaster finishes were used throughout the villa. The client praised the elegant and refined results.",
-    },
-  ];
-
   const tableHead = [
     "Project Name",
     "Client Name",
@@ -133,48 +114,6 @@ export const Projects = () => {
     "Status",
     "Action",
   ];
-
-  // dummy table data
-  // const tableData = [
-  //   {
-  //     projectName: "Residential Plastering",
-  //     clientName: "John Doe",
-  //     startDate: "2024-01-15",
-  //     endDate: "2024-02-10",
-  //     status: "Completed",
-  //     id: 0,
-  //   },
-  //   {
-  //     projectName: "Commercial Office Plastering",
-  //     clientName: "ACME Corp",
-  //     startDate: "2024-03-01",
-  //     endDate: "2024-04-15",
-  //     status: "In Progress",
-  //     id: 1,
-  //   },
-  //   {
-  //     projectName: "Retail Store Renovation",
-  //     clientName: "Jane Smith",
-  //     startDate: "2024-02-20",
-  //     status: "Pending",
-  //     id: 2,
-  //   },
-  //   {
-  //     projectName: "Warehouse Plastering",
-  //     clientName: "Logistics Co",
-  //     startDate: "2024-04-01",
-  //     status: "Running",
-  //     id: 3,
-  //   },
-  //   {
-  //     projectName: "Luxury Villa Plastering",
-  //     clientName: "Mr. Brown",
-  //     startDate: "2024-01-05",
-  //     endDate: "2024-01-25",
-  //     status: "Completed",
-  //     id: 4,
-  //   },
-  // ];
 
   const { mutate: DeleteProject, isPending: deletePending } = useMutation({
     mutationFn: () => deleteProject(projectId),
@@ -207,6 +146,12 @@ export const Projects = () => {
               setDeleteConfirationShow={setDeleteConfirationShow}
               handleProceedClick={handleProceedClick}
               deleteLoading={deletePending}
+            />
+          )}
+          {logoutConfirationShow && (
+            <LogoutConfirmation
+              handleLogoutClick={handleLogout}
+              setLogoutConfirationShow={setLogoutConfirationShow}
             />
           )}
           {isPending && (
@@ -330,7 +275,7 @@ export const Projects = () => {
                 List of Projects
               </h2>
               <Link to="/projects/addProject">
-                <button className="bg-primary flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
+                <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}
                   <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>

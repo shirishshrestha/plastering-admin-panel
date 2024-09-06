@@ -1,10 +1,17 @@
 import { useForm } from "react-hook-form";
-import { PlusIcon, Xmark } from "../../assets/icons/SvgIcons";
+import {
+  Document,
+  PlusIcon,
+  TrashIcon,
+  Xmark,
+} from "../../assets/icons/SvgIcons";
 import { useState } from "react";
 import AddProjectPart from "./AddProjectPart";
 
 const AdminEstimation = ({ setAdminFlag }) => {
   const [newProjectPart, setNewProjectPart] = useState(false);
+  const [projectPart, setProjectPart] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const {
     register,
@@ -13,19 +20,14 @@ const AdminEstimation = ({ setAdminFlag }) => {
   } = useForm();
 
   const handleEstimationSubmit = (data) => {
-    console.log("hello");
+    console.log(data);
+    console.log(projectPart);
   };
 
   return (
     <div className="h-full w-full flex items-center justify-center fixed top-0 left-0 z-10 bg-primary/80">
-      <div className="w-[70%] bg-light rounded-lg shadow-lg relative py-[1rem] px-[2rem]">
-        <div
-          className="absolute top-[0.8rem] right-[1rem] w-fit cursor-pointer"
-          onClick={() => setAdminFlag(false)}
-        >
-          <Xmark />
-        </div>
-        <h2 className="text-center font-bold text-[1.2rem]">
+      <div className="w-[60%] bg-light rounded-lg shadow-lg relative p-[2rem] max-h-[75%] overflow-y-scroll admin__estimator ">
+        <h2 className="text-center font-bold text-[1.2rem] border-[1.5px] border-primary rounded-lg py-[0.5rem]">
           Upload Estimation Files
         </h2>
         <form
@@ -40,7 +42,7 @@ const AdminEstimation = ({ setAdminFlag }) => {
               name="estimator_notes"
               {...register("estimator_note", {})}
               type="text"
-              className="w-full border-[1px] border-gray-300 rounded-lg p-[0.5rem] h-[100px] min-h-[100px] max-h-[300px] focus:ring-1 focus:ring-blue-500 focus:outline-none"
+              className="w-full border-[1px] border-gray-300 rounded-lg p-[0.5rem] h-[100px] min-h-[100px] max-h-[300px] focus:ring-1 focus:ring-blue-600 focus:outline-none"
             ></textarea>
           </div>
           <div>
@@ -55,8 +57,52 @@ const AdminEstimation = ({ setAdminFlag }) => {
                 Add Part <PlusIcon svgColor={"#f0fbff"} size={"size-5"} />
               </button>
             </div>
+            {projectPart.length > 0 && (
+              <div className="flex flex-col gap-[1rem] mt-[0.5rem]">
+                {projectPart?.map((part, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center border-[1px] border-gray-300 rounded-lg p-[0.5rem]"
+                  >
+                    <div>
+                      <p className="font-[600]">{part.project_part}</p>
+                      <div className="flex justify-evenly flex-wrap gap-5 text-[14px] mt-[0.2rem]">
+                        {Array.from(part.project_part_file).map(
+                          (file, fileIndex) => (
+                            <div className="flex gap-[0.5rem] items-center">
+                              <Document />
+                              <p key={fileIndex} className="font-[500]">
+                                {file.name}
+                              </p>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="bg-deleteBackground rounded-lg px-[5px] py-[5px] text-light"
+                      onClick={() =>
+                        setProjectPart(
+                          projectPart.filter((partDelete, i) => i !== index)
+                        )
+                      }
+                    >
+                      <TrashIcon />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
             {newProjectPart && (
-              <AddProjectPart setNewProjectPart={setNewProjectPart} />
+              <AddProjectPart
+                setNewProjectPart={setNewProjectPart}
+                setProjectPart={setProjectPart}
+                projectPart={projectPart}
+                setSelectedFiles={setSelectedFiles}
+                selectedFiles={selectedFiles}
+              />
             )}
           </div>
           <div className="flex gap-3 justify-end items-center">
@@ -67,7 +113,10 @@ const AdminEstimation = ({ setAdminFlag }) => {
             >
               Cancel
             </button>
-            <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light ">
+            <button
+              className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+              disabled={newProjectPart}
+            >
               Submit
             </button>
           </div>

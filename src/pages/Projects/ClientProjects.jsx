@@ -8,23 +8,35 @@ import {
   EyeIcon,
   PlusIcon,
   ProjectsSvg,
-  TrashIcon,
 } from "../../assets/icons/SvgIcons";
-import { DoughnutChart, Pagination } from "../../components";
+import { DoughnutChart, LogoutConfirmation } from "../../components";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
 
 import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
+import useAuth from "../../hooks/useAuth";
 
 export const ClientProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const user_id = getIdFromLocalStorage();
+
+  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
+    useAuth();
+
+  const handleLogout = () => {
+    setAuth({});
+    localStorage.clear();
+    setLogoutConfirationShow(false);
+
+    logout(() => {
+      navigate("/login");
+    });
+  };
 
   const {
     isPending,
@@ -89,44 +101,6 @@ export const ClientProjects = () => {
     },
   ];
 
-  const recentProjects = [
-    {
-      projectName: "Residential Plastering",
-      clientName: "John Doe",
-      status: "completed",
-      description:
-        "Smooth plaster finish applied to a two-story home. The client was highly satisfied with the final results.",
-    },
-    {
-      projectName: "Commercial Office Plastering",
-      clientName: "ACME Corp",
-      status: "pending",
-      description:
-        "Acoustic plaster ceilings and durable finishes were installed. The team is focused on meeting the tight deadline.",
-    },
-    {
-      projectName: "Retail Store Renovation",
-      clientName: "Jane Smith",
-      status: "scheduled",
-      description:
-        "Decorative plaster will be applied to the store's feature walls. The project is scheduled to start soon.",
-    },
-    {
-      projectName: "Warehouse Plastering",
-      clientName: "Logistics Co",
-      status: "completed",
-      description:
-        "Durable plaster will be applied to the warehouse walls and ceilings. This will ensure longevity and resistance to wear.",
-    },
-    {
-      projectName: "Luxury Villa Plastering",
-      clientName: "Mr. Brown",
-      status: "pending",
-      description:
-        "High-end Venetian plaster finishes were used throughout the villa. The client praised the elegant and refined results.",
-    },
-  ];
-
   const tableHead = [
     "Project Name",
     "Add. Requirements",
@@ -136,46 +110,6 @@ export const ClientProjects = () => {
     "Action",
   ];
   // dummy table data
-  const tableData = [
-    // {
-    //   projectName: "Residential Plastering",
-    //   clientName: "John Doe",
-    //   startDate: "2024-01-15",
-    //   endDate: "2024-02-10",
-    //   status: "Completed",
-    //   id: 0,
-    // },
-    // {
-    //   projectName: "Commercial Office Plastering",
-    //   clientName: "ACME Corp",
-    //   startDate: "2024-03-01",
-    //   endDate: "2024-04-15",
-    //   status: "In Progress",
-    //   id: 1,
-    // },
-    // {
-    //   projectName: "Retail Store Renovation",
-    //   clientName: "Jane Smith",
-    //   startDate: "2024-02-20",
-    //   status: "Pending",
-    //   id: 2,
-    // },
-    // {
-    //   projectName: "Warehouse Plastering",
-    //   clientName: "Logistics Co",
-    //   startDate: "2024-04-01",
-    //   status: "Scheduled",
-    //   id: 3,
-    // },
-    // {
-    //   projectName: "Luxury Villa Plastering",
-    //   clientName: "Mr. Brown",
-    //   startDate: "2024-01-05",
-    //   endDate: "2024-01-25",
-    //   status: "Completed",
-    //   id: 4,
-    // },
-  ];
 
   const handleViewProject = (id) => {
     navigate(`/projects/viewProject/${id}`);
@@ -186,7 +120,7 @@ export const ClientProjects = () => {
       {location.pathname === "/projects" ? (
         <section>
           {isPending && (
-            <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
+            <div className="h-full w-full bg-primary   fixed z-10 top-0 left-0 flex items-center justify-center">
               <DotLottieReact
                 autoplay
                 loop
@@ -194,6 +128,12 @@ export const ClientProjects = () => {
                 style={{ height: "300px", width: "300px" }}
               />
             </div>
+          )}
+          {logoutConfirationShow && (
+            <LogoutConfirmation
+              handleLogoutClick={handleLogout}
+              setLogoutConfirationShow={setLogoutConfirationShow}
+            />
           )}
           <div className="grid grid-cols-2">
             <div>
@@ -309,8 +249,9 @@ export const ClientProjects = () => {
                 List of Projects
               </h2>
               <Link to="/projects/addProject">
-                <button className="bg-primary flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
-                  Add New Project <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
+                <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
+                  Add New Project{" "}
+                  <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>
               </Link>
             </div>

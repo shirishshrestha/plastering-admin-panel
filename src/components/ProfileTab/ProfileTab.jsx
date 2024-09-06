@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import { HamMenu } from "../../assets/icons/SvgIcons";
 import { profile } from "../../assets/images";
 import {
@@ -16,9 +15,6 @@ const ProfileTab = ({ sidebarToggle, setSidebarToggle }) => {
           <button onClick={() => setSidebarToggle(!sidebarToggle)}>
             <HamMenu />
           </button>
-          <ul>
-            <NavLink to="/projects">Projects</NavLink>
-          </ul>
         </div>
         <div>
           <figure className="flex gap-[0.7rem] cursor-pointer">
