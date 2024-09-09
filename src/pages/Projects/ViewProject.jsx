@@ -97,12 +97,17 @@ const ViewProject = () => {
           Go Back
         </div>
       </div>
-      <h2 className="font-bold text-[1.2rem]">
-        {SingleProjectData?.name} -{" "}
-        <span className="font-semibold text-[14px]">
-          {SingleProjectData?.address}
-        </span>
-      </h2>
+      <div>
+        <h2 className="font-bold text-[1.2rem]">
+          {SingleProjectData?.name} -{" "}
+          <span className="font-semibold text-[14px]">
+            {SingleProjectData?.address}
+          </span>
+        </h2>
+        <p className="text-[14px] font-[500]">
+          Project Type: {SingleProjectData?.project_type}
+        </p>
+      </div>
       <div className="mt-[1rem] flex flex-col gap-[1rem] text-[14px]">
         <div className="border-[2px] border-gray-300 rounded-lg p-[1rem]">
           <p className="font-semibold mb-[0.1rem] text-[1rem]">

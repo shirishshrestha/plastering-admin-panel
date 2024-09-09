@@ -191,7 +191,11 @@ export const ClientProjects = () => {
                             </div>
                             <div className="flex flex-col items-end">
                               <h2 className="text-lg font-semibold text-end ">
-                                {project.name}
+                                {project.name
+                                  ? project.name.length > 25
+                                    ? `${project.name.slice(0, 25)}...`
+                                    : project.name
+                                  : "-"}
                               </h2>
                               <p className="text-sm font-[500] text-end">
                                 {project.user.name}

@@ -1,7 +1,7 @@
 import { ErrorMessage } from "@hookform/error-message";
 import { useState } from "react";
 
-export const Input = ({
+export const EditInput = ({
   type = "text",
   placeholder = "",
   autoComplete = "on",

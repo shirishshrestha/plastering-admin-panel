@@ -20,7 +20,7 @@ export const Model = {
     placeholder: "Enter project address",
     minLength: {
       value: 3,
-      message: "Address must be at least 4 characters long",
+      message: "Address must be at least 3 characters long",
     },
     pattern: {
       value: "^[a-zA-Z0-9 ,.-]+$",

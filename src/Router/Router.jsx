@@ -5,6 +5,7 @@ import {
   ClientDashboard,
   ClientProjects,
   Dashboard,
+  EditProject,
   Login,
   Projects,
   Signup,
@@ -58,6 +59,10 @@ export const router = createBrowserRouter([
           {
             path: "viewProject/:id",
             element: <ViewProject />,
+          },
+          {
+            path: "editProject/:id",
+            element: <EditProject />,
           },
         ],
       },

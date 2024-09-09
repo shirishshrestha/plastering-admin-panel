@@ -223,7 +223,11 @@ export const Projects = () => {
                           </div>
                           <div className="flex flex-col items-end">
                             <h2 className="text-lg font-semibold text-end ">
-                              {project.name}
+                              {project.name
+                                ? project.name.length > 25
+                                  ? `${project.name.slice(0, 25)}...`
+                                  : project.name
+                                : "-"}
                             </h2>
                             <p className="text-sm font-[500] text-end">
                               {project.user.name}
@@ -255,12 +259,13 @@ export const Projects = () => {
                         </p>
                         <p className="text-sm font-[500] text-end mt-[0.6rem]">
                           {project.additional_requirements
-                            ? project.additional_requirements
-                                .split(" ")
-                                .slice(0, 7)
-                                .join(" ")
-                            : ""}
-                          {project.additional_requirements ? "..." : "-"}
+                            ? project.additional_requirements.length > 25
+                              ? `${project.additional_requirements.slice(
+                                  0,
+                                  25
+                                )}...`
+                              : project.additional_requirements
+                            : "-"}
                         </p>
                       </div>
                     </SwiperSlide>
@@ -337,7 +342,12 @@ export const Projects = () => {
                           >
                             <EyeIcon strokeColor={"#3e84f4"} />
                           </button>
-                          <button className="p-[5px] rounded-md bg-editBackground">
+                          <button
+                            className="p-[5px] rounded-md bg-editBackground"
+                            onClick={() =>
+                              navigate(`/projects/editProject/${item.id}`)
+                            }
+                          >
                             <EditIcon color="#8c62ff" />
                           </button>
                           <button
