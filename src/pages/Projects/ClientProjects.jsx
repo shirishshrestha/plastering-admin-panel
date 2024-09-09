@@ -104,8 +104,8 @@ export const ClientProjects = () => {
   const tableHead = [
     "Project Name",
     "Add. Requirements",
-    "Address",
-    "Start Date",
+    "Project Location",
+    "Required by Date",
     "Status",
     "Action",
   ];
@@ -287,21 +287,29 @@ export const ClientProjects = () => {
                   ProjectData?.filter((item) => user_id === item.user_id).map(
                     (item) => (
                       <tr key={item.id} className=" last:border-none  ">
-                        <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
-                        <td className="py-[1rem]">
-                          {item.additional_requirements
-                            ? item.additional_requirements
-                                .split(" ")
-                                .slice(0, 4)
-                                .join(" ")
-                            : ""}
-                          {item.additional_requirements
-                            ? item.additional_requirements.split(" ").length > 4
-                              ? "..."
-                              : ""
+                        <td className="py-[1rem] pl-[0.5rem]">
+                          {item.name
+                            ? item.name.length > 15
+                              ? `${item.name.slice(0, 15)}...`
+                              : item.name
                             : "-"}
                         </td>
-                        <td className="py-[1rem]">{item.address}</td>
+
+                        <td className="py-[1rem]">
+                          {item.additional_requirements
+                            ? item.additional_requirements.length > 15
+                              ? `${item.additional_requirements.slice(
+                                  0,
+                                  15
+                                )}...`
+                              : item.additional_requirements
+                            : "-"}
+                        </td>
+                        <td className="py-[1rem]">
+                          {item.address.length > 15
+                            ? `${item.address.slice(0, 15)}...`
+                            : item.address}
+                        </td>
                         <td className="py-[1rem]">{item.start_date}</td>
 
                         <td className="py-[1rem] ">{item.status}</td>

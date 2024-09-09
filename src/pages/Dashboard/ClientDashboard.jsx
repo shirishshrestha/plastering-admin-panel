@@ -15,10 +15,13 @@ import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useAuth from "../../hooks/useAuth";
+import useLogout from "../../hooks/useLogout";
 
 export const ClientDashboard = () => {
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
+
+  const { logout } = useLogout();
 
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
@@ -110,7 +113,12 @@ export const ClientDashboard = () => {
     },
   ];
 
-  const tableHead = ["Project Name", "Address", "Start Date", "Status"];
+  const tableHead = [
+    "Project Name",
+    "Project Location",
+    "Required By Date",
+    "Status",
+  ];
 
   // dummy table data
   const tableData = [
@@ -321,8 +329,18 @@ export const ClientDashboard = () => {
                   .slice(0, 4)
                   .map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
-                      <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
-                      <td className="py-[1rem]">{item.address}</td>
+                      <td className="py-[1rem] pl-[0.5rem]">
+                        {item.name
+                          ? item.name.length > 20
+                            ? `${item.name.slice(0, 20)}...`
+                            : item.name
+                          : "-"}
+                      </td>
+                      <td className="py-[1rem]">
+                        {item.address.length > 20
+                          ? `${item.address.slice(0, 20)}...`
+                          : item.address}
+                      </td>
                       <td className="py-[1rem]">{item.start_date}</td>
 
                       <td className="py-[1rem] ">{item.status}</td>

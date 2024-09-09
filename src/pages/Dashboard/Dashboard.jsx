@@ -117,8 +117,8 @@ export const Dashboard = () => {
   const tableHead = [
     "Project Name",
     "Client Name",
-    "Address",
-    "Start Date",
+    "Project Location",
+    "Required By Date",
     "Status",
   ];
 
@@ -303,9 +303,19 @@ export const Dashboard = () => {
               ) : (
                 ProjectData?.slice(0, 4).map((item) => (
                   <tr key={item.id} className=" last:border-none  ">
-                    <td className="py-[1rem] first:pl-[0.5rem]">{item.name}</td>
+                    <td className="py-[1rem] pl-[0.5rem]">
+                      {item.name
+                        ? item.name.length > 20
+                          ? `${item.name.slice(0, 20)}...`
+                          : item.name
+                        : "-"}
+                    </td>
                     <td className="py-[1rem]">{item.user.name}</td>
-                    <td className="py-[1rem]">{item.address}</td>
+                    <td className="py-[1rem]">
+                      {item.address.length > 20
+                        ? `${item.address.slice(0, 20)}...`
+                        : item.address}
+                    </td>
                     <td className="py-[1rem]">{item.start_date}</td>
 
                     <td className="py-[1rem] ">{item.status}</td>

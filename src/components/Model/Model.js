@@ -3,7 +3,7 @@ export const Model = {
     type: "text",
     required: "Please enter the project name",
     name: "project_name",
-    placeholder: "Enter project name",
+    placeholder: "eg. Albert Street House / Wayne Road Duplex",
     minLength: {
       value: 2,
       message: "Project Name must be at least 2 characters long",
@@ -15,9 +15,9 @@ export const Model = {
   },
   address: {
     type: "text",
-    required: "Please enter the address",
+    required: "Please enter the project address",
     name: "address",
-    placeholder: "Enter your address",
+    placeholder: "Enter project address",
     minLength: {
       value: 3,
       message: "Address must be at least 4 characters long",

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { Input, Model } from "../../components";
+import { Input, LogoutConfirmation, Model } from "../../components";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useRef, useState } from "react";
@@ -14,6 +14,8 @@ import { getUsers } from "../../api/Register/RegisterApiSlice";
 import { addProject } from "../../api/Projects/ProjectsApiSlice";
 import { queryClient } from "../../utils/Query/Query";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import useLogout from "../../hooks/useLogout";
+import useAuth from "../../hooks/useAuth";
 
 export const AddProject = () => {
   const navigate = useNavigate();
@@ -24,6 +26,21 @@ export const AddProject = () => {
     handleSubmit,
     reset,
   } = useForm();
+
+  const { logout } = useLogout();
+
+  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
+    useAuth();
+
+  const handleLogout = () => {
+    setAuth({});
+    localStorage.clear();
+    setLogoutConfirationShow(false);
+
+    logout(() => {
+      navigate("/login");
+    });
+  };
 
   const {
     isPending: userPending,
@@ -63,6 +80,7 @@ export const AddProject = () => {
     formData.append("cloud_link", data.cloud_link);
     formData.append("start_date", data.date);
     formData.append("status", "pending");
+    // formData.append("project_type", data.project_type);
     formData.append("additional_requirements", data.additional_info || "");
 
     if (selectedFiles.length > 0) {
@@ -90,6 +108,13 @@ export const AddProject = () => {
               style={{ height: "300px", width: "300px" }}
             />
           </div>
+        )}
+
+        {logoutConfirationShow && (
+          <LogoutConfirmation
+            handleLogoutClick={handleLogout}
+            setLogoutConfirationShow={setLogoutConfirationShow}
+          />
         )}
         <div>
           <h2 className="font-bold text-[1.2rem]">Add Project</h2>
@@ -147,14 +172,14 @@ export const AddProject = () => {
                       className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
                       key="registered-client"
                     >
-                      Please select the a client
+                      Please select a client
                     </p>
                   )}
                 />
               </div>
             )}
             <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Project Name</label>
+              <label className="font-bold">Project Name (Optional)</label>
               <Input
                 placeholder={Model.projectName.placeholder}
                 type={Model.projectName.type}
@@ -165,11 +190,11 @@ export const AddProject = () => {
                 minMessage={Model.projectName.minLength.message}
                 regValue={Model.projectName.pattern.value}
                 message={Model.projectName.pattern.message}
-                required={Model.projectName.required}
+                required={false}
               />
             </div>
             <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Address</label>
+              <label className="font-bold">Project Location</label>
               <Input
                 placeholder={Model.address.placeholder}
                 type={Model.address.type}
@@ -184,20 +209,20 @@ export const AddProject = () => {
               />
             </div>
             <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Cloud Link</label>
+              <label className="font-bold">Cloud Link (Optional)</label>
               <Input
                 placeholder={Model.cloudLink.placeholder}
                 type={Model.cloudLink.type}
                 name={Model.cloudLink.name}
                 register={register}
                 errors={errors}
-                required={Model.cloudLink.required}
+                required={false}
               />
             </div>
             <div className="flex flex-col gap-[1rem]">
               <div className="flex flex-col ">
                 <div className="flex flex-col gap-[0.4rem]">
-                  <label className="font-bold">Start Date</label>
+                  <label className="font-bold">Required by date</label>
                   <input
                     type="date"
                     name="date"
@@ -227,7 +252,49 @@ export const AddProject = () => {
                   )}
                 />
               </div>
+
               {role && role === "admin" && (
+                <>
+                  <div className="flex flex-col gap-[0.4rem] ">
+                    <label className="font-bold">Upload Files (Optional)</label>
+                    <input
+                      type="file"
+                      name="project_file"
+                      {...register("project_file", {
+                        onChange: (e) => {
+                          setSelectedFiles(e.target.files);
+                        },
+                      })}
+                      id="fileInput"
+                      className="hidden"
+                      multiple
+                    />
+                    <label
+                      htmlFor="fileInput"
+                      className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
+                    >
+                      <label
+                        className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
+                        htmlFor="fileInput"
+                      >
+                        Upload
+                      </label>
+                      Select Multiple Files at once
+                    </label>
+
+                    <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                      <span>Uploaded Files:</span>
+                      {selectedFiles.length > 0 &&
+                        Array.from(selectedFiles).map((file, index) => (
+                          <p key={index}>{file.name}</p>
+                        ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            {role && role === "client" && (
+              <>
                 <div className="flex flex-col gap-[0.4rem] ">
                   <label className="font-bold">Upload Files (Optional)</label>
                   <input
@@ -244,7 +311,7 @@ export const AddProject = () => {
                   />
                   <label
                     htmlFor="fileInput"
-                    className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
+                    className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] `}
                   >
                     <label
                       className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
@@ -263,55 +330,73 @@ export const AddProject = () => {
                       ))}
                   </div>
                 </div>
-              )}
-            </div>
-            {role && role === "client" && (
-              <div className="flex flex-col gap-[0.4rem] ">
-                <label className="font-bold">Upload Files (Optional)</label>
-                <input
-                  type="file"
-                  name="project_file"
-                  {...register("project_file", {
-                    onChange: (e) => {
-                      setSelectedFiles(e.target.files);
-                    },
-                  })}
-                  id="fileInput"
-                  className="hidden"
-                  multiple
-                />
-                <label
-                  htmlFor="fileInput"
-                  className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px] `}
-                >
-                  <label
-                    className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
-                    htmlFor="fileInput"
-                  >
-                    Upload
-                  </label>
-                  Select Multiple Files at once
-                </label>
-
-                <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                  <span>Uploaded Files:</span>
-                  {selectedFiles.length > 0 &&
-                    Array.from(selectedFiles).map((file, index) => (
-                      <p key={index}>{file.name}</p>
-                    ))}
-                </div>
-              </div>
+              </>
             )}
-            <div className="flex flex-col gap-[0.4rem]">
+            <div className="flex flex-col row-span-2 gap-[0.4rem]">
               <label htmlFor="additional-req" className="font-bold">
                 Additional Requirements (Optional)
               </label>
               <textarea
                 name="additional_info"
                 id="additional-req"
-                className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[90px] max-h-[350px]"
+                className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[130px] max-h-[290px]"
                 {...register("additional_info", {})}
               ></textarea>
+            </div>
+
+            <div class=" bg-white flex flex-col gap-3  w-full">
+              <legend class=" font-bold   select-none">Project Type</legend>
+              <div className="">
+                <label
+                  htmlFor="commercial"
+                  name="project_type"
+                  class={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
+                    errors["project_type"] && "ring-red-500"
+                  } `}
+                >
+                  Commercial Project
+                  <input
+                    type="radio"
+                    name="project_type"
+                    class="peer/html w-4 h-4 absolute accent-current right-3"
+                    id="commercial"
+                    value="commercial"
+                    {...register("project_type", {
+                      required: "Select a project type",
+                    })}
+                  />
+                </label>
+                <label
+                  htmlFor="domestic"
+                  class={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
+                    errors["project_type"] && "ring-red-500"
+                  } `}
+                >
+                  Domestic Project
+                  <input
+                    type="radio"
+                    name="project_type"
+                    class="w-4 h-4 absolute accent-current right-3"
+                    id="domestic"
+                    value="domestic"
+                    {...register("project_type", {
+                      required: "Select a project type",
+                    })}
+                  />
+                </label>
+                <ErrorMessage
+                  errors={errors}
+                  name="project_type"
+                  render={() => (
+                    <p
+                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                      key="registered-client"
+                    >
+                      Please select a project type
+                    </p>
+                  )}
+                />
+              </div>
             </div>
 
             <div className="w-full  col-span-2  ">

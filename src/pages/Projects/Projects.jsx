@@ -57,7 +57,7 @@ export const Projects = () => {
   const handleLogout = () => {
     setAuth({});
     localStorage.clear();
-
+    setLogoutConfirationShow(false);
     logout(() => {
       navigate("/login");
     });
@@ -109,8 +109,8 @@ export const Projects = () => {
   const tableHead = [
     "Project Name",
     "Client Name",
-    "Address",
-    "Start Date",
+    "Project Location",
+    "Required By Date",
     "Status",
     "Action",
   ];
@@ -310,10 +310,23 @@ export const Projects = () => {
                 ) : ProjectData?.length > 0 ? (
                   ProjectData?.map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
-                      <td className="py-[1rem] pl-[0.5rem]">{item.name}</td>
-                      <td className="py-[1rem]">{item.user.name}</td>
-                      <td className="py-[1rem]">{item.address}</td>
-
+                      <td className="py-[1rem] pl-[0.5rem]">
+                        {item.name
+                          ? item.name.length > 15
+                            ? `${item.name.slice(0, 15)}...`
+                            : item.name
+                          : "-"}
+                      </td>
+                      <td className="py-[1rem]">
+                        {item.user.name.length > 15
+                          ? `${item.user.name.slice(0, 15)}...`
+                          : item.user.name}
+                      </td>
+                      <td className="py-[1rem]">
+                        {item.address.length > 15
+                          ? `${item.address.slice(0, 15)}...`
+                          : item.address}
+                      </td>
                       <td className="py-[1rem]">{item.start_date}</td>
                       <td className="py-[1rem] ">{item.status}</td>
                       <td>
