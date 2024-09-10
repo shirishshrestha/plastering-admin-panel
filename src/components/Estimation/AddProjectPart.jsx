@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../Input/Input";
 import { ErrorMessage } from "@hookform/error-message";
+import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
 
 const AddProjectPart = ({
   setNewProjectPart,
@@ -14,12 +15,12 @@ const AddProjectPart = ({
     register,
     getValues,
     trigger,
+    clearErrors,
     formState: { errors },
   } = useForm();
 
   const handleProjectPartSubmit = async () => {
     const isValid = await trigger();
-
     if (isValid) {
       const data = getValues();
       setProjectPart([
@@ -32,7 +33,7 @@ const AddProjectPart = ({
       setNewProjectPart(false);
       setSelectedFiles([]);
     } else {
-      setNewProjectPart(false);
+      setSelectedFiles([]);
       return;
     }
   };
@@ -40,13 +41,13 @@ const AddProjectPart = ({
   return (
     <div className="flex flex-col gap-[0.6rem] mt-[1rem]">
       <div className="flex flex-col gap-[0.5rem]">
-        <label htmlFor="project_part" className="font-[600] text-[14px]">
+        <label htmlFor="part_name" className="font-[600] text-[14px]">
           Project Part Name
         </label>
         <Input
           placeholder={"Enter Part Name"}
           type={"text"}
-          name={"project_part"}
+          name={"part_name"}
           register={register}
           errors={errors}
           required={"Please enter the project part name"}
@@ -59,7 +60,7 @@ const AddProjectPart = ({
           name="project_part_file"
           {...register("project_part_file", {
             onChange: (e) => {
-              setSelectedFiles(e.target.files);
+              setSelectedFiles([...selectedFiles, ...e.target.files]);
             },
             required: "Please upload the project file",
           })}
@@ -82,7 +83,7 @@ const AddProjectPart = ({
           >
             Upload
           </label>
-          Select Multiple Files at once
+          Select Files
         </label>
         <ErrorMessage
           errors={errors}
@@ -95,12 +96,32 @@ const AddProjectPart = ({
             )
           }
         />
-        <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+        <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
           <span>Uploaded Files:</span>
-          {selectedFiles.length > 0 &&
-            Array.from(selectedFiles).map((file, index) => (
-              <p key={index}>{file.name}</p>
-            ))}
+          <div className="flex flex-wrap gap-x-7 gap-y-2">
+            {selectedFiles.length > 0 &&
+              Array.from(selectedFiles).map((file, index) => (
+                <div
+                  key={file.id}
+                  className="flex gap-[0.5rem] items-center text-[14px]"
+                >
+                  <Document />
+                  <p className="font-[500]">{file.name}</p>
+
+                  <button
+                    type="button"
+                    className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                    onClick={() => {
+                      setSelectedFiles(
+                        selectedFiles.filter((file, i) => i !== index)
+                      );
+                    }}
+                  >
+                    <TrashIcon />
+                  </button>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
       <div className="flex gap-[0.6rem]">

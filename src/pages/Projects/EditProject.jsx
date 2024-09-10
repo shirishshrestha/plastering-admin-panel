@@ -253,7 +253,7 @@ export const EditProject = () => {
                 )}
               />
             </div>
-            <div className="row-span-2 flex flex-col gap-[1rem]">
+            <div className=" flex flex-col gap-[1rem]">
               <div className="flex flex-col gap-[0.4rem]">
                 <label className="font-bold">Status</label>
 
@@ -442,7 +442,6 @@ export const EditProject = () => {
                           }}
                         >
                           <TrashIcon />
-                          
                         </button>
                       </div>
                     ))}

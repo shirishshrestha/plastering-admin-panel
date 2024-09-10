@@ -8,8 +8,9 @@ import {
 import { useState } from "react";
 import AddProjectPart from "./AddProjectPart";
 import { useMutation } from "@tanstack/react-query";
+import { postEstimatesNote } from "../../api/Projects/ProjectsApiSlice";
 
-const AdminEstimation = ({ setAdminFlag }) => {
+const AdminEstimation = ({ setAdminFlag, id }) => {
   const [newProjectPart, setNewProjectPart] = useState(false);
   const [projectPart, setProjectPart] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -22,11 +23,13 @@ const AdminEstimation = ({ setAdminFlag }) => {
 
   const { mutate: EstimationNotes, isPending: EstimationPending } = useMutation(
     {
-      mutationFn: () => estimatesNote(),
+      mutationFn: (data) => postEstimatesNote(data, projectPart, id),
+      onSuccess: () => {},
     }
   );
 
   const handleEstimationSubmit = (data) => {
+    EstimationNotes(data);
     console.log(data);
     console.log(projectPart);
   };
@@ -42,12 +45,12 @@ const AdminEstimation = ({ setAdminFlag }) => {
           onSubmit={handleSubmit(handleEstimationSubmit)}
         >
           <div className="flex flex-col gap-[0.2rem]">
-            <label htmlFor="estimator_notes" className="font-[600] ">
+            <label htmlFor="estimation_notes" className="font-[600] ">
               Estimation Notes
             </label>
             <textarea
-              name="estimator_notes"
-              {...register("estimator_note", {})}
+              name="estimation_notes"
+              {...register("estimation_note", {})}
               type="text"
               className="w-full border-[1px] border-gray-300 rounded-lg p-[0.5rem] h-[100px] min-h-[100px] max-h-[300px] focus:ring-1 focus:ring-blue-600 focus:outline-none"
             ></textarea>
@@ -123,6 +126,7 @@ const AdminEstimation = ({ setAdminFlag }) => {
             <button
               className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
               disabled={newProjectPart}
+              type="submit"
             >
               Submit
             </button>

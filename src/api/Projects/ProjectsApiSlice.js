@@ -78,3 +78,18 @@ export const downloadFile = async (name, setDownload) => {
     throw error;
   }
 };
+
+export const postEstimatesNote = async (data, project_part, id) => {
+  try {
+    const [estimationResponse, partsResponse] = await Promise.all([
+      instance.post(`/projects/${id}/estimation`, {
+        estimation_notes: data.estimation_notes,
+      }),
+      instance.post(`/projects/${id}/parts`, {}),
+    ]);
+
+    return { estimationResponse, partsResponse };
+  } catch (error) {
+    throw error;
+  }
+};

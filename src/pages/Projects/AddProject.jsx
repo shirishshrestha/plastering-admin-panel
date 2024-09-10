@@ -477,7 +477,7 @@ export const AddProject = () => {
 
                   <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
                     <span>Uploaded Files:</span>
-                    <div className="flex gap-x-7 gap-y-2">
+                    <div className="flex flex-wrap gap-x-7 gap-y-2">
                       {selectedFiles.length > 0 &&
                         Array.from(selectedFiles).map((file, index) => (
                           <div

@@ -84,7 +84,7 @@ const ViewProject = () => {
         </div>
       )}
 
-      {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} />}
+      {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} id={id} />}
 
       <div className="mb-[0.5rem] text-[12px] font-[500]">
         <div
