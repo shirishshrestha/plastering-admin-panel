@@ -1,5 +1,5 @@
 import { ErrorMessage } from "@hookform/error-message";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export const EditInput = ({
   type = "text",
@@ -7,7 +7,7 @@ export const EditInput = ({
   autoComplete = "on",
   className,
   name,
-  defaultValue,
+  defaultValue = "",
   required,
   message,
   regValue,
@@ -18,14 +18,34 @@ export const EditInput = ({
   errors,
   register,
 }) => {
-  const [inputValue, setInputValue] = useState(defaultValue);
-
-  const handleChange = (e) => {
-    const inputChangeValue = e.target.value;
-    setInputValue(inputChangeValue);
-  };
-
-  const hasError = errors[name];
+  // Register the input and set defaultValue
+  useEffect(() => {
+    register(name, {
+      required: required,
+      pattern: {
+        value: new RegExp(regValue),
+        message: message,
+      },
+      minLength: {
+        value: minLength,
+        message: minMessage,
+      },
+      maxLength: {
+        value: maxLength,
+        message: maxMessage,
+      },
+    });
+  }, [
+    register,
+    name,
+    required,
+    regValue,
+    message,
+    minLength,
+    minMessage,
+    maxLength,
+    maxMessage,
+  ]);
 
   return (
     <div>
@@ -35,35 +55,17 @@ export const EditInput = ({
         placeholder={placeholder}
         autoComplete={autoComplete}
         className={`${className} w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
-          hasError ? "focus:ring-red-500 border-red-500" : ""
+          errors[name] ? "focus:ring-red-500 border-red-500" : ""
         }`}
-        {...register(name, {
-          value: inputValue,
-          onChange: handleChange,
-          required: required,
-          pattern: {
-            value: new RegExp(regValue),
-            message: message,
-          },
-          minLength: {
-            value: minLength,
-            message: minMessage,
-          },
-          maxLength: {
-            value: maxLength,
-            message: maxMessage,
-          },
-        })}
+        defaultValue={defaultValue}
+        {...register(name)}
       />
       <ErrorMessage
         errors={errors}
         name={name}
         render={({ message }) =>
           message && (
-            <p
-              className="text-[12px] text-red-500 pt-[0.3rem] pl-[0.5rem]"
-              key={type}
-            >
+            <p className="text-[12px] text-red-500 pt-[0.3rem] pl-[0.5rem]">
               {message}
             </p>
           )

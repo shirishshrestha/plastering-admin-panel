@@ -7,6 +7,7 @@ import {
 } from "../../assets/icons/SvgIcons";
 import { useState } from "react";
 import AddProjectPart from "./AddProjectPart";
+import { useMutation } from "@tanstack/react-query";
 
 const AdminEstimation = ({ setAdminFlag }) => {
   const [newProjectPart, setNewProjectPart] = useState(false);
@@ -18,6 +19,12 @@ const AdminEstimation = ({ setAdminFlag }) => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const { mutate: EstimationNotes, isPending: EstimationPending } = useMutation(
+    {
+      mutationFn: () => estimatesNote(),
+    }
+  );
 
   const handleEstimationSubmit = (data) => {
     console.log(data);

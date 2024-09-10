@@ -30,7 +30,25 @@ export const deleteProject = async (id) => {
 
 export const addProject = async (project) => {
   try {
-    const response = await instance.post("/projects", project);
+    const response = await instance.post("/projects", project, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editProject = async (data, id) => {
+  console.log("here", data);
+  try {
+    const response = await instance.post(`projects/${id}`, data, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;
