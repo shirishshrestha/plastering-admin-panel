@@ -16,8 +16,11 @@ import {
   setTokenToLocalStorage,
 } from "../../utils/Storage/StorageUtils";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const Login = () => {
+  useScrollRestoration();
+
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const {

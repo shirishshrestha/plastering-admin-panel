@@ -16,8 +16,10 @@ import EmptyData from "../../components/EmptyData/EmptyData";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const ClientDashboard = () => {
+  useScrollRestoration();
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
 
@@ -65,34 +67,34 @@ export const ClientDashboard = () => {
     {
       type: "Pending",
       value:
-        ProjectData?.filter((project) => project.user_id === user_id).filter(
-          (project) => project.status === "pending"
-        ).length > 0
-          ? ProjectData?.filter(
-              (project) => project.user_id === user_id
-            ).filter((project) => project.status === "pending").length
+        ProjectData?.data
+          .filter((project) => project.user_id === user_id)
+          .filter((project) => project.status === "pending").length > 0
+          ? ProjectData?.data
+              .filter((project) => project.user_id === user_id)
+              .filter((project) => project.status === "pending").length
           : 0,
     },
     {
       type: "Running",
       value:
-        ProjectData?.filter((project) => project.user_id === user_id).filter(
-          (project) => project.status === "running"
-        ).length > 0
-          ? ProjectData?.filter(
-              (project) => project.user_id === user_id
-            ).filter((project) => project.status === "running").length
+        ProjectData?.data
+          .filter((project) => project.user_id === user_id)
+          .filter((project) => project.status === "running").length > 0
+          ? ProjectData?.data
+              .filter((project) => project.user_id === user_id)
+              .filter((project) => project.status === "running").length
           : 0,
     },
     {
       type: "Completed",
       value:
-        ProjectData?.filter((project) => project.user_id === user_id).filter(
-          (project) => project.status === "completed"
-        ).length > 0
-          ? ProjectData?.filter(
-              (project) => project.user_id === user_id
-            ).filter((project) => project.status === "completed").length
+        ProjectData?.data
+          .filter((project) => project.user_id === user_id)
+          .filter((project) => project.status === "completed").length > 0
+          ? ProjectData?.data
+              .filter((project) => project.user_id === user_id)
+              .filter((project) => project.status === "completed").length
           : 0,
     },
   ];
@@ -221,9 +223,10 @@ export const ClientDashboard = () => {
                 </div>
                 <p className="font-semibold capitalize text-[1rem] ">
                   Total Projects -{" "}
-                  {ProjectData?.filter((project) => project.user_id === user_id)
-                    .length > 0
-                    ? ProjectData?.filter(
+                  {ProjectData?.data.filter(
+                    (project) => project.user_id === user_id
+                  ).length > 0
+                    ? ProjectData?.data.filter(
                         (project) => project.user_id === user_id
                       ).length
                     : "0"}
@@ -237,13 +240,13 @@ export const ClientDashboard = () => {
                 </div>
                 <p className="font-semibold capitalize text-[1rem] ">
                   Completed projects -{" "}
-                  {ProjectData?.filter(
-                    (project) => project.user_id === user_id
-                  ).filter((project) => project.status === "completed").length >
-                  0
-                    ? ProjectData?.filter(
-                        (project) => project.user_id === user_id
-                      ).filter((project) => project.status === "completed")
+                  {ProjectData?.data
+                    .filter((project) => project.user_id === user_id)
+                    .filter((project) => project.status === "completed")
+                    .length > 0
+                    ? ProjectData?.data
+                        .filter((project) => project.user_id === user_id)
+                        .filter((project) => project.status === "completed")
                         .length
                     : "0"}
                 </p>
@@ -256,12 +259,14 @@ export const ClientDashboard = () => {
                 </div>
                 <p className="font-semibold capitalize text-[1rem]">
                   Running Projects -{" "}
-                  {ProjectData?.filter(
-                    (project) => project.user_id === user_id
-                  ).filter((project) => project.status === "running").length > 0
-                    ? ProjectData?.filter(
-                        (project) => project.user_id === user_id
-                      ).filter((project) => project.status === "running").length
+                  {ProjectData?.data
+                    .filter((project) => project.user_id === user_id)
+                    .filter((project) => project.status === "running").length >
+                  0
+                    ? ProjectData?.data
+                        .filter((project) => project.user_id === user_id)
+                        .filter((project) => project.status === "running")
+                        .length
                     : "0"}
                 </p>
               </div>
@@ -323,9 +328,10 @@ export const ClientDashboard = () => {
                     ))}
                   </tr>
                 ))
-              ) : ProjectData?.filter((item) => user_id === item.user_id)
+              ) : ProjectData?.data.filter((item) => user_id === item.user_id)
                   .length > 0 ? (
-                ProjectData?.filter((item) => user_id === item.user_id)
+                ProjectData?.data
+                  .filter((item) => user_id === item.user_id)
                   .slice(0, 4)
                   .map((item) => (
                     <tr key={item.id} className=" last:border-none  ">

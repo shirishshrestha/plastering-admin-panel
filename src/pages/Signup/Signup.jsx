@@ -15,8 +15,11 @@ import { useMutation } from "@tanstack/react-query";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const Signup = () => {
+  useScrollRestoration();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 

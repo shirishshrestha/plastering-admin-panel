@@ -9,8 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const Dashboard = () => {
+  useScrollRestoration();
+
   const {
     isPending: projectPending,
     error,
@@ -75,25 +78,26 @@ export const Dashboard = () => {
     {
       type: "Pending",
       value:
-        ProjectData?.length > 0
-          ? ProjectData?.filter((project) => project.status === "pending")
+        ProjectData?.data.length > 0
+          ? ProjectData?.data.filter((project) => project.status === "pending")
               .length
           : 0,
     },
     {
       type: "Running",
       value:
-        ProjectData?.length > 0
-          ? ProjectData?.filter((project) => project.status === "running")
+        ProjectData?.data.length > 0
+          ? ProjectData?.data.filter((project) => project.status === "running")
               .length
           : 0,
     },
     {
       type: "Completed",
       value:
-        ProjectData?.length > 0
-          ? ProjectData?.filter((project) => project.status === "completed")
-              .length
+        ProjectData?.data.length > 0
+          ? ProjectData?.data.filter(
+              (project) => project.status === "completed"
+            ).length
           : 0,
     },
   ];
@@ -186,7 +190,9 @@ export const Dashboard = () => {
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
                   {" "}
-                  {ProjectData?.length > 0 ? ProjectData?.length : "0"}
+                  {ProjectData?.data.length > 0
+                    ? ProjectData?.data.length
+                    : "0"}
                 </p>
                 <p className="text-[12px]">
                   All running and completed projects
@@ -202,8 +208,8 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {ProjectData?.length > 0
-                    ? ProjectData?.filter(
+                  {ProjectData?.data.length > 0
+                    ? ProjectData?.data.filter(
                         (project) => project.status === "completed"
                       ).length
                     : "0"}
@@ -223,8 +229,8 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {ProjectData?.length > 0
-                    ? ProjectData?.filter(
+                  {ProjectData?.data.length > 0
+                    ? ProjectData?.data.filter(
                         (project) => project.status === "running"
                       ).length
                     : "0"}
@@ -298,10 +304,10 @@ export const Dashboard = () => {
                     ))}
                   </tr>
                 ))
-              ) : ProjectData?.length < 1 ? (
+              ) : ProjectData?.data.length < 1 ? (
                 <EmptyData />
               ) : (
-                ProjectData?.slice(0, 4).map((item) => (
+                ProjectData?.data.slice(0, 4).map((item) => (
                   <tr key={item.id} className=" last:border-none  ">
                     <td className="py-[1rem] pl-[0.5rem]">
                       {item.name

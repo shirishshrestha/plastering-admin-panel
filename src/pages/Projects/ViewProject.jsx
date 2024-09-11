@@ -9,8 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import { AdminEstimation } from "../../components";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const ViewProject = () => {
+  useScrollRestoration();
+
   const navigate = useNavigate();
   const { id } = useParams();
 

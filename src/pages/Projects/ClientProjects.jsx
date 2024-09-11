@@ -18,8 +18,11 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const ClientProjects = () => {
+  useScrollRestoration();
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -53,34 +56,34 @@ export const ClientProjects = () => {
     {
       type: "Pending",
       value:
-        ProjectData?.filter((project) => project.user_id === user_id).filter(
-          (project) => project.status === "pending"
-        ).length > 0
-          ? ProjectData?.filter(
-              (project) => project.user_id === user_id
-            ).filter((project) => project.status === "pending").length
+        ProjectData?.data
+          .filter((project) => project.user_id === user_id)
+          .filter((project) => project.status === "pending").length > 0
+          ? ProjectData?.data
+              .filter((project) => project.user_id === user_id)
+              .filter((project) => project.status === "pending").length
           : 0,
     },
     {
       type: "Running",
       value:
-        ProjectData?.filter((project) => project.user_id === user_id).filter(
-          (project) => project.status === "running"
-        ).length > 0
-          ? ProjectData?.filter(
-              (project) => project.user_id === user_id
-            ).filter((project) => project.status === "running").length
+        ProjectData?.data
+          .filter((project) => project.user_id === user_id)
+          .filter((project) => project.status === "running").length > 0
+          ? ProjectData?.data
+              .filter((project) => project.user_id === user_id)
+              .filter((project) => project.status === "running").length
           : 0,
     },
     {
       type: "Completed",
       value:
-        ProjectData?.filter((project) => project.user_id === user_id).filter(
-          (project) => project.status === "completed"
-        ).length > 0
-          ? ProjectData?.filter(
-              (project) => project.user_id === user_id
-            ).filter((project) => project.status === "completed").length
+        ProjectData?.data
+          .filter((project) => project.user_id === user_id)
+          .filter((project) => project.status === "completed").length > 0
+          ? ProjectData?.data
+              .filter((project) => project.user_id === user_id)
+              .filter((project) => project.status === "completed").length
           : 0,
     },
   ];
@@ -178,9 +181,10 @@ export const ClientProjects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {ProjectData?.filter((item) => user_id === item.user_id)
+                {ProjectData?.data.filter((item) => user_id === item.user_id)
                   .length >= 1 ? (
-                  ProjectData?.filter((item) => user_id === item.user_id)
+                  ProjectData?.data
+                    .filter((item) => user_id === item.user_id)
                     .slice(0, 5)
                     .map((project) => (
                       <SwiperSlide key={project.id}>
@@ -286,10 +290,11 @@ export const ClientProjects = () => {
                       ))}
                     </tr>
                   ))
-                ) : ProjectData?.filter((item) => user_id === item.user_id)
+                ) : ProjectData?.data.filter((item) => user_id === item.user_id)
                     .length > 0 ? (
-                  ProjectData?.filter((item) => user_id === item.user_id).map(
-                    (item) => (
+                  ProjectData?.data
+                    .filter((item) => user_id === item.user_id)
+                    .map((item) => (
                       <tr key={item.id} className=" last:border-none  ">
                         <td className="py-[1rem] pl-[0.5rem]">
                           {item.name
@@ -334,8 +339,7 @@ export const ClientProjects = () => {
                           </div>
                         </td>
                       </tr>
-                    )
-                  )
+                    ))
                 ) : (
                   <EmptyData />
                 )}

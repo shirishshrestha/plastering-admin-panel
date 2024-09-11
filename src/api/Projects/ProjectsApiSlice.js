@@ -1,10 +1,9 @@
 import { instance } from "../../utils/Axios/Instance";
-import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
-export const getProjects = async () => {
+export const getProjects = async (pageNumber) => {
   try {
-    const response = await instance.get("/projects");
-    return response.data.data;
+    const response = await instance.get(`/projects?page=${pageNumber}`);
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -83,12 +82,24 @@ export const postEstimatesNote = async (data, project_part, id) => {
   try {
     const [estimationResponse, partsResponse] = await Promise.all([
       instance.post(`/projects/${id}/estimation`, {
-        estimation_notes: data.estimation_notes,
+        estimation_notes: data.estimation_note,
       }),
-      instance.post(`/projects/${id}/parts`, {}),
+      project_part.length > 0 && instance.post(`/projects/${id}/parts`, {}),
     ]);
 
     return { estimationResponse, partsResponse };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEstimationNotes = async (id) => {
+  try {
+    const response = await Promise.all(
+      instance.get(`/projects/${id}/estimation`),
+      instance.get(`/projects/${id}/parts`)
+    );
+    return response.data;
   } catch (error) {
     throw error;
   }

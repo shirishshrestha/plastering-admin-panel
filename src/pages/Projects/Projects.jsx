@@ -15,7 +15,13 @@ import {
   LogoutConfirmation,
   Pagination,
 } from "../../components";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   deleteProject,
@@ -23,18 +29,23 @@ import {
 } from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
+import EmptyData from "../../components/EmptyData/EmptyData";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const Projects = () => {
+  useScrollRestoration();
+
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useLogout();
 
+  const [pageNumber, setPageNumber] = useState(1);
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
@@ -47,12 +58,20 @@ export const Projects = () => {
     error,
     data: ProjectData,
   } = useQuery({
-    queryKey: ["projects"],
-    queryFn: getProjects,
+    queryKey: ["projects", pageNumber],
+    queryFn: () => getProjects(pageNumber),
     keepPreviousData: true,
     enabled: location.pathname === "/projects",
     staleTime: 6000,
   });
+
+  const nextClick = () => {
+    setPageNumber((prev) => prev + 1);
+  };
+
+  const prevClick = () => {
+    setPageNumber((prev) => (prev > 1 ? prev - 1 : 1));
+  };
 
   const handleLogout = () => {
     setAuth({});
@@ -67,25 +86,26 @@ export const Projects = () => {
     {
       type: "Pending",
       value:
-        ProjectData?.length > 0
-          ? ProjectData?.filter((project) => project.status === "pending")
+        ProjectData?.data.length > 0
+          ? ProjectData?.data.filter((project) => project.status === "pending")
               .length
           : 0,
     },
     {
       type: "Running",
       value:
-        ProjectData?.length > 0
-          ? ProjectData?.filter((project) => project.status === "running")
+        ProjectData?.data.length > 0
+          ? ProjectData?.data.filter((project) => project.status === "running")
               .length
           : 0,
     },
     {
       type: "Completed",
       value:
-        ProjectData?.length > 0
-          ? ProjectData?.filter((project) => project.status === "completed")
-              .length
+        ProjectData?.data.length > 0
+          ? ProjectData?.data.filter(
+              (project) => project.status === "completed"
+            ).length
           : 0,
     },
   ];
@@ -207,14 +227,14 @@ export const Projects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {ProjectData?.length < 1 ? (
+                {ProjectData?.data.length < 1 ? (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">
                       <p className="text-[1.2rem]">No recent projects</p>
                     </div>
                   </SwiperSlide>
                 ) : (
-                  ProjectData?.slice(0, 5).map((project) => (
+                  ProjectData?.data.slice(0, 5).map((project) => (
                     <SwiperSlide key={project.id}>
                       <div className="flex flex-col p-4">
                         <div className="flex justify-between">
@@ -312,8 +332,8 @@ export const Projects = () => {
                       ))}
                     </tr>
                   ))
-                ) : ProjectData?.length > 0 ? (
-                  ProjectData?.map((item) => (
+                ) : ProjectData?.data.length > 0 ? (
+                  ProjectData?.data.map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
                       <td className="py-[1rem] pl-[0.5rem]">
                         {item.name
@@ -344,9 +364,9 @@ export const Projects = () => {
                           </button>
                           <button
                             className="p-[5px] rounded-md bg-editBackground"
-                            onClick={() =>
-                              navigate(`/projects/editProject/${item.id}`)
-                            }
+                            onClick={() => {
+                              navigate(`/projects/editProject/${item.id}`);
+                            }}
                           >
                             <EditIcon color="#8c62ff" />
                           </button>
@@ -370,9 +390,14 @@ export const Projects = () => {
               </tbody>
             </table>
           </div>
-          {/* <div className="mb-[1rem] flex items-center justify-end">
-            <Pagination />
-          </div> */}
+          <div className="mb-[1rem] flex items-center justify-end">
+            <Pagination
+              nextClick={nextClick}
+              prevClick={prevClick}
+              lastPage={ProjectData?.last_page}
+              pageNumber={pageNumber}
+            />
+          </div>
           <CustomToastContainer />
         </section>
       ) : (

@@ -1,17 +1,16 @@
 import { useForm } from "react-hook-form";
-import {
-  Document,
-  PlusIcon,
-  TrashIcon,
-  Xmark,
-} from "../../assets/icons/SvgIcons";
+import { Document, PlusIcon, TrashIcon } from "../../assets/icons/SvgIcons";
 import { useState } from "react";
 import AddProjectPart from "./AddProjectPart";
-import { useMutation } from "@tanstack/react-query";
-import { postEstimatesNote } from "../../api/Projects/ProjectsApiSlice";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  getEstimationNotes,
+  postEstimatesNote,
+} from "../../api/Projects/ProjectsApiSlice";
 
 const AdminEstimation = ({ setAdminFlag, id }) => {
   const [newProjectPart, setNewProjectPart] = useState(false);
+  const [estimationNotes, setEstimationNotes] = useState("");
   const [projectPart, setProjectPart] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -20,6 +19,15 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const {
+    isPending,
+    data: EstimationData,
+    error,
+  } = useQuery({
+    queryKey: ["estimationData", id],
+    queryFn: () => getEstimationNotes(id),
+  });
 
   const { mutate: EstimationNotes, isPending: EstimationPending } = useMutation(
     {
@@ -45,12 +53,14 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
           onSubmit={handleSubmit(handleEstimationSubmit)}
         >
           <div className="flex flex-col gap-[0.2rem]">
-            <label htmlFor="estimation_notes" className="font-[600] ">
+            <label htmlFor="estimation_note" className="font-[600] ">
               Estimation Notes
             </label>
             <textarea
-              name="estimation_notes"
-              {...register("estimation_note", {})}
+              name="estimation_note"
+              {...register("estimation_note", {
+                onChange: (e) => setEstimationNotes(e.target.value),
+              })}
               type="text"
               className="w-full border-[1px] border-gray-300 rounded-lg p-[0.5rem] h-[100px] min-h-[100px] max-h-[300px] focus:ring-1 focus:ring-blue-600 focus:outline-none"
             ></textarea>
@@ -125,7 +135,10 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
             </button>
             <button
               className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
-              disabled={newProjectPart}
+              disabled={
+                newProjectPart ||
+                (estimationNotes === "" && projectPart.length === 0)
+              }
               type="submit"
             >
               Submit

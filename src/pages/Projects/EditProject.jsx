@@ -21,8 +21,11 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { Document, Download, TrashIcon } from "../../assets/icons/SvgIcons";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const EditProject = () => {
+  useScrollRestoration();
+
   const navigate = useNavigate();
   const role = getRoleFromLocalStorage();
 
