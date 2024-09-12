@@ -66,7 +66,8 @@ export const AddProject = () => {
       }, 2000);
     },
     onError: (error) => {
-      notifyError("Error adding project");
+      console.log(error);
+      notifyError(error.response.data.error);
     },
   });
 

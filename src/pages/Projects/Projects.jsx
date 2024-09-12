@@ -50,6 +50,8 @@ export const Projects = () => {
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
 
+  const [recentProjects, setRecentProjects] = useState([]);
+
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
@@ -64,6 +66,12 @@ export const Projects = () => {
     enabled: location.pathname === "/projects",
     staleTime: 6000,
   });
+
+  useEffect(() => {
+    if (pageNumber === 1) {
+      setRecentProjects(ProjectData?.data);
+    }
+  }, [ProjectData, pageNumber]);
 
   const nextClick = () => {
     setPageNumber((prev) => prev + 1);
@@ -227,14 +235,14 @@ export const Projects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {ProjectData?.data.length < 1 ? (
+                {recentProjects?.length < 1 ? (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">
                       <p className="text-[1.2rem]">No recent projects</p>
                     </div>
                   </SwiperSlide>
                 ) : (
-                  ProjectData?.data.slice(0, 5).map((project) => (
+                  recentProjects?.slice(0, 5).map((project) => (
                     <SwiperSlide key={project.id}>
                       <div className="flex flex-col p-4">
                         <div className="flex justify-between">

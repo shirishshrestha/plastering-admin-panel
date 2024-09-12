@@ -13,12 +13,16 @@ import { DoughnutChart, LogoutConfirmation } from "../../components";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/Projects/ProjectsApiSlice";
+import {
+  getProjects,
+  getProjectsStatus,
+} from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
+import { useEffect, useState } from "react";
 
 export const ClientProjects = () => {
   useScrollRestoration();
@@ -30,6 +34,8 @@ export const ClientProjects = () => {
 
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
+
+  const [recentProjects, setRecentProjects] = useState([]);
 
   const handleLogout = () => {
     setAuth({});
@@ -52,39 +58,33 @@ export const ClientProjects = () => {
     staleTime: 6000,
   });
 
+  // useEffect(() => {
+  //   if (pageNumber === 1) {
+  //     setRecentProjects(ProjectData?.data);
+  //   }
+  // }, []);
+
+  const {
+    isPending: projectStatusPending,
+    error: projectStatusError,
+    data: ProjectStatusData,
+  } = useQuery({
+    queryKey: ["projectStatus"],
+    queryFn: () => getProjectsStatus(user_id),
+    staleTime: 6000,
+  });
   const doughnutData = [
     {
       type: "Pending",
-      value:
-        ProjectData?.data
-          .filter((project) => project.user_id === user_id)
-          .filter((project) => project.status === "pending").length > 0
-          ? ProjectData?.data
-              .filter((project) => project.user_id === user_id)
-              .filter((project) => project.status === "pending").length
-          : 0,
+      value: ProjectStatusData?.pending_projects || 0,
     },
     {
       type: "Running",
-      value:
-        ProjectData?.data
-          .filter((project) => project.user_id === user_id)
-          .filter((project) => project.status === "running").length > 0
-          ? ProjectData?.data
-              .filter((project) => project.user_id === user_id)
-              .filter((project) => project.status === "running").length
-          : 0,
+      value: ProjectStatusData?.running_projects || 0,
     },
     {
       type: "Completed",
-      value:
-        ProjectData?.data
-          .filter((project) => project.user_id === user_id)
-          .filter((project) => project.status === "completed").length > 0
-          ? ProjectData?.data
-              .filter((project) => project.user_id === user_id)
-              .filter((project) => project.status === "completed").length
-          : 0,
+      value: ProjectStatusData?.completed_projects || 0,
     },
   ];
 
@@ -181,10 +181,10 @@ export const ClientProjects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {ProjectData?.data.filter((item) => user_id === item.user_id)
+                {recentProjects?.filter((item) => user_id === item.user_id)
                   .length >= 1 ? (
-                  ProjectData?.data
-                    .filter((item) => user_id === item.user_id)
+                  recentProjects
+                    ?.filter((item) => user_id === item.user_id)
                     .slice(0, 5)
                     .map((project) => (
                       <SwiperSlide key={project.id}>

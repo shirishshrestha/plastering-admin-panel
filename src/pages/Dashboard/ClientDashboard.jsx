@@ -11,7 +11,10 @@ import {
   getNameFromLocalStorage,
 } from "../../utils/Storage/StorageUtils";
 import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/Projects/ProjectsApiSlice";
+import {
+  getProjects,
+  getProjectsStatus,
+} from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useAuth from "../../hooks/useAuth";
@@ -48,6 +51,16 @@ export const ClientDashboard = () => {
     staleTime: 6000,
   });
 
+  const {
+    isPending: projectStatusPending,
+    error: projectStatusError,
+    data: ProjectStatusData,
+  } = useQuery({
+    queryKey: ["projectStatus"],
+    queryFn: () => getProjectsStatus(user_id),
+    staleTime: 6000,
+  });
+
   const performanceData = [
     { quarter: "Plan", value: 3 },
     { quarter: "Procure", value: 4 },
@@ -66,36 +79,15 @@ export const ClientDashboard = () => {
   const doughnutData = [
     {
       type: "Pending",
-      value:
-        ProjectData?.data
-          .filter((project) => project.user_id === user_id)
-          .filter((project) => project.status === "pending").length > 0
-          ? ProjectData?.data
-              .filter((project) => project.user_id === user_id)
-              .filter((project) => project.status === "pending").length
-          : 0,
+      value: ProjectStatusData?.pending_projects || 0,
     },
     {
       type: "Running",
-      value:
-        ProjectData?.data
-          .filter((project) => project.user_id === user_id)
-          .filter((project) => project.status === "running").length > 0
-          ? ProjectData?.data
-              .filter((project) => project.user_id === user_id)
-              .filter((project) => project.status === "running").length
-          : 0,
+      value: ProjectStatusData?.running_projects || 0,
     },
     {
       type: "Completed",
-      value:
-        ProjectData?.data
-          .filter((project) => project.user_id === user_id)
-          .filter((project) => project.status === "completed").length > 0
-          ? ProjectData?.data
-              .filter((project) => project.user_id === user_id)
-              .filter((project) => project.status === "completed").length
-          : 0,
+      value: ProjectStatusData?.completed_projects || 0,
     },
   ];
 
@@ -153,7 +145,7 @@ export const ClientDashboard = () => {
 
   return (
     <section className="pt-[1rem]">
-      {projectPending && (
+      {(projectPending || projectStatusPending) && (
         <div className="h-full w-full bg-primary fixed z-20 top-0 left-0 flex items-center justify-center">
           <DotLottieReact
             autoplay
@@ -222,14 +214,7 @@ export const ClientDashboard = () => {
                   <TotalProjects />
                 </div>
                 <p className="font-semibold capitalize text-[1rem] ">
-                  Total Projects -{" "}
-                  {ProjectData?.data.filter(
-                    (project) => project.user_id === user_id
-                  ).length > 0
-                    ? ProjectData?.data.filter(
-                        (project) => project.user_id === user_id
-                      ).length
-                    : "0"}
+                  Total Projects - {ProjectStatusData?.pending_projects || "0"}
                 </p>
               </div>
             </div>
@@ -240,15 +225,7 @@ export const ClientDashboard = () => {
                 </div>
                 <p className="font-semibold capitalize text-[1rem] ">
                   Completed projects -{" "}
-                  {ProjectData?.data
-                    .filter((project) => project.user_id === user_id)
-                    .filter((project) => project.status === "completed")
-                    .length > 0
-                    ? ProjectData?.data
-                        .filter((project) => project.user_id === user_id)
-                        .filter((project) => project.status === "completed")
-                        .length
-                    : "0"}
+                  {ProjectStatusData?.completed_projects || "0"}
                 </p>
               </div>
             </div>
@@ -259,15 +236,7 @@ export const ClientDashboard = () => {
                 </div>
                 <p className="font-semibold capitalize text-[1rem]">
                   Running Projects -{" "}
-                  {ProjectData?.data
-                    .filter((project) => project.user_id === user_id)
-                    .filter((project) => project.status === "running").length >
-                  0
-                    ? ProjectData?.data
-                        .filter((project) => project.user_id === user_id)
-                        .filter((project) => project.status === "running")
-                        .length
-                    : "0"}
+                  {ProjectStatusData?.running_projects || "0"}
                 </p>
               </div>
             </div>

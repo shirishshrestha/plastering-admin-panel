@@ -96,8 +96,19 @@ export const postEstimatesNote = async (data, project_part, id) => {
 export const getEstimationNotes = async (id) => {
   try {
     const response = await Promise.all(
-      instance.get(`/projects/${id}/estimation`),
+      instance.get(`/project-parts/${id}/estimator-notes`),
       instance.get(`/projects/${id}/parts`)
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getProjectsStatus = async (user_id) => {
+  try {
+    const response = await instance.get(
+      `/users/${user_id}/projects-status-counts`
     );
     return response.data;
   } catch (error) {
