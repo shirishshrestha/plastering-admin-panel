@@ -14,7 +14,13 @@ import {
   LogoutConfirmation,
   Pagination,
 } from "../../components";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   getProjects,
@@ -39,8 +45,11 @@ export const ClientProjects = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const [pageNumber, setPageNumber] = useState(1);
+  const [searchParams] = useSearchParams();
 
+  const [pageNumber, setPageNumber] = useState(
+    parseInt(searchParams.get("page")) || 1
+  );
   const handleLogout = () => {
     setAuth({});
     localStorage.clear();

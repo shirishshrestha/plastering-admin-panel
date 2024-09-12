@@ -45,8 +45,11 @@ export const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useLogout();
+  const [searchParams] = useSearchParams();
 
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(
+    parseInt(searchParams.get("page")) || 1
+  );
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
