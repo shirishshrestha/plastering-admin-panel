@@ -26,6 +26,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   deleteProject,
   getProjects,
+  getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
@@ -67,6 +68,16 @@ export const Projects = () => {
     staleTime: 6000,
   });
 
+  const {
+    isPending: projectStatusPending,
+    error: projectStatusError,
+    data: TotalProjectStatusData,
+  } = useQuery({
+    queryKey: ["totalProjectStatus"],
+    queryFn: () => getTotalProjectsStatus(),
+    staleTime: 6000,
+  });
+
   useEffect(() => {
     if (pageNumber === 1) {
       setRecentProjects(ProjectData?.data);
@@ -93,28 +104,15 @@ export const Projects = () => {
   const doughnutData = [
     {
       type: "Pending",
-      value:
-        ProjectData?.data.length > 0
-          ? ProjectData?.data.filter((project) => project.status === "pending")
-              .length
-          : 0,
+      value: TotalProjectStatusData?.pending_projects,
     },
     {
       type: "Running",
-      value:
-        ProjectData?.data.length > 0
-          ? ProjectData?.data.filter((project) => project.status === "running")
-              .length
-          : 0,
+      value: TotalProjectStatusData?.running_projects,
     },
     {
       type: "Completed",
-      value:
-        ProjectData?.data.length > 0
-          ? ProjectData?.data.filter(
-              (project) => project.status === "completed"
-            ).length
-          : 0,
+      value: TotalProjectStatusData?.completed_projects,
     },
   ];
 
@@ -182,7 +180,7 @@ export const Projects = () => {
               setLogoutConfirationShow={setLogoutConfirationShow}
             />
           )}
-          {isPending && (
+          {(isPending || projectStatusPending) && (
             <div className="h-full w-full bg-primary fixed z-10 top-0 left-0 flex items-center justify-center">
               <DotLottieReact
                 autoplay

@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getProjects,
   getProjectsStatus,
+  getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -43,11 +44,11 @@ export const ClientDashboard = () => {
 
   const {
     isPending: projectPending,
-    error,
+    error: projectError,
     data: ProjectData,
   } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects(),
+    queryKey: ["userProjects"],
+    queryFn: () => getUserProjects(user_id),
     staleTime: 6000,
   });
 

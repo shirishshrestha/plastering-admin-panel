@@ -90,8 +90,7 @@ export const EditProject = () => {
       }, 2000);
     },
     onError: (error) => {
-      console.log(error);
-      notifyError(error.response.data.error);
+      notifyError("Something went wrong! Please try again");
     },
   });
 
@@ -129,9 +128,6 @@ export const EditProject = () => {
     navigate("/projects");
   };
 
-  console.log("here", selectedFiles);
-  console.log("deleted", deletedFiles);
-
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
@@ -164,7 +160,9 @@ export const EditProject = () => {
           />
         )}
         <div>
-          <h2 className="font-bold text-[1.2rem]">Edit Project</h2>
+          <h2 className="font-bold text-[1.2rem]">
+            Edit Project - {SingleProjectData?.user.name}
+          </h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">
             <p>Project</p>
             <div className="rounded-[100%] w-[10px] h-[10px] bg-[#8c62ff]"></div>

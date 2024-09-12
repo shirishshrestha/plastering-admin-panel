@@ -6,7 +6,10 @@ import {
 } from "../../assets/icons/SvgIcons";
 import { BarChart, DoughnutChart, LineChart } from "../../components";
 import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/Projects/ProjectsApiSlice";
+import {
+  getProjects,
+  getTotalProjectsStatus,
+} from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
@@ -21,6 +24,16 @@ export const Dashboard = () => {
   } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(),
+  });
+
+  const {
+    isPending: projectStatusPending,
+    error: projectStatusError,
+    data: TotalProjectStatusData,
+  } = useQuery({
+    queryKey: ["totalProjectStatus"],
+    queryFn: () => getTotalProjectsStatus(),
+    staleTime: 6000,
   });
 
   const performanceData = [
@@ -77,28 +90,15 @@ export const Dashboard = () => {
   const doughnutData = [
     {
       type: "Pending",
-      value:
-        ProjectData?.data.length > 0
-          ? ProjectData?.data.filter((project) => project.status === "pending")
-              .length
-          : 0,
+      value: TotalProjectStatusData?.pending_projects,
     },
     {
       type: "Running",
-      value:
-        ProjectData?.data.length > 0
-          ? ProjectData?.data.filter((project) => project.status === "running")
-              .length
-          : 0,
+      value: TotalProjectStatusData?.running_projects,
     },
     {
       type: "Completed",
-      value:
-        ProjectData?.data.length > 0
-          ? ProjectData?.data.filter(
-              (project) => project.status === "completed"
-            ).length
-          : 0,
+      value: TotalProjectStatusData?.completed_projects,
     },
   ];
 

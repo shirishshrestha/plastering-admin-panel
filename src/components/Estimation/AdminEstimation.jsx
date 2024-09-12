@@ -46,7 +46,7 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
     <div className="h-full w-full flex items-center justify-center fixed top-0 left-0 z-10 bg-primary/80">
       <div className="w-[60%] bg-light rounded-lg shadow-lg relative p-[2rem] max-h-[75%] overflow-y-scroll admin__estimator ">
         <h2 className="text-center font-bold text-[1.2rem] border-[1.5px] border-primary rounded-lg py-[0.5rem]">
-          Upload Estimation Files
+          Upload Estimation Details
         </h2>
         <form
           className="mt-[1rem] flex flex-col gap-[1rem]"

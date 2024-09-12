@@ -9,13 +9,17 @@ import {
   PlusIcon,
   ProjectsSvg,
 } from "../../assets/icons/SvgIcons";
-import { DoughnutChart, LogoutConfirmation } from "../../components";
+import {
+  DoughnutChart,
+  LogoutConfirmation,
+  Pagination,
+} from "../../components";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-
 import { useQuery } from "@tanstack/react-query";
 import {
   getProjects,
   getProjectsStatus,
+  getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import EmptyData from "../../components/EmptyData/EmptyData";
@@ -35,7 +39,7 @@ export const ClientProjects = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const [recentProjects, setRecentProjects] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
 
   const handleLogout = () => {
     setAuth({});
@@ -52,17 +56,11 @@ export const ClientProjects = () => {
     error,
     data: ProjectData,
   } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects(),
+    queryKey: ["userProjects", pageNumber],
+    queryFn: () => getUserProjects(user_id, pageNumber),
     enabled: location.pathname === "/projects",
     staleTime: 6000,
   });
-
-  // useEffect(() => {
-  //   if (pageNumber === 1) {
-  //     setRecentProjects(ProjectData?.data);
-  //   }
-  // }, []);
 
   const {
     isPending: projectStatusPending,
@@ -73,6 +71,23 @@ export const ClientProjects = () => {
     queryFn: () => getProjectsStatus(user_id),
     staleTime: 6000,
   });
+
+  const [recentProjects, setRecentProjects] = useState([]);
+
+  useEffect(() => {
+    if (pageNumber === 1) {
+      setRecentProjects(ProjectData?.data);
+    }
+  }, [ProjectData, pageNumber]);
+
+  const nextClick = () => {
+    setPageNumber((prev) => prev + 1);
+  };
+
+  const prevClick = () => {
+    setPageNumber((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+
   const doughnutData = [
     {
       type: "Pending",
@@ -122,7 +137,7 @@ export const ClientProjects = () => {
     <>
       {location.pathname === "/projects" ? (
         <section>
-          {isPending && (
+          {(isPending || projectStatusPending) && (
             <div className="h-full w-full bg-primary   fixed z-10 top-0 left-0 flex items-center justify-center">
               <DotLottieReact
                 autoplay
@@ -181,66 +196,62 @@ export const ClientProjects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {recentProjects?.filter((item) => user_id === item.user_id)
-                  .length >= 1 ? (
-                  recentProjects
-                    ?.filter((item) => user_id === item.user_id)
-                    .slice(0, 5)
-                    .map((project) => (
-                      <SwiperSlide key={project.id}>
-                        <div className="flex flex-col p-4">
-                          <div className="flex justify-between">
-                            <div>
-                              <ProjectsSvg />
-                            </div>
-                            <div className="flex flex-col items-end">
-                              <h2 className="text-lg font-semibold text-end ">
-                                {project.name
-                                  ? project.name.length > 25
-                                    ? `${project.name.slice(0, 25)}...`
-                                    : project.name
-                                  : "-"}
-                              </h2>
-                              <p className="text-sm font-[500] text-end">
-                                {project.user.name}
-                              </p>
-                              <div
-                                className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
-                                  project.status === "pending"
-                                    ? "bg-yellow-600  "
-                                    : ""
-                                } ${
-                                  project.status === "completed"
-                                    ? "bg-green-600"
-                                    : ""
-                                }
+                {recentProjects?.length >= 1 ? (
+                  recentProjects?.map((project) => (
+                    <SwiperSlide key={project.id}>
+                      <div className="flex flex-col p-4">
+                        <div className="flex justify-between">
+                          <div>
+                            <ProjectsSvg />
+                          </div>
+                          <div className="flex flex-col items-end">
+                            <h2 className="text-lg font-semibold text-end ">
+                              {project.name
+                                ? project.name.length > 25
+                                  ? `${project.name.slice(0, 25)}...`
+                                  : project.name
+                                : "-"}
+                            </h2>
+                            <p className="text-sm font-[500] text-end">
+                              {/* {project.user.name} */}
+                            </p>
+                            <div
+                              className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
+                                project.status === "pending"
+                                  ? "bg-yellow-600  "
+                                  : ""
+                              } ${
+                                project.status === "completed"
+                                  ? "bg-green-600"
+                                  : ""
+                              }
                                  ${
                                    project.status === "running"
                                      ? "bg-blue-600"
                                      : ""
                                  }`}
-                              >
-                                <p className="text-sm font-[500] text-center">
-                                  {project.status}
-                                </p>
-                              </div>
+                            >
+                              <p className="text-sm font-[500] text-center">
+                                {project.status}
+                              </p>
                             </div>
                           </div>
-                          <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                            {project.address}
-                          </p>
-                          <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                            {project.additional_requirements
-                              ? project.additional_requirements
-                                  .split(" ")
-                                  .slice(0, 7)
-                                  .join(" ")
-                              : ""}
-                            {project.additional_requirements ? "..." : ""}
-                          </p>
                         </div>
-                      </SwiperSlide>
-                    ))
+                        <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                          {project.address}
+                        </p>
+                        <p className="text-sm font-[500] text-end mt-[0.6rem]">
+                          {project.additional_requirements
+                            ? project.additional_requirements
+                                .split(" ")
+                                .slice(0, 7)
+                                .join(" ")
+                            : ""}
+                          {project.additional_requirements ? "..." : ""}
+                        </p>
+                      </div>
+                    </SwiperSlide>
+                  ))
                 ) : (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">
@@ -290,65 +301,66 @@ export const ClientProjects = () => {
                       ))}
                     </tr>
                   ))
-                ) : ProjectData?.data.filter((item) => user_id === item.user_id)
-                    .length > 0 ? (
-                  ProjectData?.data
-                    .filter((item) => user_id === item.user_id)
-                    .map((item) => (
-                      <tr key={item.id} className=" last:border-none  ">
-                        <td className="py-[1rem] pl-[0.5rem]">
-                          {item.name
-                            ? item.name.length > 15
-                              ? `${item.name.slice(0, 15)}...`
-                              : item.name
-                            : "-"}
-                        </td>
+                ) : ProjectData?.data.length > 0 ? (
+                  ProjectData?.data.map((item) => (
+                    <tr key={item.id} className=" last:border-none  ">
+                      <td className="py-[1rem] pl-[0.5rem]">
+                        {item.name
+                          ? item.name.length > 15
+                            ? `${item.name.slice(0, 15)}...`
+                            : item.name
+                          : "-"}
+                      </td>
 
-                        <td className="py-[1rem]">
-                          {item.additional_requirements
-                            ? item.additional_requirements.length > 15
-                              ? `${item.additional_requirements.slice(
-                                  0,
-                                  15
-                                )}...`
-                              : item.additional_requirements
-                            : "-"}
-                        </td>
-                        <td className="py-[1rem]">
-                          {item.address.length > 15
-                            ? `${item.address.slice(0, 15)}...`
-                            : item.address}
-                        </td>
-                        <td className="py-[1rem]">{item.start_date}</td>
+                      <td className="py-[1rem]">
+                        {item.additional_requirements
+                          ? item.additional_requirements.length > 15
+                            ? `${item.additional_requirements.slice(0, 15)}...`
+                            : item.additional_requirements
+                          : "-"}
+                      </td>
+                      <td className="py-[1rem]">
+                        {item.address.length > 15
+                          ? `${item.address.slice(0, 15)}...`
+                          : item.address}
+                      </td>
+                      <td className="py-[1rem]">{item.start_date}</td>
 
-                        <td className="py-[1rem] ">{item.status}</td>
-                        <td>
-                          <div className="flex gap-[0.7rem]">
-                            <button
-                              className="p-[5px] rounded-md bg-viewBackground"
-                              onClick={() => handleViewProject(item.id)}
-                            >
-                              <EyeIcon strokeColor={"#3e84f4"} />
-                            </button>
-                            <button
-                              className="p-[5px] rounded-md bg-gray-200/60 cursor-not-allowed  "
-                              disabled
-                            >
-                              <EditIcon color="#9b9c9f" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                      <td className="py-[1rem] ">{item.status}</td>
+                      <td>
+                        <div className="flex gap-[0.7rem]">
+                          <button
+                            className="p-[5px] rounded-md bg-viewBackground"
+                            onClick={() => handleViewProject(item.id)}
+                          >
+                            <EyeIcon strokeColor={"#3e84f4"} />
+                          </button>
+                          <button
+                            className="p-[5px] rounded-md bg-gray-200/60 cursor-not-allowed  "
+                            disabled
+                          >
+                            <EditIcon color="#9b9c9f" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 ) : (
                   <EmptyData />
                 )}
               </tbody>
             </table>
           </div>
-          {/* <div className="mb-[1rem] flex items-center justify-end">
-            <Pagination />
-          </div> */}
+          {ProjectData?.total_pages > 1 && (
+            <div className="mb-[1rem] flex items-center justify-end">
+              <Pagination
+                nextClick={nextClick}
+                prevClick={prevClick}
+                lastPage={ProjectData?.total_pages}
+                pageNumber={pageNumber}
+              />
+            </div>
+          )}
         </section>
       ) : (
         <Outlet />

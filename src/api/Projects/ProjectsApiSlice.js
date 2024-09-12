@@ -9,6 +9,17 @@ export const getProjects = async (pageNumber) => {
   }
 };
 
+export const getUserProjects = async (id, pageNumber) => {
+  try {
+    const response = await instance.get(
+      `/users/${id}/projects?page=${pageNumber}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getProjectById = async (id) => {
   try {
     const response = await instance.get(`/projects/${id}`);
@@ -110,6 +121,15 @@ export const getProjectsStatus = async (user_id) => {
     const response = await instance.get(
       `/users/${user_id}/projects-status-counts`
     );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getTotalProjectsStatus = async () => {
+  try {
+    const response = await instance.get(`/project-count`);
     return response.data;
   } catch (error) {
     throw error;

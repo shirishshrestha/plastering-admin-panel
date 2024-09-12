@@ -8,7 +8,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
-import { AdminEstimation } from "../../components";
+import { AdminEstimation, ClientEstimation } from "../../components";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const ViewProject = () => {
@@ -88,6 +88,7 @@ const ViewProject = () => {
       )}
 
       {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} id={id} />}
+      {clientFlag && <ClientEstimation setClientFlag={setClientFlag} id={id} />}
 
       <div className="mb-[0.5rem] text-[12px] font-[500]">
         <div
