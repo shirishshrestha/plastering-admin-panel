@@ -4,7 +4,7 @@ import {
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
-import { DoughnutChart, LogoutConfirmation } from "../../components";
+import { DoughnutChart, Loader, LogoutConfirmation } from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
 import {
   getIdFromLocalStorage,
@@ -12,12 +12,10 @@ import {
 } from "../../utils/Storage/StorageUtils";
 import { useQuery } from "@tanstack/react-query";
 import {
-  getProjects,
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
@@ -62,21 +60,6 @@ export const ClientDashboard = () => {
     staleTime: 6000,
   });
 
-  const performanceData = [
-    { quarter: "Plan", value: 3 },
-    { quarter: "Procure", value: 4 },
-    { quarter: "Execute", value: 6 },
-    { quarter: "Inspect", value: 2 },
-  ];
-
-  const barDatasets = [
-    {
-      label: "Time Taken (in weeks)",
-      data: performanceData.map((item) => item.value),
-      backgroundColor: "#182C3A",
-    },
-  ];
-
   const doughnutData = [
     {
       type: "Pending",
@@ -115,47 +98,10 @@ export const ClientDashboard = () => {
     "Status",
   ];
 
-  // dummy table data
-  const tableData = [
-    {
-      projectName: "Residential Plastering",
-      startDate: "2024-01-15",
-      status: "Completed",
-    },
-    {
-      projectName: "Commercial Office Plastering",
-      startDate: "2024-03-01",
-      status: "In Progress",
-    },
-    {
-      projectName: "Retail Store Renovation",
-      startDate: "2024-02-20",
-      status: "Pending",
-    },
-    {
-      projectName: "Warehouse Plastering",
-      startDate: "2024-04-01",
-      status: "Scheduled",
-    },
-    {
-      projectName: "Luxury Villa Plastering",
-      startDate: "2024-01-05",
-      status: "Completed",
-    },
-  ];
-
   return (
     <section className="pt-[1rem]">
-      {(projectPending || projectStatusPending) && (
-        <div className="h-full w-full bg-primary fixed z-20 top-0 left-0 flex items-center justify-center">
-          <DotLottieReact
-            autoplay
-            loop
-            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-            style={{ height: "300px", width: "300px" }}
-          />
-        </div>
-      )}
+      {projectPending && <Loader />}
+      {projectStatusPending && <Loader />}
 
       {logoutConfirationShow && (
         <LogoutConfirmation
@@ -244,21 +190,6 @@ export const ClientDashboard = () => {
           </div>
         </div>
         <div>
-          {/* <div className=" h-fit p-[1rem] bg-white flex flex-col justify-center items-center shadow-lg rounded-lg">
-            <h4 className="font-bold text-start"> Project Milestone</h4>
-            <div className=" pb-[1.2rem] text-[12px] font-[500] pt-[0.2rem]">
-              <p>Per Project</p>
-            </div>
-            <div className="max-w-[370px]">
-              <BarChart
-                yBool={true}
-                barData={performanceData}
-                datasets={barDatasets}
-                legendBool={false}
-                // borderColors="rgba(24, 44, 58, 0.668)"
-              />
-            </div>
-          </div> */}
           <div className="h-fit p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start text-[18px]">Project Status</h4>
 

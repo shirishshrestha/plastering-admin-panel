@@ -12,6 +12,7 @@ import {
 } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
+  Loader,
   LogoutConfirmation,
   Pagination,
 } from "../../components";
@@ -28,9 +29,8 @@ import {
   getProjects,
   getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
@@ -54,8 +54,6 @@ export const Projects = () => {
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
 
-  const [recentProjects, setRecentProjects] = useState([]);
-
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
@@ -71,6 +69,15 @@ export const Projects = () => {
     staleTime: 6000,
   });
 
+  const { isPending: recentProjectsPending, data: RecentProjectData } =
+    useQuery({
+      queryKey: ["projects"],
+      queryFn: () => getProjects(1),
+      keepPreviousData: true,
+      enabled: location.pathname === "/projects",
+      staleTime: 6000,
+    });
+
   const {
     isPending: projectStatusPending,
     error: projectStatusError,
@@ -80,12 +87,6 @@ export const Projects = () => {
     queryFn: () => getTotalProjectsStatus(),
     staleTime: 6000,
   });
-
-  useEffect(() => {
-    if (pageNumber === 1) {
-      setRecentProjects(ProjectData?.data);
-    }
-  }, [ProjectData, pageNumber]);
 
   const nextClick = () => {
     setPageNumber((prev) => prev + 1);
@@ -183,16 +184,9 @@ export const Projects = () => {
               setLogoutConfirationShow={setLogoutConfirationShow}
             />
           )}
-          {(isPending || projectStatusPending) && (
-            <div className="h-full w-full bg-primary fixed z-10 top-0 left-0 flex items-center justify-center">
-              <DotLottieReact
-                autoplay
-                loop
-                src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-                style={{ height: "300px", width: "300px" }}
-              />
-            </div>
-          )}
+          {isPending && <Loader />}
+          {projectStatusPending && <Loader />}
+
           <div className="grid grid-cols-2">
             <div>
               <div className=" mx-auto  bg-white shadow-lg rounded-lg">
@@ -236,14 +230,14 @@ export const Projects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {recentProjects?.length < 1 ? (
+                {RecentProjectData?.data.length < 1 ? (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">
                       <p className="text-[1.2rem]">No recent projects</p>
                     </div>
                   </SwiperSlide>
                 ) : (
-                  recentProjects?.slice(0, 5).map((project) => (
+                  RecentProjectData?.data.slice(0, 5).map((project) => (
                     <SwiperSlide key={project.id}>
                       <div className="flex flex-col p-4">
                         <div className="flex justify-between">

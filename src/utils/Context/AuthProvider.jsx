@@ -7,8 +7,6 @@ export const AuthProvider = ({ children }) => {
 
   const [logoutConfirationShow, setLogoutConfirationShow] = useState(false);
 
-  console.log(logoutConfirationShow);
-
   return (
     <AuthContext.Provider
       value={{

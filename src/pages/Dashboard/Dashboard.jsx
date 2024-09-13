@@ -4,14 +4,13 @@ import {
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
-import { BarChart, DoughnutChart, LineChart } from "../../components";
+import { BarChart, DoughnutChart, LineChart, Loader } from "../../components";
 import { useQuery } from "@tanstack/react-query";
 import {
   getProjects,
   getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
 import EmptyData from "../../components/EmptyData/EmptyData";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const Dashboard = () => {
@@ -42,12 +41,6 @@ export const Dashboard = () => {
     { quarter: "Q3", value: 1800 },
     { quarter: "Q4", value: 2000 },
   ];
-
-  // const salesData = [
-  //   { quarter: "Goal", value: 40 },
-  //   { quarter: "Pending Forcast", value: 15 },
-  //   { quarter: "Revenue", value: 18 },
-  // ];
 
   const lineData = [
     { month: "Jan", plaster: 1200, sand: 800 },
@@ -126,57 +119,10 @@ export const Dashboard = () => {
     "Status",
   ];
 
-  // dummy table data
-  const tableData = [
-    {
-      projectName: "Residential Plastering",
-      clientName: "John Doe",
-      startDate: "2024-01-15",
-      endDate: "2024-02-10",
-      status: "Completed",
-    },
-    {
-      projectName: "Commercial Office Plastering",
-      clientName: "ACME Corp",
-      startDate: "2024-03-01",
-      endDate: "2024-04-15",
-      status: "In Progress",
-    },
-    {
-      projectName: "Retail Store Renovation",
-      clientName: "Jane Smith",
-      startDate: "2024-02-20",
-
-      status: "Pending",
-    },
-    {
-      projectName: "Warehouse Plastering",
-      clientName: "Logistics Co",
-      startDate: "2024-04-01",
-
-      status: "Scheduled",
-    },
-    {
-      projectName: "Luxury Villa Plastering",
-      clientName: "Mr. Brown",
-      startDate: "2024-01-05",
-      endDate: "2024-01-25",
-      status: "Completed",
-    },
-  ];
-
   return (
     <section className="pt-[1rem]">
-      {projectPending && (
-        <div className="h-full w-full bg-primary fixed z-20 top-0 left-0 flex items-center justify-center">
-          <DotLottieReact
-            autoplay
-            loop
-            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-            style={{ height: "300px", width: "300px" }}
-          />
-        </div>
-      )}
+      {projectPending && <Loader />}
+      {projectStatusPending && <Loader />}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1.2rem] w-full h-full">
         <div className="w-full h-full">
           <div className="grid grid-cols-3 gap-[0.8rem] justify-center">
@@ -189,10 +135,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {" "}
-                  {ProjectData?.data.length > 0
-                    ? ProjectData?.data.length
-                    : "0"}
+                  {TotalProjectStatusData?.total_projects}
                 </p>
                 <p className="text-[12px]">
                   All running and completed projects
@@ -208,11 +151,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {ProjectData?.data.length > 0
-                    ? ProjectData?.data.filter(
-                        (project) => project.status === "completed"
-                      ).length
-                    : "0"}
+                  {TotalProjectStatusData?.completed_projects}
                 </p>
                 <p className="text-[12px]">
                   <span className="text-secondary font-[700]">+12%</span>{" "}
@@ -229,11 +168,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {ProjectData?.data.length > 0
-                    ? ProjectData?.data.filter(
-                        (project) => project.status === "running"
-                      ).length
-                    : "0"}
+                  {TotalProjectStatusData?.running_projects}
                 </p>
                 <p className="text-[12px]">
                   <span className="text-secondary font-[700]">+8% </span>{" "}

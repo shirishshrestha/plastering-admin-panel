@@ -11,6 +11,7 @@ import {
 } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
+  Loader,
   LogoutConfirmation,
   Pagination,
 } from "../../components";
@@ -23,11 +24,9 @@ import {
 } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
-  getProjects,
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
@@ -71,6 +70,15 @@ export const ClientProjects = () => {
     staleTime: 6000,
   });
 
+  const { isPending: recentProjectsPending, data: RecentProjectData } =
+    useQuery({
+      queryKey: ["userProjects"],
+      queryFn: () => getUserProjects(user_id, 1),
+      keepPreviousData: true,
+      enabled: location.pathname === "/projects",
+      staleTime: 6000,
+    });
+
   const {
     isPending: projectStatusPending,
     error: projectStatusError,
@@ -80,14 +88,6 @@ export const ClientProjects = () => {
     queryFn: () => getProjectsStatus(user_id),
     staleTime: 6000,
   });
-
-  const [recentProjects, setRecentProjects] = useState([]);
-
-  useEffect(() => {
-    if (pageNumber === 1) {
-      setRecentProjects(ProjectData?.data);
-    }
-  }, [ProjectData, pageNumber]);
 
   const nextClick = () => {
     setPageNumber((prev) => prev + 1);
@@ -136,7 +136,6 @@ export const ClientProjects = () => {
     "Status",
     "Action",
   ];
-  // dummy table data
 
   const handleViewProject = (id) => {
     navigate(`/projects/viewProject/${id}`);
@@ -146,16 +145,8 @@ export const ClientProjects = () => {
     <>
       {location.pathname === "/projects" ? (
         <section>
-          {(isPending || projectStatusPending) && (
-            <div className="h-full w-full bg-primary   fixed z-10 top-0 left-0 flex items-center justify-center">
-              <DotLottieReact
-                autoplay
-                loop
-                src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-                style={{ height: "300px", width: "300px" }}
-              />
-            </div>
-          )}
+          {isPending && <Loader />}
+          {projectStatusPending && <Loader />}
           {logoutConfirationShow && (
             <LogoutConfirmation
               handleLogoutClick={handleLogout}
@@ -205,8 +196,8 @@ export const ClientProjects = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {recentProjects?.length >= 1 ? (
-                  recentProjects?.map((project) => (
+                {RecentProjectData?.data.length >= 1 ? (
+                  RecentProjectData?.data.map((project) => (
                     <SwiperSlide key={project.id}>
                       <div className="flex flex-col p-4">
                         <div className="flex justify-between">

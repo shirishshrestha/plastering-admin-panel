@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { Input, LogoutConfirmation, Model } from "../../components";
+import { Input, Loader, LogoutConfirmation, Model } from "../../components";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useRef, useState } from "react";
@@ -103,16 +103,7 @@ export const AddProject = () => {
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-        {addProjectPending && (
-          <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
-            <DotLottieReact
-              autoplay
-              loop
-              src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-              style={{ height: "300px", width: "300px" }}
-            />
-          </div>
-        )}
+        {addProjectPending && <Loader />}
 
         {logoutConfirationShow && (
           <LogoutConfirmation

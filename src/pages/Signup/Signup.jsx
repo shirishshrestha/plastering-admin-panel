@@ -7,14 +7,13 @@ import {
   Lock,
   Username,
 } from "../../assets/icons/SvgIcons";
-import { LoginSignupInput, Model } from "../../components";
-import { set, useForm } from "react-hook-form";
+import { Loader, LoginSignupInput, Model } from "../../components";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { signupClient } from "../../api/Register/RegisterApiSlice";
 import { useMutation } from "@tanstack/react-query";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const Signup = () => {
@@ -67,21 +66,12 @@ const Signup = () => {
   };
 
   const handleSignupForm = (data) => {
-    // console.log(data);
     Register(data);
   };
   return (
     <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem] relative">
-      {signupPending && (
-        <div className="h-full w-full bg-primary/80 fixed z-20 top-0 left-0 flex items-center justify-center">
-          <DotLottieReact
-            autoplay
-            loop
-            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-            style={{ height: "300px", width: "300px" }}
-          />
-        </div>
-      )}
+      {signupPending && <Loader />}
+
       <div className="!pb-[4rem]">
         <figure className="w-full clip-custom relative overflow-hidden">
           <div className="absolute h-full w-full bg-primary/80 flex items-center justify-center "></div>

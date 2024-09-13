@@ -4,11 +4,10 @@ import {
   downloadFile,
   getProjectById,
 } from "../../api/Projects/ProjectsApiSlice";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
-import { AdminEstimation, ClientEstimation } from "../../components";
+import { AdminEstimation, ClientEstimation, Loader } from "../../components";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const ViewProject = () => {
@@ -76,16 +75,7 @@ const ViewProject = () => {
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-      {viewProjectPending && (
-        <div className="h-full w-full bg-primary fixed z-10 top-0 left-0 flex items-center justify-center">
-          <DotLottieReact
-            autoplay
-            loop
-            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-            style={{ height: "300px", width: "300px" }}
-          />
-        </div>
-      )}
+      {viewProjectPending && <Loader />}
 
       {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} id={id} />}
       {clientFlag && <ClientEstimation setClientFlag={setClientFlag} id={id} />}

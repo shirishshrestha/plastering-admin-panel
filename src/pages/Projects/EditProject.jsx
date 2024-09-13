@@ -1,33 +1,25 @@
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { EditInput, LogoutConfirmation, Model } from "../../components";
+import { EditInput, Loader, LogoutConfirmation, Model } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
-import {
-  getIdFromLocalStorage,
-  getRoleFromLocalStorage,
-} from "../../utils/Storage/StorageUtils";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../api/Register/RegisterApiSlice";
 import {
-  addProject,
   editProject,
   getProjectById,
 } from "../../api/Projects/ProjectsApiSlice";
 import { queryClient } from "../../utils/Query/Query";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
-import { Document, Download, TrashIcon } from "../../assets/icons/SvgIcons";
+import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const EditProject = () => {
   useScrollRestoration();
 
   const navigate = useNavigate();
-  const role = getRoleFromLocalStorage();
 
   const { id } = useParams();
 
@@ -131,27 +123,9 @@ export const EditProject = () => {
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-        {editProjectPending && (
-          <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
-            <DotLottieReact
-              autoplay
-              loop
-              src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-              style={{ height: "300px", width: "300px" }}
-            />
-          </div>
-        )}
+        {editProjectPending && <Loader />}
 
-        {viewProjectPending && (
-          <div className="h-full w-full bg-primary fixed z-10 top-0 left-0 flex items-center justify-center">
-            <DotLottieReact
-              autoplay
-              loop
-              src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-              style={{ height: "300px", width: "300px" }}
-            />
-          </div>
-        )}
+        {viewProjectPending && <Loader />}
 
         {logoutConfirationShow && (
           <LogoutConfirmation
@@ -234,11 +208,6 @@ export const EditProject = () => {
                       setValue("date", e.target.value);
                     },
                   })}
-                  min={
-                    new Date(new Date().setDate(new Date().getDate() + 6))
-                      .toISOString()
-                      .split("T")[0]
-                  }
                 />
               </div>
               <ErrorMessage

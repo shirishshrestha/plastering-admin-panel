@@ -1,7 +1,7 @@
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { loginBg, logo } from "../../assets/images";
 import { EyeIcon, EyeSlash, Lock, Username } from "../../assets/icons/SvgIcons";
-import { LoginSignupInput, Model } from "../../components";
+import { Loader, LoginSignupInput, Model } from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { notifyError } from "../../components/Toast/Toast";
@@ -64,16 +64,7 @@ const Login = () => {
 
   return (
     <section className="bg-[#f1f1e6] h-full w-full relative">
-      {loginPending && (
-        <div className="h-full w-full bg-primary/80 fixed z-10 top-0 left-0 flex items-center justify-center">
-          <DotLottieReact
-            autoplay
-            loop
-            src="https://lottie.host/60536e0b-45dc-4920-b2cc-712007c38ee2/k56mKpn4dv.lottie"
-            style={{ height: "300px", width: "300px" }}
-          />
-        </div>
-      )}
+      {loginPending && <Loader />}
       <div className="main_container mx-auto">
         <div className="flex flex-col justify-center items-center h-screen">
           <div className="w-[70%] grid grid-cols-[0.8fr,1fr] rounded-2xl overflow-hidden shadow-xl bg-white">

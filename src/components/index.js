@@ -6,6 +6,7 @@ import { EditInput } from "./Input/EditInput";
 import { Input } from "./Input/Input";
 import { LoginSignupInput } from "./Input/LoginSignupInput";
 import { LineChart } from "./LineChart/LineChart";
+import { Loader } from "./Loader/Loader";
 import { LogoutConfirmation } from "./LogoutConfirmation/LogoutConfirmation";
 import { Model } from "./Model/Model";
 import { Pagination } from "./Pagination/Pagination";
@@ -26,4 +27,5 @@ export {
   ClientEstimation,
   LogoutConfirmation,
   EditInput,
+  Loader,
 };
