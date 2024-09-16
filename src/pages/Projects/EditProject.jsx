@@ -76,7 +76,7 @@ export const EditProject = () => {
     mutationFn: (data) => editProject(data, id),
     onSuccess: (data) => {
       queryClient.invalidateQueries("projects");
-      notifySuccess("Project added successfully");
+      notifySuccess("Project edited successfully");
       setTimeout(() => {
         navigate("/projects");
       }, 2000);
@@ -109,10 +109,7 @@ export const EditProject = () => {
     Array.from(deletedFiles).forEach((file) => {
       formData.append("deleted_files[]", file);
     });
-
-    // formData.append("old_files", JSON.stringify(selectedFiles));
-    // formData.append("deleted_files", JSON.stringify(deletedFiles));
-
+    
     EditProject(formData);
   };
 
@@ -352,10 +349,7 @@ export const EditProject = () => {
 
               <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
                 <span>Uploaded Files:</span>
-                {/* {selectedFiles?.length > 0 &&
-                  Array.from(selectedFiles).map((file, index) => (
-                    <p key={index}>{file.name}</p>
-                  ))} */}
+                
               </div>
               <div className="flex flex-wrap  gap-x-7 gap-y-2">
                 {selectedFiles?.length < 1 ? (

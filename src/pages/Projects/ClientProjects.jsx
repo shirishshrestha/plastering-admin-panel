@@ -247,7 +247,7 @@ export const ClientProjects = () => {
                                 .slice(0, 7)
                                 .join(" ")
                             : ""}
-                          {project.additional_requirements ? "..." : ""}
+                          {project.additional_requirements ? "..." : "-"}
                         </p>
                       </div>
                     </SwiperSlide>

@@ -52,9 +52,21 @@ export const addProject = async (project) => {
 };
 
 export const editProject = async (data, id) => {
-  console.log("here", data);
   try {
     const response = await instance.post(`projects/${id}`, data, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const acceptProject = async (data, project_id) => {
+  try {
+    const response = await instance.post(`projects/${project_id}`, data, {
       headers: {
         Accept: "application/json",
       },
@@ -90,15 +102,64 @@ export const downloadFile = async (name, setDownload) => {
 };
 
 export const postEstimatesNote = async (data, project_part, id) => {
-  try {
-    const [estimationResponse, partsResponse] = await Promise.all([
-      instance.post(`/projects/${id}/estimation`, {
-        estimation_notes: data.estimation_note,
-      }),
-      project_part.length > 0 && instance.post(`/projects/${id}/parts`, {}),
-    ]);
+  const formData = new FormData();
 
-    return { estimationResponse, partsResponse };
+  formData.append("estimation_note", data.estimation_note || "");
+
+  project_part.forEach((part, index) => {
+    formData.append(`project_parts[${index}][part_name]`, part.part_name);
+    part.files.forEach((file, fileIndex) => {
+      formData.append(`project_parts[${index}][files][${fileIndex}]`, file);
+    });
+  });
+
+  try {
+    const response = await instance.post(
+      `/projects/${id}/estimations`,
+      formData
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editEstimation = async (
+  data,
+  newEstimationFiles,
+  deletedPart,
+  project_id,
+  project_length
+) => {
+  const formData = new FormData();
+
+  formData.append("estimation_note", data.estimation_note || "");
+
+  newEstimationFiles.forEach((part, index) => {
+    formData.append(
+      `project_parts[${index + project_length}][part_name]`,
+      part.part_name
+    );
+    part.files.forEach((file, fileIndex) => {
+      formData.append(
+        `project_parts[${index + project_length}][files][${fileIndex}]`,
+        file
+      );
+    });
+  });
+
+  formData.append("_method", "PUT");
+
+  formData.append("part_ids", deletedPart || []);
+
+  try {
+    const response = await instance.post(
+      `/project/${project_id}/update`,
+      formData
+    );
+
+    return response;
   } catch (error) {
     throw error;
   }
@@ -106,10 +167,7 @@ export const postEstimatesNote = async (data, project_part, id) => {
 
 export const getEstimationNotes = async (id) => {
   try {
-    const response = await Promise.all(
-      instance.get(`/project-parts/${id}/estimator-notes`),
-      instance.get(`/projects/${id}/parts`)
-    );
+    const response = await instance.get(`/projects/${id}/estimations`);
     return response.data;
   } catch (error) {
     throw error;

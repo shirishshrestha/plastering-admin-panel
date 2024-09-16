@@ -26,8 +26,8 @@ const AddProjectPart = ({
       setProjectPart([
         ...projectPart,
         {
-          project_part: data.project_part,
-          project_part_file: selectedFiles,
+          part_name: data.part_name,
+          files: selectedFiles,
         },
       ]);
       setNewProjectPart(false);

@@ -86,6 +86,7 @@ export const Projects = () => {
     queryKey: ["totalProjectStatus"],
     queryFn: () => getTotalProjectsStatus(),
     staleTime: 6000,
+    enabled: location.pathname === "/projects",
   });
 
   const nextClick = () => {
@@ -154,7 +155,6 @@ export const Projects = () => {
     },
     onError: (error) => {
       notifyError("Failed to delete project, please try again");
-      console.log(error);
     },
   });
 

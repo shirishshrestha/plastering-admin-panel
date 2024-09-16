@@ -1,14 +1,24 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Document, Download, GoBack } from "../../assets/icons/SvgIcons";
 import {
+  acceptProject,
   downloadFile,
   getProjectById,
 } from "../../api/Projects/ProjectsApiSlice";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
-import { AdminEstimation, ClientEstimation, Loader } from "../../components";
+import {
+  AdminEstimation,
+  ClientEstimation,
+  ConfirmationPopup,
+  Loader,
+} from "../../components";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
+import CustomToastContainer from "../../components/Toast/ToastContainer";
+import { queryClient } from "../../utils/Query/Query";
+import useAuth from "../../hooks/useAuth";
+import { notifySuccess } from "../../components/Toast/Toast";
 
 const ViewProject = () => {
   useScrollRestoration();
@@ -20,6 +30,8 @@ const ViewProject = () => {
 
   const [adminFlag, setAdminFlag] = useState(false);
   const [clientFlag, setClientFlag] = useState(false);
+
+  const { confirmationShow, setConfirmationShow } = useAuth();
 
   const {
     isPending: viewProjectPending,
@@ -73,9 +85,37 @@ const ViewProject = () => {
     setDownload(name);
   };
 
+  const { mutate: AcceptProject, isPending: AcceptProjectPending } =
+    useMutation({
+      mutationFn: (data) => acceptProject(data, id),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["singleProject", id]);
+        setConfirmationShow(false);
+        notifySuccess("Project accepted");
+      },
+      onError: (error) => {
+        notifyError("Something went wrong! Please try again");
+      },
+    });
+
+  const SubmissionHandler = () => {
+    const formData = new FormData();
+    formData.append("status", "running");
+    formData.append("_method", "PUT");
+    AcceptProject(formData);
+  };
+
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
       {viewProjectPending && <Loader />}
+      {AcceptProjectPending && <Loader />}
+
+      {confirmationShow && (
+        <ConfirmationPopup
+          handleAcceptSubmission={SubmissionHandler}
+          setSubmissionConfirmationShow={setConfirmationShow}
+        />
+      )}
 
       {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} id={id} />}
       {clientFlag && <ClientEstimation setClientFlag={setClientFlag} id={id} />}
@@ -84,7 +124,7 @@ const ViewProject = () => {
         <div
           className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
           onClick={() => {
-            navigate("/projects");
+            navigate(-1);
           }}
         >
           <GoBack />
@@ -92,6 +132,9 @@ const ViewProject = () => {
         </div>
       </div>
       <div>
+        <h2 className="font-bold text-[0.8rem]">
+          {SingleProjectData?.user.name}
+        </h2>
         <h2 className="font-bold text-[1.2rem]">
           {SingleProjectData?.name} -{" "}
           <span className="font-semibold text-[14px]">
@@ -124,7 +167,7 @@ const ViewProject = () => {
               <p className="font-[500]">No files uploaded</p>
             ) : (
               SingleProjectData?.files.map((file, index) => (
-                <div key={file.id} className="flex gap-[0.5rem] items-center">
+                <div key={index} className="flex gap-[0.5rem] items-center">
                   <Document />
                   <p className="font-[500]">{file.split("/").pop()}</p>
 
@@ -149,7 +192,7 @@ const ViewProject = () => {
             className="border-[2px] border-gray-300 rounded-lg p-[1rem] hover:text-light hover:bg-primary hover:border-primary cursor-pointer transition-all ease-in-out duration-300 font-[500] text-[1rem] text-center"
             onClick={() => setAdminFlag(true)}
           >
-            Upload Estimation Files / View Estimation Files
+            Upload Estimation Files / Edit Estimation Files
           </div>
         ) : (
           <div
@@ -164,13 +207,22 @@ const ViewProject = () => {
           <div className="flex items-center justify-center">
             <div className="flex flex-col items-start gap-[0.5rem] w-[70%]">
               {role === "admin" && (
-                <button className="button w-full justify-center">
-                  Accept Submission
+                <button
+                  className="button w-full justify-center disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  onClick={() => setConfirmationShow(true)}
+                  disabled={
+                    SingleProjectData?.status === "running" ||
+                    SingleProjectData?.status === "completed"
+                  }
+                >
+                  {SingleProjectData?.status === "pending"
+                    ? "Accept Submission"
+                    : SingleProjectData?.status === "running"
+                    ? "Running"
+                    : "Completed"}
                 </button>
               )}
-              <button className="button w-full justify-center">
-                Download Project
-              </button>
+
               {role === "client" && (
                 <button className="button w-full justify-center">
                   Request Cancellation
@@ -228,6 +280,7 @@ const ViewProject = () => {
           </div>
         </div>
       </div>
+      <CustomToastContainer />
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { Document, Download, TrashIcon } from "../../assets/icons/SvgIcons";
+import { Document, Download } from "../../assets/icons/SvgIcons";
 
 const ClientEstimation = ({ setClientFlag }) => {
   return (

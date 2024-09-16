@@ -98,7 +98,7 @@ const Signup = () => {
             <form onSubmit={handleSubmit(handleSignupForm)} className="w-[80%]">
               <div className="mb-4">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                 >
                   Full Name
@@ -120,7 +120,7 @@ const Signup = () => {
               </div>
               <div className="mb-4">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                 >
                   Username
@@ -142,7 +142,7 @@ const Signup = () => {
               </div>
               <div className="mb-4">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                 >
                   Email
@@ -164,7 +164,7 @@ const Signup = () => {
               </div>
               <div className="mb-6">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                 >
                   Password
@@ -193,7 +193,7 @@ const Signup = () => {
               </div>
               <div className="mb-6">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                 >
                   Confirm Password

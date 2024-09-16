@@ -1,4 +1,5 @@
 import { BarChart } from "./BarChart/BarChart";
+import { ConfirmationPopup } from "./ConfirmationPopup/ConfirmationPopup";
 import { DoughnutChart } from "./DoughnutChart/DoughnutChart";
 import AdminEstimation from "./Estimation/AdminEstimation";
 import ClientEstimation from "./Estimation/ClientEstimation";
@@ -28,4 +29,5 @@ export {
   LogoutConfirmation,
   EditInput,
   Loader,
+  ConfirmationPopup,
 };
