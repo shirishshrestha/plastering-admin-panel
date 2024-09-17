@@ -138,6 +138,7 @@ export const Projects = () => {
   ];
 
   const tableHead = [
+    "P. ID",
     "Project Name",
     "Client Name",
     "Project Location",
@@ -338,6 +339,7 @@ export const Projects = () => {
                 ) : ProjectData?.data.length > 0 ? (
                   ProjectData?.data.map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
+                      <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
                       <td className="py-[1rem] pl-[0.5rem]">
                         {item.name
                           ? item.name.length > 15

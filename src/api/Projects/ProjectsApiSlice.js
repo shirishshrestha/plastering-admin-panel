@@ -137,25 +137,19 @@ export const editEstimation = async (
   formData.append("estimation_note", data.estimation_note || "");
 
   newEstimationFiles.forEach((part, index) => {
-    formData.append(
-      `project_parts[${index + project_length}][part_name]`,
-      part.part_name
-    );
+    formData.append(`project_parts[${index}][part_name]`, part.part_name);
     part.files.forEach((file, fileIndex) => {
-      formData.append(
-        `project_parts[${index + project_length}][files][${fileIndex}]`,
-        file
-      );
+      formData.append(`project_parts[${index}][files][${fileIndex}]`, file);
     });
   });
 
   formData.append("_method", "PUT");
 
-  formData.append("part_ids", deletedPart || []);
+  formData.append("deleted_project_parts", JSON.stringify(deletedPart));
 
   try {
     const response = await instance.post(
-      `/project/${project_id}/update`,
+      `/projects/${project_id}/update`,
       formData
     );
 
@@ -188,6 +182,44 @@ export const getProjectsStatus = async (user_id) => {
 export const getTotalProjectsStatus = async () => {
   try {
     const response = await instance.get(`/project-count`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const requestCancellation = async (user_id, project_id) => {
+  try {
+    const response = await instance.post("/request-cancellation", {
+      user_id: user_id,
+      project_id: project_id,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const requestRevision = async (data, project_id) => {
+  try {
+    const response = await instance.post(
+      `projects/${project_id}/request-revision`,
+      data,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendEmailToClient = async (project_id) => {
+  try {
+    const response = await instance.post(`projects/${project_id}/accept`);
     return response.data;
   } catch (error) {
     throw error;

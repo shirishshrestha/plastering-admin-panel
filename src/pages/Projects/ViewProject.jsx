@@ -4,10 +4,16 @@ import {
   acceptProject,
   downloadFile,
   getProjectById,
+  requestCancellation,
+  requestRevision,
+  sendEmailToClient,
 } from "../../api/Projects/ProjectsApiSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
+import {
+  getIdFromLocalStorage,
+  getRoleFromLocalStorage,
+} from "../../utils/Storage/StorageUtils";
 import {
   AdminEstimation,
   ClientEstimation,
@@ -19,6 +25,7 @@ import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
 import { notifySuccess } from "../../components/Toast/Toast";
+import { RevisionPopup } from "./RevisionPopup";
 
 const ViewProject = () => {
   useScrollRestoration();
@@ -27,11 +34,20 @@ const ViewProject = () => {
   const { id } = useParams();
 
   const role = getRoleFromLocalStorage();
+  const user_id = getIdFromLocalStorage();
 
   const [adminFlag, setAdminFlag] = useState(false);
   const [clientFlag, setClientFlag] = useState(false);
+  const [cancellationFlag, setCancellationFlag] = useState(false);
+  const [revisionFlag, setRevisionFlag] = useState(false);
+  const [sendEmailFlag, setSendEmailFlag] = useState(false);
 
   const { confirmationShow, setConfirmationShow } = useAuth();
+
+  const [disabledFlag, setDisabledFlag] = useState({
+    cancellationFlag: false,
+    revisionFlag: false,
+  });
 
   const {
     isPending: viewProjectPending,
@@ -43,30 +59,6 @@ const ViewProject = () => {
     enabled: !!id,
     staleTime: 6000,
   });
-
-  const files = [
-    {
-      fileName: "Plastering.pdf",
-      id: 1,
-    },
-    {
-      fileName: "Electrical.pdf",
-      id: 2,
-    },
-    {
-      fileName: "cement.pdf",
-      id: 3,
-    },
-  ];
-
-  const projectDetails = {
-    assignedEstimator: "John Doe",
-    dateSubmitted: "2024-08-15",
-    dateStarted: "2024-08-16",
-    lastModified: "2024-08-18",
-    dateCompleted: "2024-08-20",
-    duration: "72 hours",
-  };
 
   const [download, setDownload] = useState();
   const [downloadId, setDownloadId] = useState();
@@ -95,6 +87,33 @@ const ViewProject = () => {
       },
       onError: (error) => {
         notifyError("Something went wrong! Please try again");
+        setConfirmationShow(false);
+      },
+    });
+
+  const { mutate: RequestCancellation, isPending: RequestCancellationPending } =
+    useMutation({
+      mutationFn: () => requestCancellation(user_id, id),
+      onSuccess: () => {
+        setDisabledFlag({ ...disabledFlag, cancellationFlag: true });
+        notifySuccess("Request for cancellation sent");
+        setCancellationFlag(false);
+      },
+      onError: () => {
+        notifyError("Something went wrong! Please try again");
+        setCancellationFlag(false);
+      },
+    });
+
+  const { mutate: SendEmailToClient, isPending: SendEmailPending } =
+    useMutation({
+      mutationFn: () => sendEmailToClient(id),
+      onSuccess: () => {
+        notifySuccess("Request for revision sent");
+        setSendEmailFlag(true);
+      },
+      onError: () => {
+        notifyError("Something went wrong! Please try again");
       },
     });
 
@@ -107,13 +126,30 @@ const ViewProject = () => {
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-      {viewProjectPending && <Loader />}
-      {AcceptProjectPending && <Loader />}
+      {(viewProjectPending ||
+        AcceptProjectPending ||
+        RequestCancellationPending ||
+        SendEmailPending) && <Loader />}
 
       {confirmationShow && (
         <ConfirmationPopup
           handleAcceptSubmission={SubmissionHandler}
           setSubmissionConfirmationShow={setConfirmationShow}
+        />
+      )}
+
+      {cancellationFlag && (
+        <ConfirmationPopup
+          handleAcceptSubmission={() => RequestCancellation()}
+          setSubmissionConfirmationShow={setCancellationFlag}
+        />
+      )}
+
+      {revisionFlag && (
+        <RevisionPopup
+          setRevisionFlag={setRevisionFlag}
+          setDisabledFlag={setDisabledFlag}
+          disabledFlag={disabledFlag}
         />
       )}
 
@@ -174,7 +210,7 @@ const ViewProject = () => {
                   <button
                     type="button"
                     className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
-                    onClick={() => handleDownload(file.split("/")[1], index)}
+                    onClick={() => handleDownload(file.split("/").pop(), index)}
                   >
                     <Download />
                     {fetchingFile && index === downloadId
@@ -224,18 +260,34 @@ const ViewProject = () => {
               )}
 
               {role === "client" && (
-                <button className="button w-full justify-center">
+                <button
+                  className="button w-full justify-center disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  onClick={() => setCancellationFlag(true)}
+                  disabled={disabledFlag.cancellationFlag}
+                >
                   Request Cancellation
                 </button>
               )}
               {role === "client" && (
-                <button className="button w-full justify-center">
+                <button
+                  className="button w-full justify-center disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  onClick={() => setRevisionFlag(true)}
+                  disabled={
+                    disabledFlag.revisionFlag || disabledFlag.cancellationFlag
+                  }
+                >
                   Request Revision
                 </button>
               )}
               {role === "admin" && (
-                <button className="button w-full justify-center">
-                  Send Email
+                <button
+                  className="button w-full justify-center disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  disabled={
+                    SingleProjectData?.status === "pending" || sendEmailFlag
+                  }
+                  onClick={() => SendEmailToClient()}
+                >
+                  Send Acceptance Email to Client
                 </button>
               )}
             </div>
@@ -248,9 +300,7 @@ const ViewProject = () => {
                     <th className="text-start py-[5px] ">
                       Assigned Estimator:{" "}
                     </th>
-                    <td className="font-[500]">
-                      {projectDetails.assignedEstimator}
-                    </td>
+                    <td className="font-[500]">PE&I</td>
                   </tr>
                   <tr>
                     <th className="text-start py-[5px] ">Submitted Date: </th>

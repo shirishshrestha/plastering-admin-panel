@@ -5,6 +5,7 @@ import { AddProject } from "./Projects/AddProject";
 import { ClientProjects } from "./Projects/ClientProjects";
 import { EditProject } from "./Projects/EditProject";
 import { Projects } from "./Projects/Projects";
+import { RevisionPopup } from "./Projects/RevisionPopup";
 import ViewProject from "./Projects/ViewProject";
 import Signup from "./Signup/Signup";
 
@@ -18,4 +19,5 @@ export {
   ClientProjects,
   ClientDashboard,
   EditProject,
+  RevisionPopup,
 };

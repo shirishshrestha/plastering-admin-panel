@@ -17,6 +17,7 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
   const [estimationNotes, setEstimationNotes] = useState("");
   const [projectPart, setProjectPart] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [disabledFlag, setDisabledFlag] = useState(false);
 
   const [oldPart, setOldPart] = useState([]);
   const [newEstimationFiles, setNewEstimationFiles] = useState([]);
@@ -60,6 +61,7 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
           setDeletedPart([]);
           setProjectPart([]);
           setSelectedFiles([]);
+          setDisabledFlag(false);
         }, 2000);
       },
       onError: () => {
@@ -101,13 +103,16 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
   };
 
   const handleEditEstimationSubmit = (data) => {
+    setDisabledFlag(true);
     EditEstimation(data);
   };
 
   return (
     <div className="h-full w-full flex items-center justify-center fixed top-0 left-0 z-10 bg-primary/80">
-      {EstimationPending && <Loader />}
-      {EstimationDataPending && <Loader />}
+      {(EstimationPending ||
+        EditEstimationPending ||
+        EstimationDataPending) && <Loader />}
+
       {EstimationData ? (
         <div className="w-[60%] bg-light rounded-lg shadow-lg relative p-[2rem] max-h-[75%] overflow-y-scroll admin__estimator ">
           <h2 className="text-center font-bold text-[1.2rem] border-[1.5px] border-primary rounded-lg py-[0.5rem]">
@@ -218,13 +223,13 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
                     <button
                       type="button"
                       className="bg-deleteBackground rounded-lg px-[5px] py-[5px] text-light"
-                      onClick={() =>
+                      onClick={() => {
                         setNewEstimationFiles(
                           newEstimationFiles.filter(
                             (partDelete, i) => i !== index
                           )
-                        )
-                      }
+                        );
+                      }}
                     >
                       <TrashIcon />
                     </button>
@@ -253,8 +258,11 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
               <button
                 className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
                 disabled={
+                  disabledFlag ||
                   newProjectPart ||
-                  (estimationNotes === "" && newEstimationFiles.length === 0)
+                  (estimationNotes === "" &&
+                    newEstimationFiles.length === 0 &&
+                    deletedPart.length < 1)
                 }
                 type="submit"
               >

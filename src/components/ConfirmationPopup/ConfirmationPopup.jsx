@@ -15,8 +15,7 @@ export const ConfirmationPopup = ({
 
         <div className="pb-[1.2rem]">
           <p className="text-[14px] font-[500] leading-[21px]  tracking-[0.5%] text-center  ">
-            Are you sure you want to proceed with this action? This change
-            cannot be undone.
+            Are you sure you want to proceed with this action?
           </p>
         </div>
         <div className="flex gap-[14px]">

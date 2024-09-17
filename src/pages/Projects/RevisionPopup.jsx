@@ -1,30 +1,26 @@
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { EditInput, Loader, LogoutConfirmation, Model } from "../../components";
-import { useNavigate, useParams } from "react-router-dom";
+import { EditInput, Loader, Model } from "../../components";
+import { useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  editProject,
   getProjectById,
+  requestRevision,
 } from "../../api/Projects/ProjectsApiSlice";
-import { queryClient } from "../../utils/Query/Query";
-import useLogout from "../../hooks/useLogout";
-import useAuth from "../../hooks/useAuth";
 import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
-export const EditProject = () => {
-  useScrollRestoration();
-
-  const navigate = useNavigate();
-
+export const RevisionPopup = ({
+  setRevisionFlag,
+  setDisabledFlag,
+  disabledFlag,
+}) => {
   const { id } = useParams();
 
   const {
-    isPending: viewProjectPending,
+    isPending: RevProjectPending,
     error,
     data: SingleProjectData,
   } = useQuery({
@@ -37,6 +33,7 @@ export const EditProject = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [newFiles, setNewFiles] = useState([]);
   const [deletedFiles, setDeletedFiles] = useState([]);
+  const [disabledSubmit, setDisabledSubmit] = useState(false);
 
   const {
     register,
@@ -57,36 +54,25 @@ export const EditProject = () => {
     setSelectedFiles(SingleProjectData?.files);
   }, [SingleProjectData, setValue]);
 
-  const { logout } = useLogout();
-
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  const handleLogout = () => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
+  const { mutate: RevisionProject, isPending: RevisionProjectPending } =
+    useMutation({
+      mutationFn: (data) => requestRevision(data, id),
+      onSuccess: (data) => {
+        notifySuccess("Project edited successfully");
+        setTimeout(() => {
+          setRevisionFlag(false);
+          setDisabledFlag({ ...disabledFlag, revisionFlag: true });
+          setDisabledSubmit(false);
+        }, 2000);
+      },
+      onError: (error) => {
+        notifyError("Something went wrong! Please try again");
+        setDisabledSubmit(false);
+      },
     });
-  };
 
-  const { mutate: EditProject, isPending: editProjectPending } = useMutation({
-    mutationFn: (data) => editProject(data, id),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries("projects");
-      notifySuccess("Project edited successfully");
-      setTimeout(() => {
-        navigate("/projects");
-      }, 2000);
-    },
-    onError: (error) => {
-      notifyError("Something went wrong! Please try again");
-    },
-  });
-
-  const editProjectForm = (data) => {
+  const revisionProjectForm = (data) => {
+    setDisabledSubmit(true);
     const formData = new FormData();
 
     formData.append("name", data.project_name);
@@ -97,7 +83,6 @@ export const EditProject = () => {
     formData.append("project_type", data.project_type);
     formData.append("additional_requirements", data.additional_info || "");
 
-    formData.append("_method", "PUT");
     Array.from(newFiles).forEach((file) => {
       formData.append("files[]", file);
     });
@@ -110,30 +95,16 @@ export const EditProject = () => {
       formData.append("deleted_files[]", file);
     });
 
-    EditProject(formData);
-  };
-
-  const handleProjectCancel = () => {
-    navigate(-1);
+    RevisionProject(formData);
   };
 
   return (
-    <>
-      <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-        {editProjectPending && <Loader />}
+    <div className="w-full h-screen fixed z-10 inset-0 bg-primary/80 flex items-center justify-center  ">
+      <div className="bg-white shadow-lg rounded-lg p-[1.5rem] w-[70%] overflow-y-scroll h-[90%] admin__estimator">
+        {(RevisionProjectPending || RevProjectPending) && <Loader />}
 
-        {viewProjectPending && <Loader />}
-
-        {logoutConfirationShow && (
-          <LogoutConfirmation
-            handleLogoutClick={handleLogout}
-            setLogoutConfirationShow={setLogoutConfirationShow}
-          />
-        )}
         <div>
-          <h2 className="font-bold text-[1.2rem]">
-            Edit Project - {SingleProjectData?.user.name}
-          </h2>
+          <h2 className="font-bold text-[1.2rem]">Request Edit</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">
             <p>Project</p>
             <div className="rounded-[100%] w-[10px] h-[10px] bg-[#8c62ff]"></div>
@@ -142,7 +113,7 @@ export const EditProject = () => {
         </div>
         <div className="mt-[1rem]">
           <form
-            onSubmit={handleSubmit(editProjectForm)}
+            onSubmit={handleSubmit(revisionProjectForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
             <div className="flex flex-col gap-[0.4rem]">
@@ -415,18 +386,21 @@ export const EditProject = () => {
               <button
                 className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
                 type="button"
-                onClick={handleProjectCancel}
+                onClick={() => setRevisionFlag(false)}
               >
                 Cancel
               </button>
-              <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light ">
+              <button
+                className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={disabledSubmit}
+              >
                 Submit
               </button>
             </div>
           </form>
         </div>
         {<CustomToastContainer />}
-      </section>
-    </>
+      </div>
+    </div>
   );
 };

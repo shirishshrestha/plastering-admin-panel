@@ -336,7 +336,7 @@ export const AddProject = () => {
                       >
                         Upload
                       </label>
-                      Select Multiple Files at once
+                      Select Files
                     </label>
 
                     <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">

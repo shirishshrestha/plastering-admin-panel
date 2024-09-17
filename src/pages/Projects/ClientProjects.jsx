@@ -87,6 +87,7 @@ export const ClientProjects = () => {
     queryKey: ["projectStatus"],
     queryFn: () => getProjectsStatus(user_id),
     staleTime: 6000,
+    enabled: location.pathname === "/projects",
   });
 
   const nextClick = () => {
@@ -129,6 +130,7 @@ export const ClientProjects = () => {
   ];
 
   const tableHead = [
+    "P. ID",
     "Project Name",
     "Add. Requirements",
     "Project Location",
@@ -304,6 +306,7 @@ export const ClientProjects = () => {
                 ) : ProjectData?.data.length > 0 ? (
                   ProjectData?.data.map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
+                      <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
                       <td className="py-[1rem] pl-[0.5rem]">
                         {item.name
                           ? item.name.length > 15
