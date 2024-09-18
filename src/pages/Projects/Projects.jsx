@@ -69,8 +69,8 @@ export const Projects = () => {
     error,
     data: ProjectData,
   } = useQuery({
-    queryKey: ["projects", pageNumber, searchId],
-    queryFn: () => getProjects(pageNumber, searchId),
+    queryKey: ["projects", searchParams.get("page"), searchId],
+    queryFn: () => getProjects(searchParams.get("page"), searchId),
 
     enabled: location.pathname === "/projects",
     staleTime: 6000,
@@ -173,6 +173,8 @@ export const Projects = () => {
   const handleProceedClick = () => {
     DeleteProject();
   };
+
+  console.log(pageNumber);
 
   return (
     <>
@@ -316,6 +318,7 @@ export const Projects = () => {
                   defaultValue={""}
                   setSearchParams={setSearchParams}
                   searchParams={searchParams}
+                  pageNumber={pageNumber}
                   setPageNumber={setPageNumber}
                 />
                 <Link to="/projects/addProject">
@@ -418,13 +421,11 @@ export const Projects = () => {
                   setPageNumber(newPageNumber);
                   updatePageNumber(newPageNumber);
                 }}
-                prevClick={() =>
-                  setPageNumber((prev) => {
-                    const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
-                    setPageNumber(newPageNumber);
-                    updatePageNumber(newPageNumber);
-                  })
-                }
+                prevClick={() => {
+                  const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
+                  setPageNumber(newPageNumber);
+                  updatePageNumber(newPageNumber);
+                }}
                 lastPage={ProjectData?.last_page}
                 pageNumber={ProjectData?.current_page}
               />

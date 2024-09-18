@@ -5,6 +5,7 @@ export const SearchInput = ({
   defaultValue,
   setSearchParams,
   searchParams,
+  pageNumber,
   setPageNumber,
 }) => {
   const [inputValue, setInputValue] = useState(
@@ -14,24 +15,29 @@ export const SearchInput = ({
 
   const debouncedSearch = useDebounce(inputValue);
 
+  // useEffect(() => {
+  //   const page = parseInt(searchParams.get("page")) || 1;
+  //   setPageNumber(page);
+  // }, [searchParams, setPageNumber]);
+
   useEffect(() => {
-    if (!error) {
+    if (debouncedSearch === "") {
+      setSearchParams({
+        page: pageNumber,
+        Search: debouncedSearch,
+      });
+    } else {
       setSearchParams({
         page: 1,
         Search: debouncedSearch,
       });
       setPageNumber(1);
     }
-  }, [debouncedSearch, error]);
+  }, [debouncedSearch]);
 
   const handleChange = (e) => {
     const value = e.target.value.trimStart();
-    // if (/^\d*$/.test(value)) {
     setInputValue(value);
-    setError(null);
-    // } else {
-    //   setError("Please enter numbers only.");
-    // }
   };
 
   return (
