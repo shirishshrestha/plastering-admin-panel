@@ -46,7 +46,7 @@ export const ClientDashboard = () => {
     data: ProjectData,
   } = useQuery({
     queryKey: ["userProjects"],
-    queryFn: () => getUserProjects(user_id),
+    queryFn: () => getUserProjects(user_id, 1),
     staleTime: 6000,
   });
 
