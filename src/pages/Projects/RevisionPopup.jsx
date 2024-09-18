@@ -298,7 +298,19 @@ export const RevisionPopup = ({
                 name="project_file"
                 {...register("project_file", {
                   onChange: (e) => {
-                    setNewFiles([...newFiles, ...e.target.files]);
+                    const innerNewFiles = Array.from(e.target.files);
+                    const filteredFiles = innerNewFiles.filter(
+                      (newFile) =>
+                        !newFiles.some(
+                          (file) =>
+                            file.name === newFile.name &&
+                            file.lastModified === newFile.lastModified
+                        )
+                    );
+
+                    setNewFiles([...newFiles, ...filteredFiles]);
+
+                    e.target.value = null;
                   },
                 })}
                 id="fileInput"

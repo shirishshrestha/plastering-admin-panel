@@ -1,8 +1,10 @@
 import { instance } from "../../utils/Axios/Instance";
 
-export const getProjects = async (pageNumber) => {
+export const getProjects = async (pageNumber, search_id) => {
   try {
-    const response = await instance.get(`/projects?page=${pageNumber}`);
+    const response = await instance.get(
+      `/projects?page=${pageNumber}&search=${search_id}`
+    );
     return response.data;
   } catch (error) {
     throw error;

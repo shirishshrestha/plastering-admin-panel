@@ -90,14 +90,6 @@ export const ClientProjects = () => {
     enabled: location.pathname === "/projects",
   });
 
-  const nextClick = () => {
-    setPageNumber((prev) => prev + 1);
-  };
-
-  const prevClick = () => {
-    setPageNumber((prev) => (prev > 1 ? prev - 1 : 1));
-  };
-
   const doughnutData = [
     {
       type: "Pending",
@@ -130,7 +122,7 @@ export const ClientProjects = () => {
   ];
 
   const tableHead = [
-    "P. ID",
+    "P. Id",
     "Project Name",
     "Add. Requirements",
     "Project Location",
@@ -357,8 +349,10 @@ export const ClientProjects = () => {
           {ProjectData?.total_pages > 1 && (
             <div className="mb-[1rem] flex items-center justify-end">
               <Pagination
-                nextClick={nextClick}
-                prevClick={prevClick}
+                nextClick={() => setPageNumber((prev) => prev + 1)}
+                prevClick={() =>
+                  setPageNumber((prev) => (prev > 1 ? prev - 1 : 1))
+                }
                 lastPage={ProjectData?.total_pages}
                 pageNumber={pageNumber}
               />

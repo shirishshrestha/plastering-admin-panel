@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { Input } from "../Input/Input";
 import { ErrorMessage } from "@hookform/error-message";
@@ -60,7 +59,19 @@ const AddProjectPart = ({
           name="project_part_file"
           {...register("project_part_file", {
             onChange: (e) => {
-              setSelectedFiles([...selectedFiles, ...e.target.files]);
+              const newFiles = Array.from(e.target.files);
+              const filteredFiles = newFiles.filter(
+                (newFile) =>
+                  !selectedFiles.some(
+                    (file) =>
+                      file.name === newFile.name &&
+                      file.lastModified === newFile.lastModified
+                  )
+              );
+
+              setSelectedFiles([...selectedFiles, ...filteredFiles]);
+
+              e.target.value = null;
             },
             required: "Please upload the project file",
           })}
@@ -102,7 +113,7 @@ const AddProjectPart = ({
             {selectedFiles.length > 0 &&
               Array.from(selectedFiles).map((file, index) => (
                 <div
-                  key={file.id}
+                  key={`${file.name}-${index}`}
                   className="flex gap-[0.5rem] items-center text-[14px]"
                 >
                   <Document />
@@ -113,7 +124,7 @@ const AddProjectPart = ({
                     className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
                     onClick={() => {
                       setSelectedFiles(
-                        selectedFiles.filter((file, i) => i !== index)
+                        selectedFiles.filter((_, i) => i !== index)
                       );
                     }}
                   >

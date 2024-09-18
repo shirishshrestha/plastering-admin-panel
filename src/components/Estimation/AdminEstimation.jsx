@@ -318,7 +318,7 @@ const AdminEstimation = ({ setAdminFlag, id }) => {
                       <div className="flex  justify-evenly flex-wrap gap-5 text-[14px] mt-[0.2rem]">
                         {Array.from(part.files).map((file, fileIndex) => (
                           <div
-                            key={file.name}
+                            key={`${file.name}-${fileIndex}`}
                             className="flex gap-[0.5rem] items-center"
                           >
                             <Document />

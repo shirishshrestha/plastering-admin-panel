@@ -5,7 +5,6 @@ import {
   downloadFile,
   getProjectById,
   requestCancellation,
-  requestRevision,
   sendEmailToClient,
 } from "../../api/Projects/ProjectsApiSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";

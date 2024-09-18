@@ -30,7 +30,7 @@ import {
   getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
@@ -38,6 +38,7 @@ import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import EmptyData from "../../components/EmptyData/EmptyData";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
+import { SearchInput } from "../../components/Input/SearchInput";
 
 export const Projects = () => {
   useScrollRestoration();
@@ -45,11 +46,17 @@ export const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useLogout();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchId, setSearchId] = useState("");
 
   const [pageNumber, setPageNumber] = useState(
     parseInt(searchParams.get("page")) || 1
   );
+
+  useEffect(() => {
+    setSearchId(searchParams.get("Search") || "");
+  }, [searchParams, searchParams]);
+
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
@@ -62,8 +69,8 @@ export const Projects = () => {
     error,
     data: ProjectData,
   } = useQuery({
-    queryKey: ["projects", pageNumber],
-    queryFn: () => getProjects(pageNumber),
+    queryKey: ["projects", pageNumber, searchId],
+    queryFn: () => getProjects(pageNumber, searchId),
     keepPreviousData: true,
     enabled: location.pathname === "/projects",
     staleTime: 6000,
@@ -72,7 +79,7 @@ export const Projects = () => {
   const { isPending: recentProjectsPending, data: RecentProjectData } =
     useQuery({
       queryKey: ["projects"],
-      queryFn: () => getProjects(1),
+      queryFn: () => getProjects(1, ""),
       keepPreviousData: true,
       enabled: location.pathname === "/projects",
       staleTime: 6000,
@@ -88,14 +95,6 @@ export const Projects = () => {
     staleTime: 6000,
     enabled: location.pathname === "/projects",
   });
-
-  const nextClick = () => {
-    setPageNumber((prev) => prev + 1);
-  };
-
-  const prevClick = () => {
-    setPageNumber((prev) => (prev > 1 ? prev - 1 : 1));
-  };
 
   const handleLogout = () => {
     setAuth({});
@@ -138,7 +137,7 @@ export const Projects = () => {
   ];
 
   const tableHead = [
-    "P. ID",
+    "P. Id",
     "Project Name",
     "Client Name",
     "Project Location",
@@ -185,8 +184,9 @@ export const Projects = () => {
               setLogoutConfirationShow={setLogoutConfirationShow}
             />
           )}
-          {isPending && <Loader />}
-          {projectStatusPending && <Loader />}
+          {(isPending || recentProjectsPending || projectStatusPending) && (
+            <Loader />
+          )}
 
           <div className="grid grid-cols-2">
             <div>
@@ -303,12 +303,18 @@ export const Projects = () => {
               <h2 className="font-bold text-[1.4rem] text-start">
                 List of Projects
               </h2>
-              <Link to="/projects/addProject">
-                <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
-                  Add New Project{" "}
-                  <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
-                </button>
-              </Link>
+              <div className="flex gap-[1rem]">
+                <SearchInput
+                  defaultValue={""}
+                  setSearchParams={setSearchParams}
+                />
+                <Link to="/projects/addProject">
+                  <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
+                    Add New Project{" "}
+                    <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
+                  </button>
+                </Link>
+              </div>
             </div>
             <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
               <thead className="bg-primary text-white  ">
@@ -325,7 +331,6 @@ export const Projects = () => {
                 {isPending ? (
                   [...Array(5)].map((_, index) => (
                     <tr key={index} className="h-[1.5rem]">
-                      {/* Render 5 cells to match the table columns */}
                       {[...Array(5)].map((_, index) => (
                         <td
                           key={index}
@@ -397,8 +402,10 @@ export const Projects = () => {
           </div>
           <div className="mb-[1rem] flex items-center justify-end">
             <Pagination
-              nextClick={nextClick}
-              prevClick={prevClick}
+              nextClick={() => setPageNumber((prev) => prev + 1)}
+              prevClick={() =>
+                setPageNumber((prev) => (prev > 1 ? prev - 1 : 1))
+              }
               lastPage={ProjectData?.last_page}
               pageNumber={pageNumber}
             />

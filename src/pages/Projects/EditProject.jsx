@@ -327,7 +327,19 @@ export const EditProject = () => {
                 name="project_file"
                 {...register("project_file", {
                   onChange: (e) => {
-                    setNewFiles([...newFiles, ...e.target.files]);
+                    const innerNewFiles = Array.from(e.target.files);
+                    const filteredFiles = innerNewFiles.filter(
+                      (newFile) =>
+                        !newFiles.some(
+                          (file) =>
+                            file.name === newFile.name &&
+                            file.lastModified === newFile.lastModified
+                        )
+                    );
+
+                    setNewFiles([...newFiles, ...filteredFiles]);
+
+                    e.target.value = null;
                   },
                 })}
                 id="fileInput"
@@ -358,7 +370,7 @@ export const EditProject = () => {
                 ) : (
                   selectedFiles?.map((file, index) => (
                     <div
-                      key={file.id}
+                      key={`${file}-${index}`}
                       className="flex gap-[0.5rem] items-center text-[14px]"
                     >
                       <Document />
@@ -389,7 +401,7 @@ export const EditProject = () => {
                   {newFiles?.length > 0 &&
                     Array.from(newFiles).map((file, index) => (
                       <div
-                        key={file.id}
+                        key={`${file.name}-${file.lastModified}`}
                         className="flex gap-[0.5rem] items-center text-[14px]"
                       >
                         <Document />
@@ -399,9 +411,7 @@ export const EditProject = () => {
                           type="button"
                           className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
                           onClick={() => {
-                            setNewFiles(
-                              newFiles.filter((file, i) => i !== index)
-                            );
+                            setNewFiles(newFiles.filter((_, i) => i !== index));
                           }}
                         >
                           <TrashIcon />

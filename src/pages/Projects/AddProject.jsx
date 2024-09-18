@@ -2,9 +2,9 @@ import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { Input, Loader, LogoutConfirmation, Model } from "../../components";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   getIdFromLocalStorage,
   getRoleFromLocalStorage,
@@ -13,7 +13,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../api/Register/RegisterApiSlice";
 import { addProject } from "../../api/Projects/ProjectsApiSlice";
 import { queryClient } from "../../utils/Query/Query";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
@@ -28,7 +27,6 @@ export const AddProject = () => {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
   } = useForm();
 
   const { logout } = useLogout();
@@ -309,17 +307,29 @@ export const AddProject = () => {
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-[0.4rem] ">
+                  <div className="flex flex-col gap-[0.4rem]  ">
                     <label className="font-bold">Upload Files (Optional)</label>
                     <input
                       type="file"
                       name="project_file"
                       {...register("project_file", {
                         onChange: (e) => {
+                          const newFiles = Array.from(e.target.files);
+                          const filteredFiles = newFiles.filter(
+                            (newFile) =>
+                              !selectedFiles.some(
+                                (file) =>
+                                  file.name === newFile.name &&
+                                  file.lastModified === newFile.lastModified
+                              )
+                          );
+
                           setSelectedFiles([
                             ...selectedFiles,
-                            ...e.target.files,
+                            ...filteredFiles,
                           ]);
+
+                          e.target.value = null;
                         },
                       })}
                       id="fileInput"
@@ -341,11 +351,11 @@ export const AddProject = () => {
 
                     <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
                       <span>Uploaded Files:</span>
-                      <div className="flex gap-x-7 gap-y-2">
+                      <div className="flex gap-x-7 gap-y-2 flex-wrap">
                         {selectedFiles.length > 0 &&
                           Array.from(selectedFiles).map((file, index) => (
                             <div
-                              key={file.id}
+                              key={`${file.name}-${file.lastModified}`}
                               className="flex gap-[0.5rem] items-center text-[14px]"
                             >
                               <Document />
@@ -353,12 +363,10 @@ export const AddProject = () => {
 
                               <button
                                 type="button"
-                                className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                                className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
                                 onClick={() => {
                                   setSelectedFiles(
-                                    selectedFiles.filter(
-                                      (file, i) => i !== index
-                                    )
+                                    selectedFiles.filter((_, i) => i !== index)
                                   );
                                 }}
                               >
@@ -371,7 +379,7 @@ export const AddProject = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col row-span-2 gap-[0.4rem]">
+                <div className="flex flex-col  gap-[0.4rem]">
                   <label htmlFor="additional-req" className="font-bold">
                     Additional Requirements (Optional)
                   </label>
@@ -449,7 +457,19 @@ export const AddProject = () => {
                     name="project_file"
                     {...register("project_file", {
                       onChange: (e) => {
-                        setSelectedFiles([...selectedFiles, ...e.target.files]);
+                        const newFiles = Array.from(e.target.files);
+                        const filteredFiles = newFiles.filter(
+                          (newFile) =>
+                            !selectedFiles.some(
+                              (file) =>
+                                file.name === newFile.name &&
+                                file.lastModified === newFile.lastModified
+                            )
+                        );
+
+                        setSelectedFiles([...selectedFiles, ...filteredFiles]);
+
+                        e.target.value = null;
                       },
                     })}
                     id="fileInput"
