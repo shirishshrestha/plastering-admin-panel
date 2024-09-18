@@ -22,7 +22,7 @@ export const Dashboard = () => {
     data: ProjectData,
   } = useQuery({
     queryKey: ["projects"],
-    queryFn: () => getProjects(),
+    queryFn: () => getProjects(1, ""),
   });
 
   const {
