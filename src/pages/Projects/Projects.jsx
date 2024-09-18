@@ -71,15 +71,16 @@ export const Projects = () => {
   } = useQuery({
     queryKey: ["projects", pageNumber, searchId],
     queryFn: () => getProjects(pageNumber, searchId),
-    keepPreviousData: true,
+
     enabled: location.pathname === "/projects",
+    staleTime: 6000,
   });
 
   const { isPending: recentProjectsPending, data: RecentProjectData } =
     useQuery({
-      queryKey: ["projects"],
+      queryKey: ["recentProjects"],
       queryFn: () => getProjects(1, ""),
-      keepPreviousData: true,
+
       enabled: location.pathname === "/projects",
       staleTime: 6000,
     });

@@ -72,7 +72,7 @@ export const ClientProjects = () => {
 
   const { isPending: recentProjectsPending, data: RecentProjectData } =
     useQuery({
-      queryKey: ["userProjects"],
+      queryKey: ["userRecentProjects"],
       queryFn: () => getUserProjects(user_id, 1),
       keepPreviousData: true,
       enabled: location.pathname === "/projects",
