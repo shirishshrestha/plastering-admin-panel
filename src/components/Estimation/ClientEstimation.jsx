@@ -97,7 +97,7 @@ const ClientEstimation = ({ setClientFlag, id }) => {
                   </div>
                 ))
               ) : (
-                <>-</>
+                <p className="font-[500]">No parts added</p>
               )}
             </div>
           </div>
