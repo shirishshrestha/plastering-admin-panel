@@ -96,6 +96,7 @@ export const AddProject = () => {
 
   const handleProjectCancel = () => {
     navigate("/projects");
+    
   };
 
   return (

@@ -44,7 +44,7 @@ export const ClientProjects = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [pageNumber, setPageNumber] = useState(
     parseInt(searchParams.get("page")) || 1
@@ -78,6 +78,14 @@ export const ClientProjects = () => {
       enabled: location.pathname === "/projects",
       staleTime: 6000,
     });
+
+  const updatePageNumber = (newPageNumber) => {
+    const updatedParams = new URLSearchParams(searchParams);
+
+    updatedParams.set("page", newPageNumber);
+
+    setSearchParams(updatedParams);
+  };
 
   const {
     isPending: projectStatusPending,
@@ -347,10 +355,16 @@ export const ClientProjects = () => {
           {ProjectData?.total_pages > 1 && (
             <div className="mb-[1rem] flex items-center justify-end">
               <Pagination
-                nextClick={() => setPageNumber((prev) => prev + 1)}
-                prevClick={() =>
-                  setPageNumber((prev) => (prev > 1 ? prev - 1 : 1))
-                }
+                nextClick={() => {
+                  const newPageNumber = pageNumber + 1;
+                  setPageNumber(newPageNumber);
+                  updatePageNumber(newPageNumber);
+                }}
+                prevClick={() => {
+                  const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
+                  setPageNumber(newPageNumber);
+                  updatePageNumber(newPageNumber);
+                }}
                 lastPage={ProjectData?.total_pages}
                 pageNumber={pageNumber}
               />

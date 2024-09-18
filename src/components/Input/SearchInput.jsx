@@ -15,10 +15,10 @@ export const SearchInput = ({
 
   const debouncedSearch = useDebounce(inputValue);
 
-  // useEffect(() => {
-  //   const page = parseInt(searchParams.get("page")) || 1;
-  //   setPageNumber(page);
-  // }, [searchParams, setPageNumber]);
+  useEffect(() => {
+    const page = parseInt(searchParams.get("page")) || 1;
+    setPageNumber(page);
+  }, [searchParams, setPageNumber]);
 
   useEffect(() => {
     if (debouncedSearch === "") {
@@ -36,7 +36,7 @@ export const SearchInput = ({
   }, [debouncedSearch]);
 
   const handleChange = (e) => {
-    const value = e.target.value.trimStart();
+    const value = e.target.value.trim();
     setInputValue(value);
   };
 
