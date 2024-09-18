@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Calendar,
   CompletedProjects,
@@ -24,6 +24,8 @@ import useAuth from "../../hooks/useAuth";
 
 export const Dashboard = () => {
   useScrollRestoration();
+
+  const navigate = useNavigate();
 
   const { logout } = useLogout();
 
