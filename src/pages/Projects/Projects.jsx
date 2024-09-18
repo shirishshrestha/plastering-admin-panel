@@ -174,8 +174,6 @@ export const Projects = () => {
     DeleteProject();
   };
 
-  console.log(pageNumber);
-
   return (
     <>
       {location.pathname === "/projects" ? (
