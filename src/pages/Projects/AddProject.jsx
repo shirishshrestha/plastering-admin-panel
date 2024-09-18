@@ -495,7 +495,7 @@ export const AddProject = () => {
                       {selectedFiles.length > 0 &&
                         Array.from(selectedFiles).map((file, index) => (
                           <div
-                            key={file.id}
+                            key={`${file.name}-${index}`}
                             className="flex gap-[0.5rem] items-center text-[14px]"
                           >
                             <Document />
@@ -506,7 +506,7 @@ export const AddProject = () => {
                               className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
                               onClick={() => {
                                 setSelectedFiles(
-                                  selectedFiles.filter((file, i) => i !== index)
+                                  selectedFiles.filter((_, i) => i !== index)
                                 );
                               }}
                             >

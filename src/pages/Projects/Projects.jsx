@@ -73,7 +73,6 @@ export const Projects = () => {
     queryFn: () => getProjects(pageNumber, searchId),
     keepPreviousData: true,
     enabled: location.pathname === "/projects",
-    staleTime: 6000,
   });
 
   const { isPending: recentProjectsPending, data: RecentProjectData } =
@@ -157,6 +156,14 @@ export const Projects = () => {
       notifyError("Failed to delete project, please try again");
     },
   });
+
+  const updatePageNumber = (newPageNumber) => {
+    const updatedParams = new URLSearchParams(searchParams);
+
+    updatedParams.set("page", newPageNumber);
+
+    setSearchParams(updatedParams);
+  };
 
   const handleViewProject = (id) => {
     navigate(`/projects/viewProject/${id}`);
@@ -307,6 +314,8 @@ export const Projects = () => {
                 <SearchInput
                   defaultValue={""}
                   setSearchParams={setSearchParams}
+                  searchParams={searchParams}
+                  setPageNumber={setPageNumber}
                 />
                 <Link to="/projects/addProject">
                   <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
@@ -400,16 +409,26 @@ export const Projects = () => {
               </tbody>
             </table>
           </div>
-          <div className="mb-[1rem] flex items-center justify-end">
-            <Pagination
-              nextClick={() => setPageNumber((prev) => prev + 1)}
-              prevClick={() =>
-                setPageNumber((prev) => (prev > 1 ? prev - 1 : 1))
-              }
-              lastPage={ProjectData?.last_page}
-              pageNumber={pageNumber}
-            />
-          </div>
+          {ProjectData?.last_page > 1 && (
+            <div className="mb-[1rem] flex items-center justify-end">
+              <Pagination
+                nextClick={() => {
+                  const newPageNumber = pageNumber + 1;
+                  setPageNumber(newPageNumber);
+                  updatePageNumber(newPageNumber);
+                }}
+                prevClick={() =>
+                  setPageNumber((prev) => {
+                    const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
+                    setPageNumber(newPageNumber);
+                    updatePageNumber(newPageNumber);
+                  })
+                }
+                lastPage={ProjectData?.last_page}
+                pageNumber={ProjectData?.current_page}
+              />
+            </div>
+          )}
           <CustomToastContainer />
         </section>
       ) : (

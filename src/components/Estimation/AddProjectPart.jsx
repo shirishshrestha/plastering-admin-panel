@@ -14,7 +14,6 @@ const AddProjectPart = ({
     register,
     getValues,
     trigger,
-    clearErrors,
     formState: { errors },
   } = useForm();
 
@@ -32,7 +31,6 @@ const AddProjectPart = ({
       setNewProjectPart(false);
       setSelectedFiles([]);
     } else {
-      setSelectedFiles([]);
       return;
     }
   };
@@ -71,7 +69,7 @@ const AddProjectPart = ({
 
               setSelectedFiles([...selectedFiles, ...filteredFiles]);
 
-              e.target.value = null;
+              e.target.files = null;
             },
             required: "Please upload the project file",
           })}
@@ -146,7 +144,10 @@ const AddProjectPart = ({
         <button
           className="bg-delete rounded-lg px-[10px] py-[5px] text-light text-[14px]"
           type="button"
-          onClick={() => setNewProjectPart(false)}
+          onClick={() => {
+            setNewProjectPart(false);
+            setSelectedFiles([]);
+          }}
         >
           Cancel
         </button>
