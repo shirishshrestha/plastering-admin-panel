@@ -52,6 +52,7 @@ export const SearchInput = ({
         name="Search"
         value={inputValue}
         onChange={handleChange}
+        autoComplete="off"
         placeholder="Search by id or status"
         className={`focus:border-transparent  w-full focus:outline-none bg-transparent`}
         type="text"
