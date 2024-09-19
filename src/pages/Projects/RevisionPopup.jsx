@@ -58,7 +58,7 @@ export const RevisionPopup = ({
     useMutation({
       mutationFn: (data) => requestRevision(data, id),
       onSuccess: (data) => {
-        notifySuccess("Project edited successfully");
+        notifySuccess("Revision request sent successfully");
         setTimeout(() => {
           setRevisionFlag(false);
           setDisabledFlag({ ...disabledFlag, revisionFlag: true });
@@ -66,7 +66,7 @@ export const RevisionPopup = ({
         }, 2000);
       },
       onError: (error) => {
-        notifyError("Something went wrong! Please try again");
+        notifyError("Something went wrong or the file is a duplicate.");
         setDisabledSubmit(false);
       },
     });
@@ -79,7 +79,6 @@ export const RevisionPopup = ({
     formData.append("address", data.address);
     formData.append("cloud_link", data.cloud_link);
     formData.append("start_date", data.date);
-    formData.append("status", data.status);
     formData.append("project_type", data.project_type);
     formData.append("additional_requirements", data.additional_info || "");
 
@@ -191,95 +190,168 @@ export const RevisionPopup = ({
                 )}
               />
             </div>
-            <div className=" flex flex-col gap-[1rem]">
-              <div className="flex flex-col gap-[0.4rem]">
-                <label className="font-bold">Status</label>
 
-                <select
-                  name="status"
-                  className="cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-[0.4px] focus:ring-blue-600 focus:border-transparent text-[14px] h-fit"
-                  {...register("status", {
-                    required: "Please select the status",
+            <div className="flex gap-[1rem] flex-col">
+              <div class=" bg-white flex flex-col gap-[0.4rem] w-full">
+                <legend class=" font-bold select-none">Project Type</legend>
+                <div className="">
+                  <label
+                    htmlFor="commercial"
+                    name="project_type"
+                    className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
+                      errors["project_type"] && "ring-red-500"
+                    } `}
+                  >
+                    Commercial Project
+                    <input
+                      type="radio"
+                      name="project_type"
+                      className=" w-4 h-4 absolute accent-current right-3"
+                      id="commercial"
+                      value="Commercial"
+                      {...register("project_type", {
+                        required: "Select a project type",
+                      })}
+                    />
+                  </label>
+                  <label
+                    htmlFor="domestic"
+                    className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
+                      errors["project_type"] && "ring-red-500"
+                    } `}
+                  >
+                    Domestic Project
+                    <input
+                      type="radio"
+                      name="project_type"
+                      className="w-4 h-4 absolute accent-current right-3"
+                      id="domestic"
+                      value="Domestic"
+                      {...register("project_type", {
+                        required: "Select a project type",
+                      })}
+                    />
+                  </label>
+                  <ErrorMessage
+                    errors={errors}
+                    name="project_type"
+                    render={() => (
+                      <p
+                        className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                        key="registered-client"
+                      >
+                        Please select a project type
+                      </p>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-[0.4rem] ">
+                <label className="font-bold">Upload New Files (Optional)</label>
+                <input
+                  type="file"
+                  name="project_file"
+                  {...register("project_file", {
+                    onChange: (e) => {
+                      const innerNewFiles = Array.from(e.target.files);
+                      const filteredFiles = innerNewFiles.filter(
+                        (newFile) =>
+                          !newFiles.some(
+                            (file) =>
+                              file.name === newFile.name &&
+                              file.lastModified === newFile.lastModified
+                          )
+                      );
+
+                      setNewFiles([...newFiles, ...filteredFiles]);
+
+                      e.target.value = null;
+                    },
                   })}
-                >
-                  <option
-                    value="pending"
-                    selected={SingleProjectData?.status === "pending"}
-                  >
-                    Pending
-                  </option>
-                  <option
-                    value="running"
-                    selected={SingleProjectData?.status === "running"}
-                  >
-                    Running
-                  </option>
-                  <option
-                    value="completed"
-                    selected={SingleProjectData?.status === "completed"}
-                  >
-                    Completed
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <div class=" bg-white flex flex-col gap-[0.4rem] w-full">
-              <legend class=" font-bold select-none">Project Type</legend>
-              <div className="">
-                <label
-                  htmlFor="commercial"
-                  name="project_type"
-                  className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
-                    errors["project_type"] && "ring-red-500"
-                  } `}
-                >
-                  Commercial Project
-                  <input
-                    type="radio"
-                    name="project_type"
-                    className=" w-4 h-4 absolute accent-current right-3"
-                    id="commercial"
-                    value="Commercial"
-                    {...register("project_type", {
-                      required: "Select a project type",
-                    })}
-                  />
-                </label>
-                <label
-                  htmlFor="domestic"
-                  className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
-                    errors["project_type"] && "ring-red-500"
-                  } `}
-                >
-                  Domestic Project
-                  <input
-                    type="radio"
-                    name="project_type"
-                    className="w-4 h-4 absolute accent-current right-3"
-                    id="domestic"
-                    value="Domestic"
-                    {...register("project_type", {
-                      required: "Select a project type",
-                    })}
-                  />
-                </label>
-                <ErrorMessage
-                  errors={errors}
-                  name="project_type"
-                  render={() => (
-                    <p
-                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                      key="registered-client"
-                    >
-                      Please select a project type
-                    </p>
-                  )}
+                  id="fileInput"
+                  className="hidden"
+                  multiple
                 />
+                <label
+                  htmlFor="fileInput"
+                  className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
+                >
+                  <label
+                    className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
+                    htmlFor="fileInput"
+                  >
+                    Upload
+                  </label>
+                  Select Files
+                </label>
+
+                <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                  <span>Uploaded Files:</span>
+                </div>
+                <div className="flex flex-wrap  gap-x-7 gap-y-2">
+                  {selectedFiles?.length < 1 ? (
+                    <p className="font-[500] text-[14px] pl-[2rem]">
+                      No previous files
+                    </p>
+                  ) : (
+                    selectedFiles?.map((file, index) => (
+                      <div
+                        key={file.id}
+                        className="flex gap-[0.5rem] items-center text-[14px]"
+                      >
+                        <Document />
+                        <p className="font-[500]">{file.split("/").pop()}</p>
+
+                        <button
+                          type="button"
+                          className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                          onClick={() => {
+                            setDeletedFiles([...deletedFiles, file]);
+                            setSelectedFiles(
+                              selectedFiles.filter((file, i) => i !== index)
+                            );
+                          }}
+                        >
+                          <TrashIcon />
+                          {/* {fetchingFile && index === downloadId
+                        ? "Loading"
+                        : "Download"} */}
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                  <span>New Files:</span>
+                  <div className="flex gap-x-7 flex-wrap gap-y-2">
+                    {newFiles?.length > 0 &&
+                      Array.from(newFiles).map((file, index) => (
+                        <div
+                          key={file.id}
+                          className="flex gap-[0.5rem] items-center text-[14px]"
+                        >
+                          <Document />
+                          <p className="font-[500]">{file.name}</p>
+
+                          <button
+                            type="button"
+                            className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                            onClick={() => {
+                              setNewFiles(
+                                newFiles.filter((file, i) => i !== index)
+                              );
+                            }}
+                          >
+                            <TrashIcon />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-col col-span-2 gap-[0.4rem]">
+            <div className="flex flex-col  gap-[0.4rem]">
               <label htmlFor="additional-req" className="font-bold">
                 Additional Requirements (Optional)
               </label>
@@ -291,109 +363,6 @@ export const RevisionPopup = ({
               ></textarea>
             </div>
 
-            <div className="flex flex-col gap-[0.4rem] col-span-2 ">
-              <label className="font-bold">Upload New Files (Optional)</label>
-              <input
-                type="file"
-                name="project_file"
-                {...register("project_file", {
-                  onChange: (e) => {
-                    const innerNewFiles = Array.from(e.target.files);
-                    const filteredFiles = innerNewFiles.filter(
-                      (newFile) =>
-                        !newFiles.some(
-                          (file) =>
-                            file.name === newFile.name &&
-                            file.lastModified === newFile.lastModified
-                        )
-                    );
-
-                    setNewFiles([...newFiles, ...filteredFiles]);
-
-                    e.target.value = null;
-                  },
-                })}
-                id="fileInput"
-                className="hidden"
-                multiple
-              />
-              <label
-                htmlFor="fileInput"
-                className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
-              >
-                <label
-                  className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
-                  htmlFor="fileInput"
-                >
-                  Upload
-                </label>
-                Select Files
-              </label>
-
-              <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                <span>Uploaded Files:</span>
-              </div>
-              <div className="flex flex-wrap  gap-x-7 gap-y-2">
-                {selectedFiles?.length < 1 ? (
-                  <p className="font-[500] text-[14px] pl-[2rem]">
-                    No previous files
-                  </p>
-                ) : (
-                  selectedFiles?.map((file, index) => (
-                    <div
-                      key={file.id}
-                      className="flex gap-[0.5rem] items-center text-[14px]"
-                    >
-                      <Document />
-                      <p className="font-[500]">{file.split("/").pop()}</p>
-
-                      <button
-                        type="button"
-                        className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
-                        onClick={() => {
-                          setDeletedFiles([...deletedFiles, file]);
-                          setSelectedFiles(
-                            selectedFiles.filter((file, i) => i !== index)
-                          );
-                        }}
-                      >
-                        <TrashIcon />
-                        {/* {fetchingFile && index === downloadId
-                        ? "Loading"
-                        : "Download"} */}
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-              <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                <span>New Files:</span>
-                <div className="flex gap-x-7 gap-y-2">
-                  {newFiles?.length > 0 &&
-                    Array.from(newFiles).map((file, index) => (
-                      <div
-                        key={file.id}
-                        className="flex gap-[0.5rem] items-center text-[14px]"
-                      >
-                        <Document />
-                        <p className="font-[500]">{file.name}</p>
-
-                        <button
-                          type="button"
-                          className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
-                          onClick={() => {
-                            setNewFiles(
-                              newFiles.filter((file, i) => i !== index)
-                            );
-                          }}
-                        >
-                          <TrashIcon />
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
             <div className="flex gap-3 justify-end items-center col-span-2">
               <button
                 className="bg-delete rounded-lg px-[30px] py-[10px] text-light"

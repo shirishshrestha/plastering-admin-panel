@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDebounce } from "../../hooks/useDebounce";
+import { Search } from "../../assets/icons/SvgIcons";
 
 export const SearchInput = ({
   defaultValue,
@@ -41,15 +42,18 @@ export const SearchInput = ({
   };
 
   return (
-    <div className=" ">
+    <div
+      className={`border px-2 py-2 border-[#FF5733] shadow-sm rounded-md focus-within:ring-indigo-500 transition-all duration-75 ease-in-out focus-within:border-indigo-500 flex gap-3 items-center text-[14px]  ${
+        !!error ? "focus:ring-red-500 border-red-500" : ""
+      } `}
+    >
+      <Search />
       <input
         name="Search"
         value={inputValue}
         onChange={handleChange}
         placeholder="Search by id or status"
-        className={`p-2 text-[14px] border border-[#FF5733] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
-          !!error ? "focus:ring-red-500 border-red-500" : ""
-        } `}
+        className={`focus:border-transparent  w-full focus:outline-none bg-transparent`}
         type="text"
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}

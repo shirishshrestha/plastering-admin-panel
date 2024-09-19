@@ -27,6 +27,7 @@ export const AddProject = () => {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
 
   const { logout } = useLogout();
@@ -59,6 +60,7 @@ export const AddProject = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries("projects");
       notifySuccess("Project added successfully");
+      reset();
       setTimeout(() => {
         navigate("/projects");
       }, 2000);
@@ -96,7 +98,6 @@ export const AddProject = () => {
 
   const handleProjectCancel = () => {
     navigate("/projects");
-    
   };
 
   return (
