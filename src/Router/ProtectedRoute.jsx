@@ -34,3 +34,15 @@ export const ProtectedLoginSignupRoute = ({ children }) => {
     children
   );
 };
+
+export const ProtectedClientRoute = ({ children }) => {
+  const { auth } = useAuth();
+
+  const role = getRoleFromLocalStorage();
+
+  return auth?.role === "admin" || (role && role === "admin") ? (
+    children
+  ) : (
+    <Navigate to="/" />
+  );
+};

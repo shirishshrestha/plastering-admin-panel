@@ -4,6 +4,7 @@ import {
   AddProject,
   ClientDashboard,
   ClientProjects,
+  Clients,
   Dashboard,
   EditProject,
   Login,
@@ -11,7 +12,10 @@ import {
   Signup,
   ViewProject,
 } from "../pages";
-import ProtectedRoute, { ProtectedLoginSignupRoute } from "./ProtectedRoute";
+import ProtectedRoute, {
+  ProtectedClientRoute,
+  ProtectedLoginSignupRoute,
+} from "./ProtectedRoute";
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
 import useAuth from "../hooks/useAuth";
 
@@ -67,8 +71,12 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "/client",
-        element: <ClientDashboard />,
+        path: "/clients",
+        element: (
+          <ProtectedClientRoute>
+            <Clients />
+          </ProtectedClientRoute>
+        ),
       },
     ],
   },

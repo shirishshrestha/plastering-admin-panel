@@ -12,7 +12,10 @@ const ProfileTab = ({ sidebarToggle, setSidebarToggle }) => {
     <section className="w-full py-[1rem] ">
       <div className="w-full bg-[#fff] shadow-lg rounded-lg p-[1.2rem] flex justify-between items-center">
         <div className="flex gap-[1.5rem]">
-          <button onClick={() => setSidebarToggle(!sidebarToggle)}>
+          <button
+            onClick={() => setSidebarToggle(!sidebarToggle)}
+            title="Minimize Sidebar"
+          >
             <HamMenu />
           </button>
         </div>

@@ -1,3 +1,4 @@
+import Clients from "./Clients/Clients";
 import { ClientDashboard } from "./Dashboard/ClientDashboard";
 import { Dashboard } from "./Dashboard/Dashboard";
 import Login from "./Login/Login";
@@ -20,4 +21,5 @@ export {
   ClientDashboard,
   EditProject,
   RevisionPopup,
+  Clients,
 };
