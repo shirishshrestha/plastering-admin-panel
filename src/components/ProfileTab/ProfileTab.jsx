@@ -14,7 +14,7 @@ const ProfileTab = ({ sidebarToggle, setSidebarToggle }) => {
         <div className="flex gap-[1.5rem]">
           <button
             onClick={() => setSidebarToggle(!sidebarToggle)}
-            title="Minimize Sidebar"
+            title={sidebarToggle ? "Minimize Sidebar" : "Expand Sidebar"}
           >
             <HamMenu />
           </button>
