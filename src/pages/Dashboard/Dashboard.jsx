@@ -227,10 +227,7 @@ export const Dashboard = () => {
                 <p className="text-[2rem] font-bold">
                   {TotalProjectStatusData?.completed_projects}
                 </p>
-                <p className="text-[12px]">
-                  <span className="text-secondary font-[700]">+12%</span>{" "}
-                  Completion Rate this month
-                </p>
+                <p className="text-[12px]">Projects successfully completed</p>
               </div>
             </div>
             <div className="p-[1rem] bg-[#fff] w-full h-[167px] rounded-lg shadow-lg text-primary">
@@ -244,10 +241,7 @@ export const Dashboard = () => {
                 <p className="text-[2rem] font-bold">
                   {TotalProjectStatusData?.running_projects}
                 </p>
-                <p className="text-[12px]">
-                  <span className="text-secondary font-[700]">+8% </span>{" "}
-                  Running projects increases
-                </p>
+                <p className="text-[12px]">Ongoing projects</p>
               </div>
             </div>
           </div>
