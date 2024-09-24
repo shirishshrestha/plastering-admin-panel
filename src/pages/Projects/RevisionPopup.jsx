@@ -66,7 +66,7 @@ export const RevisionPopup = ({
         }, 2000);
       },
       onError: (error) => {
-        notifyError("Something went wrong or the file is a duplicate.");
+        notifyError("Something went wrong ");
         setDisabledSubmit(false);
       },
     });

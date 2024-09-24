@@ -23,7 +23,7 @@ import useScrollRestoration from "../../hooks/useScrollRestoration";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
-import { notifySuccess } from "../../components/Toast/Toast";
+import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import { RevisionPopup } from "./RevisionPopup";
 
 const ViewProject = () => {
@@ -85,6 +85,7 @@ const ViewProject = () => {
         notifySuccess("Project accepted");
       },
       onError: (error) => {
+        console.log(error);
         notifyError("Something went wrong! Please try again");
         setConfirmationShow(false);
       },

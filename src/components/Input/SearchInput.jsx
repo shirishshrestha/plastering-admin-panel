@@ -8,6 +8,7 @@ export const SearchInput = ({
   searchParams,
   pageNumber,
   setPageNumber,
+  placeholder,
 }) => {
   const [inputValue, setInputValue] = useState(
     searchParams.get("Search") || defaultValue.trim()
@@ -53,7 +54,7 @@ export const SearchInput = ({
         value={inputValue}
         onChange={handleChange}
         autoComplete="off"
-        placeholder="Search by id or status"
+        placeholder={placeholder}
         className={`focus:border-transparent  w-full focus:outline-none bg-transparent`}
         type="text"
       />

@@ -252,15 +252,15 @@ export const AddProject = () => {
             {role && role === "client" && (
               <>
                 <div className="flex flex-col gap-[1rem]">
-                  <div class=" bg-white flex flex-col gap-3  w-full">
-                    <legend class=" font-bold   select-none">
+                  <div className=" bg-white flex flex-col gap-3  w-full">
+                    <legend className=" font-bold   select-none">
                       Project Type
                     </legend>
                     <div className="">
                       <label
                         htmlFor="commercial"
                         name="project_type"
-                        class={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
+                        className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
                           errors["project_type"] && "ring-red-500"
                         } `}
                       >
@@ -268,7 +268,7 @@ export const AddProject = () => {
                         <input
                           type="radio"
                           name="project_type"
-                          class="peer/html w-4 h-4 absolute accent-current right-3"
+                          className="peer/html w-4 h-4 absolute accent-current right-3"
                           id="commercial"
                           value="Commercial"
                           {...register("project_type", {
@@ -278,7 +278,7 @@ export const AddProject = () => {
                       </label>
                       <label
                         htmlFor="domestic"
-                        class={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
+                        className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
                           errors["project_type"] && "ring-red-500"
                         } `}
                       >
@@ -286,7 +286,7 @@ export const AddProject = () => {
                         <input
                           type="radio"
                           name="project_type"
-                          class="w-4 h-4 absolute accent-current right-3"
+                          className="w-4 h-4 absolute accent-current right-3"
                           id="domestic"
                           value="Domestic"
                           {...register("project_type", {

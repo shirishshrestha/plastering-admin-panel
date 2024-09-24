@@ -1,6 +1,5 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "../../assets/icons/SvgIcons";
-import { Link } from "react-router-dom";
 
 export const Pagination = ({ nextClick, prevClick, pageNumber, lastPage }) => {
   return (

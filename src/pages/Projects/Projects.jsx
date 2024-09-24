@@ -318,6 +318,7 @@ export const Projects = () => {
                   searchParams={searchParams}
                   pageNumber={pageNumber}
                   setPageNumber={setPageNumber}
+                  placeholder={"Search by id or status"}
                 />
                 <Link to="/projects/addProject">
                   <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
