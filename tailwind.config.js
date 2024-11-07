@@ -14,6 +14,9 @@ export default {
         delete: "#e03137",
         deleteBackground: "#fee9f1",
       },
+      gridTemplateColumns: {
+        custom: "repeat(auto-fit, minmax(200px, 1fr))",
+      },
     },
   },
   plugins: [],

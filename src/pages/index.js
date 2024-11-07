@@ -8,6 +8,7 @@ import { EditProject } from "./Projects/EditProject";
 import { Projects } from "./Projects/Projects";
 import { RevisionPopup } from "./Projects/RevisionPopup";
 import ViewProject from "./Projects/ViewProject";
+import BusinessSignup from "./Signup/BusinessSignup";
 import Signup from "./Signup/Signup";
 
 export {
@@ -22,4 +23,5 @@ export {
   EditProject,
   RevisionPopup,
   Clients,
+  BusinessSignup,
 };

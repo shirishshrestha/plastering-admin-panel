@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { getClients } from "../../api/User/UserApiSlice";
 import { Loader, Pagination } from "../../components";
 import EmptyData from "../../components/EmptyData/EmptyData";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { SearchInput } from "../../components/Input/SearchInput";
+import { EditIcon, EyeIcon, TrashIcon } from "../../assets/icons/SvgIcons";
 
 const Clients = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -42,6 +43,7 @@ const Clients = () => {
     "Username",
     "Email",
     "Registered Date",
+    "Actions",
   ];
 
   return (
@@ -90,8 +92,29 @@ const Clients = () => {
                   <td className="py-[1rem] pl-[1rem] pr-[1rem]">{user.id}</td>
                   <td className="py-[1rem] pl-[0.5rem]">{user.name}</td>
                   <td className="py-[1rem] pl-[0.5rem]">{user.username} </td>
-                  <td className="py-[1rem]">{user.email}</td>
+                  <td className="py-[1rem]">
+                    {user.email
+                      ? user.email.length > 25
+                        ? `${user.email.slice(0, 25)}...`
+                        : user.email
+                      : "-"}
+                  </td>
                   <td className="py-[1rem]">{user.created_at.split("T")[0]}</td>
+                  <td>
+                    <div className="flex gap-[0.7rem]">
+                      <button className="p-[5px] rounded-md bg-viewBackground">
+                        <EyeIcon strokeColor={"#3e84f4"} />
+                      </button>
+                      <button className="p-[5px] rounded-md bg-editBackground">
+                        <EditIcon color="#8c62ff" />
+                      </button>
+                      <Link to="">
+                        <button className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[30px] py-[5px] text-light rounded-lg ">
+                          Project Details
+                        </button>
+                      </Link>
+                    </div>
+                  </td>
                 </tr>
               ))
           ) : (

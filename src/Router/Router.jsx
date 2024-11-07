@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import {
   AddProject,
+  BusinessSignup,
   ClientDashboard,
   ClientProjects,
   Clients,
@@ -93,6 +94,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedLoginSignupRoute>
         <Signup />
+      </ProtectedLoginSignupRoute>
+    ),
+  },
+  {
+    path: "/businessSignup",
+    element: (
+      <ProtectedLoginSignupRoute>
+        <BusinessSignup />
       </ProtectedLoginSignupRoute>
     ),
   },

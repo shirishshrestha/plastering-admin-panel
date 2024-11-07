@@ -163,14 +163,19 @@ const Login = () => {
                       <span className="text-[#71a8c4]">Register</span>
                     </Link>
                   </div>
+                  <div>or</div>
+                  <div>
+                    <p>
+                      Are you a business owner?{" "}
+                      <Link to="/businessSignup">
+                        <span className="text-[#71a8c4]">
+                          {" "}
+                          Create a Business Account
+                        </span>
+                      </Link>
+                    </p>
+                  </div>
                 </div>
-                {/* <div className="w-full flex items-center justify-center">
-                  <Link to="/" className="mt-[1rem]">
-                    <div className=" px-[30px] py-[10px] bg-primary w-fit text-light rounded-lg">
-                      <h2 className="">Go To Dashboard (demo)</h2>
-                    </div>
-                  </Link>
-                </div> */}
               </form>
             </div>
           </div>

@@ -85,34 +85,6 @@ export const LoginSignupInput = ({
           )
         }
       />
-      <ErrorMessage
-        errors={errors}
-        name={name}
-        render={({ minMessage }) =>
-          minMessage && (
-            <p
-              className="text-[12px] text-red-500 pt-[0.3rem] pl-[0.5rem]"
-              key={type}
-            >
-              {minMessage}
-            </p>
-          )
-        }
-      />
-      <ErrorMessage
-        errors={errors}
-        name={name}
-        render={({ maxMessage }) =>
-          maxMessage && (
-            <p
-              className="text-[12px] text-red-500 pt-[0.3rem] pl-[0.5rem]"
-              key={type}
-            >
-              {maxMessage}
-            </p>
-          )
-        }
-      />
     </>
   );
 };
