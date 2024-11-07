@@ -115,7 +115,7 @@ export const Model = {
   },
 
   Name: {
-    type: "string",
+    type: "text",
     required: "Please enter your name",
     placeholder: "Enter your name",
     name: "fullname",
@@ -134,7 +134,7 @@ export const Model = {
   },
 
   BusinessName: {
-    type: "string",
+    type: "text",
     required: "Please enter business name",
     placeholder: "Enter business name",
     name: "businessName",
@@ -154,7 +154,7 @@ export const Model = {
   },
 
   ACN: {
-    type: "string",
+    type: "text",
     required: "Please enter ABN / ACN",
     placeholder: "Enter ABN / ACN",
     name: "abn",
@@ -173,7 +173,7 @@ export const Model = {
   },
 
   TradeType: {
-    type: "string",
+    type: "text",
     required: "Please enter trade type",
     placeholder: "Eg. Builder, Plasterer, etc",
     name: "trade_type",
@@ -193,7 +193,7 @@ export const Model = {
   },
 
   BusinessStructure: {
-    type: "string",
+    type: "text",
     required: "Please enter business structure",
     placeholder: "Enter business structure",
     name: "business_structure",

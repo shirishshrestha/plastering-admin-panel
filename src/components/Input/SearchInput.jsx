@@ -55,7 +55,7 @@ export const SearchInput = ({
         onChange={handleChange}
         autoComplete="off"
         placeholder={placeholder}
-        className={`focus:border-transparent  w-full focus:outline-none bg-transparent`}
+        className={`focus:border-transparent  w-full focus:outline-none bg-transparent !ring-0 !outline-none border-none p-0 text-[0.8rem]`}
         type="text"
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}

@@ -45,7 +45,7 @@ export const LoginSignupInput = ({
           name={name}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`${className} block w-full focus:outline-none `}
+          className={`${className} block w-full !ring-0 !outline-none border-none p-0 text-[0.8rem] focus:border-none `}
           {...register(name, {
             value: inputValue,
             onChange: handleChange,

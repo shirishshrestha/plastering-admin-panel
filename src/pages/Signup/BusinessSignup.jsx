@@ -210,7 +210,7 @@ const BusinessSignup = () => {
                   </div>
                   <div>
                     <label
-                      htmlFor="role"
+                      htmlFor="company_role"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                     >
                       Role / Position
@@ -218,7 +218,7 @@ const BusinessSignup = () => {
                     <LoginSignupInput
                       placeholder={"Enter role / position"}
                       type={Model.Name.type}
-                      name={"role"}
+                      name={"company_role"}
                       register={register}
                       errors={errors}
                       minLength={Model.Name.minLength.value}
@@ -579,7 +579,7 @@ const BusinessSignup = () => {
                       htmlFor="regions_covered"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                     >
-                      Regions Covered <span className="text-red-500 ">*</span>
+                      Regions Covered
                     </label>
 
                     <LoginSignupInput
@@ -666,7 +666,7 @@ const BusinessSignup = () => {
                         name="retype_password"
                         placeholder="Retype Password"
                         autoComplete="off"
-                        className={`block w-full rounded-md focus:outline-none
+                        className={`block w-full rounded-md focus:outline-none !ring-0 p-0 text-[0.8rem] border-none
                       `}
                         {...register("retype_password", {
                           required: "Please retype your password",
@@ -706,7 +706,7 @@ const BusinessSignup = () => {
                     {...register("terms", {
                       required: true,
                     })}
-                    className="cursor-pointer"
+                    className="cursor-pointer !ring-0 !outline-none p-0  rounded-sm text-[0.8rem] text-primary"
                   />
                   <label
                     htmlFor="terms-conditions"

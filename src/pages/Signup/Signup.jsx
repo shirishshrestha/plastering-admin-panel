@@ -211,8 +211,8 @@ const Signup = () => {
                     name="retype_password"
                     placeholder="Retype Password"
                     autoComplete="off"
-                    className={`block w-full rounded-md focus:outline-none
-                      `}
+                    className={`block w-full rounded-md !outline-none
+                      border-none p-0 text-[0.8rem] !ring-0 `}
                     {...register("retype_password", {
                       required: "Please retype your password",
                       validate: (value) =>

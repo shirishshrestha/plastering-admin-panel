@@ -16,3 +16,12 @@ export const getClients = async (page, search) => {
     throw error;
   }
 };
+
+export const getUserById = async (id) => {
+  try {
+    const response = await instance.get(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
