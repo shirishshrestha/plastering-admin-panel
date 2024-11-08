@@ -139,7 +139,7 @@ const Clients = () => {
                             <EditIcon color="#8c62ff" />
                           </button>
                           <Link to="">
-                            <button className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[30px] py-[5px] text-light rounded-lg ">
+                            <button className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg ">
                               Project Details
                             </button>
                           </Link>

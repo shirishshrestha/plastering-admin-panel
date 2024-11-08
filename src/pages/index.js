@@ -1,4 +1,5 @@
 import Clients from "./Clients/Clients";
+import { EditClient } from "./Clients/EditClients";
 import { ClientDashboard } from "./Dashboard/ClientDashboard";
 import { Dashboard } from "./Dashboard/Dashboard";
 import Login from "./Login/Login";
@@ -24,4 +25,5 @@ export {
   RevisionPopup,
   Clients,
   BusinessSignup,
+  EditClient,
 };

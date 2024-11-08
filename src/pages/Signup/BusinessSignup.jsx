@@ -3,7 +3,7 @@ import { signup, logo } from "../../assets/images";
 import { Loader, LoginSignupInput, Model } from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { signupClient } from "../../api/Register/RegisterApiSlice";
+import { signupBusiness } from "../../api/Register/RegisterApiSlice";
 import { useMutation } from "@tanstack/react-query";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
@@ -27,31 +27,52 @@ const BusinessSignup = () => {
     reset,
   } = useForm();
 
-  const { mutate: Register, isPending: signupPending } = useMutation({
-    mutationFn: (formData) => signupClient(formData),
-    onSuccess: () => {
-      reset({
-        fullname: "",
-        username: "",
-        email: "",
-        password: "",
-        retype_password: "",
-      });
-      notifySuccess("Registered Successfully");
-      setTimeout(() => {
-        reset();
-        navigate("/login");
-      }, 2000);
-    },
-    onError: (error) => {
-      if (error.response.data.errors.email) {
-        notifyError(error.response.data.errors.email[0]);
-      }
-      if (error.response.data.errors.username) {
-        notifyError(error.response.data.errors.username[0]);
-      }
-    },
-  });
+  const { mutate: BusinessRegister, isPending: signupBusinessPending } =
+    useMutation({
+      mutationFn: (formData) => signupBusiness(formData),
+      onSuccess: () => {
+        reset({
+          business_name: "",
+          abn: "",
+          trade_type: "",
+          business_structure: "",
+          fullname: "",
+          company_role: "",
+          email: "",
+          phone_number: "",
+          address: "",
+          city: "",
+          state: "",
+          country: "",
+          postcode: "",
+          billing_name: "",
+          billing_address: "",
+          billing_email: "",
+          estimator_name: "",
+          estimator_email: "",
+          estimator_number: "",
+          project_type: "",
+          scope: "",
+          regions_covered: "",
+          username: "",
+          password: "",
+          password_confirmation: "",
+        });
+        notifySuccess("Business Registered Successfully");
+        setTimeout(() => {
+          reset();
+          navigate("/login");
+        }, 2000);
+      },
+      onError: (error) => {
+        if (error.response.data.errors.email) {
+          notifyError(error.response.data.errors.email[0]);
+        }
+        if (error.response.data.errors.username) {
+          notifyError(error.response.data.errors.username[0]);
+        }
+      },
+    });
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -60,12 +81,12 @@ const BusinessSignup = () => {
     setShowRetypePassword(!showRetypePassword);
   };
 
-  const handleSignupForm = (data) => {
-    Register(data);
+  const handleBusinessSignupForm = (data) => {
+    BusinessRegister(data);
   };
   return (
     <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem] relative">
-      {signupPending && <Loader />}
+      {signupBusinessPending && <Loader />}
 
       <div className="!pb-[4rem]">
         <figure className="w-full clip-custom relative overflow-hidden">
@@ -90,13 +111,16 @@ const BusinessSignup = () => {
               </h1>
               <p className="font-[500] text-[12px] w-[75%] text-center leading-[150%]"></p>
             </div>
-            <form onSubmit={handleSubmit(handleSignupForm)} className="w-[80%]">
+            <form
+              onSubmit={handleSubmit(handleBusinessSignupForm)}
+              className="w-[80%]"
+            >
               <div className="mb-4">
                 <p className="font-bold ">1. Business Information:</p>
                 <div className="mt-2 grid grid-cols-custom gap-x-4 gap-y-3">
                   <div>
                     <label
-                      htmlFor="businessName"
+                      htmlFor="business_name"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem] "
                     >
                       Business Name <span className="text-red-500 ">*</span>
@@ -256,7 +280,7 @@ const BusinessSignup = () => {
                   </div>
                   <div>
                     <label
-                      htmlFor="phoneNumber"
+                      htmlFor="phone_number"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                     >
                       Phone Number <span className="text-red-500 ">*</span>

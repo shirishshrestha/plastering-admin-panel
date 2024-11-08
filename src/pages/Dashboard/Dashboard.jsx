@@ -61,51 +61,6 @@ export const Dashboard = () => {
     staleTime: 6000,
   });
 
-  const performanceData = [
-    { quarter: "Q1", value: 1200 },
-    { quarter: "Q2", value: 2200 },
-    { quarter: "Q3", value: 1800 },
-    { quarter: "Q4", value: 2000 },
-  ];
-
-  const lineData = [
-    { month: "Jan", plaster: 1200, sand: 800 },
-    { month: "Feb", plaster: 1500, sand: 1000 },
-    { month: "Mar", plaster: 1400, sand: 950 },
-    { month: "Apr", plaster: 1600, sand: 1100 },
-    { month: "May", plaster: 1700, sand: 1200 },
-    { month: "Jun", plaster: 1800, sand: 1300 },
-    { month: "Jul", plaster: 1900, sand: 1350 },
-    { month: "Aug", plaster: 2100, sand: 1400 },
-    { month: "Sep", plaster: 2200, sand: 1450 },
-    { month: "Oct", plaster: 2300, sand: 1500 },
-    { month: "Nov", plaster: 2400, sand: 1550 },
-    { month: "Dec", plaster: 2500, sand: 1600 },
-  ];
-
-  const lineDatasets = [
-    {
-      label: "Plaster Usage (kg)",
-      data: lineData.map((item) => item.plaster),
-      borderColor: "rgba(54, 162, 235, 1)", // Blue
-      pointBackgroundColor: "rgba(54, 162, 235, 1)",
-    },
-    {
-      label: "Sand Usage (kg)",
-      data: lineData.map((item) => item.sand),
-      borderColor: "rgba(255, 159, 64, 1)", // Orange
-      pointBackgroundColor: "rgba(255, 159, 64, 1)",
-    },
-  ];
-
-  const barDatasets = [
-    {
-      label: "Team Performance",
-      data: performanceData.map((item) => item.value),
-      backgroundColor: "#182C3A",
-    },
-  ];
-
   const doughnutData = [
     {
       type: "Pending",
@@ -245,29 +200,8 @@ export const Dashboard = () => {
               </div>
             </div>
           </div>
-          {/* <div className="flex flex-col justify-center items-center p-[1rem] mt-[1.5rem] bg-white w-full  rounded-lg shadow-lg">
-            <div className="mb-[1.8rem] text-center">
-              <h4 className="font-bold text-[1.2rem] ">Material Usage</h4>
-              <p className="text-[12px]">Last 1 year</p>
-            </div>
-            <LineChart lineData={lineData} datasets={lineDatasets} />
-          </div> */}
         </div>
         <div>
-          {/* <div className=" h-fit p-[1rem] bg-white flex flex-col justify-center items-center shadow-lg rounded-lg">
-            <h4 className="font-bold text-start">Team Performance</h4>
-            <div className=" pb-[1.2rem] text-[12px] font-[500] pt-[0.2rem]">
-              <p>Last 1 year</p>
-            </div>
-            <div className="max-w-[370px]">
-              <BarChart
-                barData={performanceData}
-                datasets={barDatasets}
-                legendBool={false}
-                // borderColors="rgba(24, 44, 58, 0.668)"
-              />
-            </div>
-          </div> */}
           <div className="h-fit  p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start pb-[1.2rem]">Project Status</h4>
 

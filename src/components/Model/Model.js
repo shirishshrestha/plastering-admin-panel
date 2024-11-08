@@ -79,7 +79,7 @@ export const Model = {
   phoneNumber: {
     type: "tel",
     required: "Please enter your phone number",
-    name: "phoneNumber",
+    name: "phone_number",
     placeholder: "Enter phone number",
     minLength: {
       value: 10,
@@ -90,7 +90,7 @@ export const Model = {
       message: "Phone number should be no more than 15 digits",
     },
     pattern: {
-      value: "^[+]?[(]?[0-9]{1,4}[)]?[-s./0-9]*$",
+      value: "^[0-9 +]+$",
       message: "Invalid phone number. Please enter a valid format.",
     },
   },
@@ -137,7 +137,7 @@ export const Model = {
     type: "text",
     required: "Please enter business name",
     placeholder: "Enter business name",
-    name: "businessName",
+    name: "business_name",
     minLength: {
       value: 2,
       message: "Business Name must be at least 2 characters long",

@@ -17,10 +17,7 @@ export default {
         deleteBackground: "#fee9f1",
       },
       gridTemplateColumns: {
-        custom: "repeat(auto-fit, minmax(200px, 1fr))",
-      },
-      outline: {
-        none: "none",
+        custom: "repeat(auto-fit, minmax(230px, 1fr))",
       },
     },
   },

@@ -1,13 +1,11 @@
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginBg, logo } from "../../assets/images";
-import { EyeIcon, EyeSlash, Lock, Username } from "../../assets/icons/SvgIcons";
-import { Loader, LoginSignupInput, Model } from "../../components";
-import { useForm } from "react-hook-form";
+import { Loader } from "../../components";
 import { useState } from "react";
-import { notifyError } from "../../components/Toast/Toast";
+import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../../api/Login/LoginApiSlice";
+import { businessLogin, login } from "../../api/Login/LoginApiSlice";
 import useAuth from "../../hooks/useAuth";
 import {
   setIdToLocalStorage,
@@ -15,19 +13,16 @@ import {
   setRoleToLocalStorage,
   setTokenToLocalStorage,
 } from "../../utils/Storage/StorageUtils";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
+import { UserLogin } from "./UserLogin";
+import { BusinessLogin } from "./BusinessLogin";
 
 const Login = () => {
   useScrollRestoration();
 
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const [loginFlag, setLoginFlag] = useState("user");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,6 +49,30 @@ const Login = () => {
     },
   });
 
+  const { mutate: BusinessLoginReq, isPending: loginBusinessPending } =
+    useMutation({
+      mutationFn: (formData) => businessLogin(formData),
+      onSuccess: (data) => {
+        setTokenToLocalStorage(data.access_token);
+        setRoleToLocalStorage(data.estimator.role);
+        setNameToLocalStorage(data.estimator.business_name);
+        setIdToLocalStorage(data.estimator.id);
+
+        const role = data.estimator.role;
+        const id = data.estimator.id;
+        const token = data.access_token;
+        const businessName = data.estimator.business_name;
+        setAuth({ role, id, token, businessName });
+        notifySuccess("Business Login Successful");
+        setTimeout(() => {
+          
+        }, 2000);
+      },
+      onError: () => {
+        notifyError("Incorrect Username or Password");
+      },
+    });
+
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
@@ -62,9 +81,13 @@ const Login = () => {
     Login(data);
   };
 
+  const handleBusinessLoginForm = (data) => {
+    BusinessLoginReq(data);
+  };
+
   return (
     <section className="bg-[#f1f1e6] h-full w-full relative">
-      {loginPending && <Loader />}
+      {loginPending && loginBusinessPending && <Loader />}
       <div className="main_container mx-auto">
         <div className="flex flex-col justify-center items-center h-screen">
           <div className="w-[70%] grid grid-cols-[0.8fr,1fr] rounded-2xl overflow-hidden shadow-xl bg-white">
@@ -88,73 +111,71 @@ const Login = () => {
                 <img src={loginBg} alt="" className="h-full object-cover" />
               </figure>
             </div>
-            <div className="flex flex-col py-[1rem] w-full justify-center items-center flex-shrink-0">
-              <div className="mb-[1rem] flex flex-col items-center gap-[0.3rem]">
-                <h2 className="text-[1rem] text-[#71a8c4] font-semibold text-center leading-[150%]">
-                  Welcome To
-                </h2>
-                <h1 className="text-[1.6rem] text-primary font-bold text-center leading-[150%]">
-                  Plastering Estimates & Insights
-                </h1>
-                <p className="font-[500] text-[12px] w-[75%] text-center leading-[150%]">
-                  Log in to seamlessly track & analyze every aspect of your
-                  activities for enhanced productivity and ensight
-                </p>
-              </div>
-              <form
-                onSubmit={handleSubmit(handleLoginForm)}
-                className="w-[70%]"
-              >
-                <div className="mb-4">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
+            <div className="flex py-[1rem] w-full justify-center items-center flex-shrink-0">
+              <div className="flex flex-col  w-full justify-center items-center flex-shrink-0">
+                <div className="flex items-center justify-center gap-2 text-[0.8rem] font-semibold text-white mb-4">
+                  <div
+                    className={`py-2 px-10 rounded-md cursor-pointer ${
+                      loginFlag === "user"
+                        ? "bg-primary  "
+                        : "bg-gray-100 text-primary/70"
+                    }`}
+                    onClick={() => setLoginFlag("user")}
                   >
-                    Email/Username
-                  </label>
-
-                  <LoginSignupInput
-                    icon={<Username />}
-                    placeholder={"Enter username or email"}
-                    type={Model.username.type}
-                    name={Model.username.name}
-                    register={register}
-                    errors={errors}
-                    minLength={Model.username.minLength.value}
-                    minMessage={Model.username.minLength.message}
-                    required={Model.username.required}
-                  />
-                </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
+                    <p>User / Admin Login</p>
+                  </div>
+                  <div
+                    className={`py-2 px-10 rounded-md cursor-pointer ${
+                      loginFlag === "business"
+                        ? "bg-primary  "
+                        : "bg-gray-100 text-primary/70"
+                    }`}
+                    onClick={() => setLoginFlag("business")}
                   >
-                    Password
-                  </label>
-                  <LoginSignupInput
-                    icon={<Lock />}
-                    placeholder={Model.password.placeholder}
-                    type={showPassword ? "text" : Model.password.type}
-                    name={Model.password.name}
-                    register={register}
-                    errors={errors}
-                    minLength={Model.password.minLength.value}
-                    minMessage={Model.password.minLength.message}
-                    required={Model.password.required}
-                    handlePasswordToggle={handlePasswordToggle}
-                    sufix={
-                      showPassword ? (
-                        <EyeIcon strokeColor={"#8BB4C8"} />
-                      ) : (
-                        <EyeSlash />
-                      )
-                    }
-                  />
+                    <p>Business Login</p>
+                  </div>
                 </div>
-                <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all ease-in-out duration-200">
-                  Login
-                </button>
+                {loginFlag === "user" ? (
+                  <>
+                    <div className="mb-[1rem] flex flex-col items-center gap-[0.3rem]">
+                      <h2 className="text-[1rem] text-[#71a8c4] font-semibold text-center leading-[150%]">
+                        Welcome To
+                      </h2>
+                      <h1 className="text-[1.6rem] text-primary font-bold text-center leading-[150%]">
+                        Plastering Estimates & Insights
+                      </h1>
+                      <p className="font-[500] text-[12px] w-[75%] text-center leading-[150%]">
+                        Log in to seamlessly track & analyze every aspect of
+                        your activities for enhanced productivity and ensight
+                      </p>
+                    </div>
+                    <UserLogin
+                      handleLoginForm={handleLoginForm}
+                      handlePasswordToggle={handlePasswordToggle}
+                      showPassword={showPassword}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-[1rem] flex flex-col items-center gap-[0.3rem]">
+                      <h2 className="text-[1rem] text-[#71a8c4] font-semibold text-center leading-[150%]">
+                        Welcome ! Login to manage your business
+                      </h2>
+                      <h1 className="text-[1.6rem] text-primary font-bold text-center leading-[150%]">
+                        Plastering Estimates & Insights
+                      </h1>
+                      <p className="font-[500] text-[12px] w-[75%] text-center leading-[150%]">
+                        Log in to manage, track, and analyze your business
+                        operations
+                      </p>
+                    </div>
+                    <BusinessLogin
+                      handleBusinessLoginForm={handleBusinessLoginForm}
+                      showPassword={showPassword}
+                      handlePasswordToggle={handlePasswordToggle}
+                    />
+                  </>
+                )}
                 <div className="text-[12px] text-center mt-[0.5rem]">
                   <div className="">
                     Don't have an account?{" "}
@@ -176,7 +197,7 @@ const Login = () => {
                     </p>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
           <div className="text-[12px] text-center mt-[2rem] text-primary">

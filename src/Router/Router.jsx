@@ -7,6 +7,7 @@ import {
   ClientProjects,
   Clients,
   Dashboard,
+  EditClient,
   EditProject,
   Login,
   Projects,
@@ -19,14 +20,17 @@ import ProtectedRoute, {
 } from "./ProtectedRoute";
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
 import useAuth from "../hooks/useAuth";
+import { BusinessDashboard } from "../pages/Dashboard/BusinessDashboard";
 
 const DashboardPriority = () => {
   const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
   return auth?.role === "admin" || (role && role === "admin") ? (
     <Dashboard />
-  ) : (
+  ) : auth?.role === "client" || (role && role === "client") ? (
     <ClientDashboard />
+  ) : (
+    <BusinessDashboard />
   );
 };
 
@@ -78,6 +82,12 @@ export const router = createBrowserRouter([
             <Clients />
           </ProtectedClientRoute>
         ),
+        children: [
+          {
+            path: "editClient/:id",
+            element: <EditClient />,
+          },
+        ],
       },
     ],
   },
