@@ -25,8 +25,6 @@ const Login = () => {
   const [loginFlag, setLoginFlag] = useState("user");
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.pathname || "/";
 
   const { mutate: Login, isPending: loginPending } = useMutation({
     mutationFn: (formData) => login(formData),
@@ -41,11 +39,9 @@ const Login = () => {
       const token = data.access_token;
       const userName = data.user.name;
       setAuth({ role, id, token, userName });
-
-      navigate(from, { replace: true });
     },
     onError: () => {
-      notifyError("Incorrect Username or Password");
+      notifyError("Incorrect Email / Username or Password");
     },
   });
 
@@ -53,23 +49,24 @@ const Login = () => {
     useMutation({
       mutationFn: (formData) => businessLogin(formData),
       onSuccess: (data) => {
-        setTokenToLocalStorage(data.access_token);
+        setTokenToLocalStorage(data.token);
         setRoleToLocalStorage(data.estimator.role);
         setNameToLocalStorage(data.estimator.business_name);
         setIdToLocalStorage(data.estimator.id);
 
         const role = data.estimator.role;
         const id = data.estimator.id;
-        const token = data.access_token;
+        const token = data.token;
         const businessName = data.estimator.business_name;
         setAuth({ role, id, token, businessName });
+
         notifySuccess("Business Login Successful");
         setTimeout(() => {
-          
+          console.log("hello");
         }, 2000);
       },
       onError: () => {
-        notifyError("Incorrect Username or Password");
+        notifyError("Incorrect Email / Username or Password");
       },
     });
 
@@ -87,7 +84,7 @@ const Login = () => {
 
   return (
     <section className="bg-[#f1f1e6] h-full w-full relative">
-      {loginPending && loginBusinessPending && <Loader />}
+      {(loginPending || loginBusinessPending) && <Loader />}
       <div className="main_container mx-auto">
         <div className="flex flex-col justify-center items-center h-screen">
           <div className="w-[70%] grid grid-cols-[0.8fr,1fr] rounded-2xl overflow-hidden shadow-xl bg-white">

@@ -116,3 +116,7 @@ input:-webkit-autofill:focus {
 .admin__estimator:hover::-webkit-scrollbar-thumb {
   background-color: #182c3a;
 }
+
+sider-quick-compose-btn {
+  display: none;
+}

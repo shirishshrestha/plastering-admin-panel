@@ -21,6 +21,7 @@ import ProtectedRoute, {
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
 import useAuth from "../hooks/useAuth";
 import { BusinessDashboard } from "../pages/Dashboard/BusinessDashboard";
+import BusinessDirectory from "../pages/BusinessDirectory/BusinessDirectory";
 
 const DashboardPriority = () => {
   const role = getRoleFromLocalStorage();
@@ -88,6 +89,14 @@ export const router = createBrowserRouter([
             element: <EditClient />,
           },
         ],
+      },
+      {
+        path: "/business",
+        element: (
+          <ProtectedClientRoute>
+            <BusinessDirectory />
+          </ProtectedClientRoute>
+        ),
       },
     ],
   },

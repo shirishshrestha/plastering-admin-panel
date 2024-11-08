@@ -391,8 +391,8 @@ export const Business = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="#71a8c4"
-      className="size-6"
+      stroke="currentColor"
+      className="size-7"
     >
       <path
         strokeLinecap="round"

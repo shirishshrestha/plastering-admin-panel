@@ -206,12 +206,16 @@ export const Dashboard = () => {
             <h4 className="font-bold text-start pb-[1.2rem]">Project Status</h4>
 
             <div className="max-w-[340px] ">
-              <DoughnutChart
-                dealData={doughnutData}
-                datasets={doughnutDatasets}
-                legendPosition={"bottom"}
-                legendTextColor={"#fff"}
-              />
+              {TotalProjectStatusData?.total_projects < 1 ? (
+                <h4>No data available</h4>
+              ) : (
+                <DoughnutChart
+                  dealData={doughnutData}
+                  datasets={doughnutDatasets}
+                  legendPosition={"bottom"}
+                  legendTextColor={"#fff"}
+                />
+              )}
             </div>
           </div>
         </div>

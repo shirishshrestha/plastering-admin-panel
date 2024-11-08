@@ -161,7 +161,10 @@ export const ClientDashboard = () => {
                   <TotalProjects />
                 </div>
                 <p className="font-semibold capitalize text-[1rem] ">
-                  Total Projects - {ProjectStatusData?.pending_projects || "0"}
+                  Total Projects -{" "}
+                  {ProjectStatusData?.pending_projects +
+                    ProjectStatusData?.completed_projects +
+                    ProjectStatusData?.running_projects || "0"}
                 </p>
               </div>
             </div>
@@ -194,12 +197,19 @@ export const ClientDashboard = () => {
             <h4 className="font-bold text-start text-[18px]">Project Status</h4>
 
             <div className="max-w-[340px] mt-[0.5rem]">
-              <DoughnutChart
-                dealData={doughnutData}
-                datasets={doughnutDatasets}
-                legendPosition={"bottom"}
-                legendTextColor={"#fff"}
-              />
+              {ProjectStatusData?.pending_projects +
+                ProjectStatusData?.completed_projects +
+                ProjectStatusData?.running_projects <
+              1 ? (
+                <h4>No data available</h4>
+              ) : (
+                <DoughnutChart
+                  dealData={doughnutData}
+                  datasets={doughnutDatasets}
+                  legendPosition={"bottom"}
+                  legendTextColor={"#fff"}
+                />
+              )}
             </div>
           </div>
         </div>

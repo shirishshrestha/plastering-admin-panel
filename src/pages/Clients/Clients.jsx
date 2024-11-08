@@ -90,17 +90,7 @@ const Clients = () => {
               ))}
             </thead>
             <tbody className="">
-              {UserPending ? (
-                [...Array(5)].map((_, index) => (
-                  <tr key={index} className="h-[1.5rem]">
-                    {[...Array(5)].map((_, index) => (
-                      <td key={index} className="py-[1.5rem] first:pl-[0.5rem]">
-                        <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : UserData?.data.length > 0 ? (
+              {UserData?.data.length > 0 ? (
                 UserData?.data
                   .filter((user) => user.role === "client")
                   .map((user) => (

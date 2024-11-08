@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { logo } from "../../assets/images";
-import { DashboardSvg, ProjectsSvg, Users } from "../../assets/icons/SvgIcons";
+import {
+  Business,
+  DashboardSvg,
+  ProjectsSvg,
+  Users,
+} from "../../assets/icons/SvgIcons";
 import { NavLink } from "react-router-dom";
 import { LogoutComp } from "../../utils/Logout/Logout";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
@@ -98,6 +103,28 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
                 }`}
               >
                 Clients
+              </span>
+            </NavLink>
+          )}
+          {role === "admin" && (
+            <NavLink
+              to="/business"
+              className={({ isActive }) =>
+                `${
+                  isActive ? "bg-light text-primary sidebar-menu" : ""
+                } flex items-center gap-[0.5rem] rounded-lg p-[0.7rem] ${
+                  sidebarToggle ? "w-full" : "w-fit"
+                } `
+              }
+              title="Business Directory"
+            >
+              <Business />
+              <span
+                className={`transition-all duration-300 w-fit ${
+                  showText ? "block" : "hidden"
+                }`}
+              >
+                Business Directory
               </span>
             </NavLink>
           )}
