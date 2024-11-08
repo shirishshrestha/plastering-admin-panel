@@ -3,6 +3,7 @@ import { EditClient } from "./Clients/EditClients";
 import { ClientDashboard } from "./Dashboard/ClientDashboard";
 import { Dashboard } from "./Dashboard/Dashboard";
 import Login from "./Login/Login";
+import PageNotFound from "./PageNotFound/PageNotFound";
 import { AddProject } from "./Projects/AddProject";
 import { ClientProjects } from "./Projects/ClientProjects";
 import { EditProject } from "./Projects/EditProject";
@@ -26,4 +27,5 @@ export {
   Clients,
   BusinessSignup,
   EditClient,
+  PageNotFound,
 };

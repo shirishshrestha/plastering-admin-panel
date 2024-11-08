@@ -29,7 +29,8 @@ const BusinessDirectory = () => {
   ];
   return (
     <section className="mt-[.5rem] pb-[1rem]">
-      {/* {UserPending && <Loader />} */}
+      {EstimatorPending && <Loader />}
+
       <div className="mb-2">
         <h2 class="font-bold text-[1.4rem] text-start">List of Businesses</h2>
       </div>

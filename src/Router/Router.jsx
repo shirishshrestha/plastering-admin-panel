@@ -10,6 +10,7 @@ import {
   EditClient,
   EditProject,
   Login,
+  PageNotFound,
   Projects,
   Signup,
   ViewProject,
@@ -123,5 +124,9 @@ export const router = createBrowserRouter([
         <BusinessSignup />
       </ProtectedLoginSignupRoute>
     ),
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
   },
 ]);
