@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
+import { Calendar, TotalProjects } from "../../assets/icons/SvgIcons";
 import {
-  Calendar,
-  CompletedProjects,
-  TotalProjects,
-} from "../../assets/icons/SvgIcons";
-import { DoughnutChart, Loader, LogoutConfirmation } from "../../components";
+  DoughnutChart,
+  EmptyData,
+  Loader,
+  LogoutConfirmation,
+} from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
 import {
   getIdFromLocalStorage,
@@ -15,7 +16,6 @@ import {
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
-import EmptyData from "../../components/EmptyData/EmptyData";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import useScrollRestoration from "../../hooks/useScrollRestoration";

@@ -1,3 +1,5 @@
+import EditBusiness from "./BusinessDirectory/EditBusiness";
+import ViewBusiness from "./BusinessDirectory/ViewBusiness";
 import Clients from "./Clients/Clients";
 import { EditClient } from "./Clients/EditClients";
 import { ClientDashboard } from "./Dashboard/ClientDashboard";
@@ -28,4 +30,6 @@ export {
   BusinessSignup,
   EditClient,
   PageNotFound,
+  ViewBusiness,
+  EditBusiness,
 };

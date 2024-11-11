@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getClients } from "../../api/User/UserApiSlice";
-import { Loader, Pagination } from "../../components";
-import EmptyData from "../../components/EmptyData/EmptyData";
+import { EmptyData, Loader, Pagination } from "../../components";
 import {
   Link,
   Outlet,
@@ -11,7 +10,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { SearchInput } from "../../components/Input/SearchInput";
-import { EditIcon, EyeIcon, TrashIcon } from "../../assets/icons/SvgIcons";
+import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
 
 const Clients = () => {

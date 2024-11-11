@@ -620,7 +620,7 @@ const BusinessSignup = () => {
               </div>
 
               <div className="mb-4">
-                <p className="font-bold ">6. Login and Account Details:</p>
+                <p className="font-bold ">7. Login and Account Details:</p>
                 <div className="mt-2 grid grid-cols-custom gap-x-4 gap-y-3">
                   <div>
                     <label

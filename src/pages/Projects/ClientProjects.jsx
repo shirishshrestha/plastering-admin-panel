@@ -11,6 +11,7 @@ import {
 } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
+  EmptyData,
   Loader,
   LogoutConfirmation,
   Pagination,
@@ -27,11 +28,11 @@ import {
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
-import EmptyData from "../../components/EmptyData/EmptyData";
+
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const ClientProjects = () => {
   useScrollRestoration();

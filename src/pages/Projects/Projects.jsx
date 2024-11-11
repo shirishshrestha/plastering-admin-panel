@@ -12,6 +12,7 @@ import {
 } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
+  EmptyData,
   Loader,
   LogoutConfirmation,
   Pagination,
@@ -36,7 +37,7 @@ import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
-import EmptyData from "../../components/EmptyData/EmptyData";
+
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { SearchInput } from "../../components/Input/SearchInput";
 

@@ -1,6 +1,7 @@
 import { BarChart } from "./BarChart/BarChart";
 import { ConfirmationPopup } from "./ConfirmationPopup/ConfirmationPopup";
 import { DoughnutChart } from "./DoughnutChart/DoughnutChart";
+import EmptyData from "./EmptyData/EmptyData";
 import AdminEstimation from "./Estimation/AdminEstimation";
 import ClientEstimation from "./Estimation/ClientEstimation";
 import { EditInput } from "./Input/EditInput";
@@ -30,4 +31,5 @@ export {
   EditInput,
   Loader,
   ConfirmationPopup,
+  EmptyData,
 };

@@ -18,6 +18,7 @@ export default {
       },
       gridTemplateColumns: {
         custom: "repeat(auto-fit, minmax(230px, 1fr))",
+        business: "repeat(auto-fit, minmax(250px, 1fr))",
       },
     },
   },

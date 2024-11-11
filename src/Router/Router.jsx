@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import {
   AddProject,
@@ -7,12 +7,14 @@ import {
   ClientProjects,
   Clients,
   Dashboard,
+  EditBusiness,
   EditClient,
   EditProject,
   Login,
   PageNotFound,
   Projects,
   Signup,
+  ViewBusiness,
   ViewProject,
 } from "../pages";
 import ProtectedRoute, {
@@ -98,6 +100,16 @@ export const router = createBrowserRouter([
             <BusinessDirectory />
           </ProtectedClientRoute>
         ),
+        children: [
+          {
+            path: "viewBusiness/:id",
+            element: <ViewBusiness />,
+          },
+          {
+            path: "editBusiness/:id",
+            element: <EditBusiness />,
+          },
+        ],
       },
     ],
   },

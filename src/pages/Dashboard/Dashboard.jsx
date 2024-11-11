@@ -5,9 +5,8 @@ import {
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
 import {
-  BarChart,
   DoughnutChart,
-  LineChart,
+  EmptyData,
   Loader,
   LogoutConfirmation,
 } from "../../components";
@@ -16,7 +15,6 @@ import {
   getProjects,
   getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
-import EmptyData from "../../components/EmptyData/EmptyData";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
 import useLogout from "../../hooks/useLogout";
