@@ -139,7 +139,7 @@ export const Projects = () => {
   const tableHead = [
     "P. Id",
     "Project Name",
-    "Client Name",
+    // "Client Name",
     "Project Location",
     "Required By Date",
     "Status",
@@ -261,9 +261,9 @@ export const Projects = () => {
                                   : project.name
                                 : "-"}
                             </h2>
-                            <p className="text-sm font-[500] text-end">
+                            {/* <p className="text-sm font-[500] text-end">
                               {project.user.name}
-                            </p>
+                            </p> */}
                             <div
                               className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
                                 project.status === "pending"
@@ -364,11 +364,19 @@ export const Projects = () => {
                             : item.name
                           : "-"}
                       </td>
-                      <td className="py-[1rem]">
-                        {item.user.name.length > 15
-                          ? `${item.user.name.slice(0, 15)}...`
-                          : item.user.name}
-                      </td>
+                      {/* <td className="py-[1rem]">
+                        {item.user.name ? (
+                          item.user.name.length > 25 ? (
+                            <Tooltip content={item.user.name}>
+                              {`${item.user.name.slice(0, 25)}...`}
+                            </Tooltip>
+                          ) : (
+                            item.user.name
+                          )
+                        ) : (
+                          "-"
+                        )}
+                      </td> */}
                       <td className="py-[1rem]">
                         {item.address.length > 15
                           ? `${item.address.slice(0, 15)}...`
