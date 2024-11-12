@@ -584,8 +584,7 @@ const BusinessSignup = () => {
                       htmlFor="scope"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                     >
-                      Scope or Specialisation{" "}
-                      <span className="text-red-500 ">*</span>
+                      Scope or Specialisation
                     </label>
                     <LoginSignupInput
                       placeholder={"Enter scope or specialisation"}
@@ -597,7 +596,6 @@ const BusinessSignup = () => {
                       message={
                         "Invalid scope. Must contain only alphabetic characters"
                       }
-                      required={"Please scope or specialisation"}
                     />
                   </div>
                   <div>

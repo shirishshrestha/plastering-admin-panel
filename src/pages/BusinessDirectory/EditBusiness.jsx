@@ -112,7 +112,7 @@ const EditBusiness = () => {
                 htmlFor="abn"
                 className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
               >
-                ABN / ACN
+                ABN / ACN <span className="text-red-500 ">*</span>
               </label>
               <LoginSignupInput
                 placeholder={Model.ACN.placeholder}
@@ -126,6 +126,7 @@ const EditBusiness = () => {
                 maxMessage={Model.ACN.maxLength.message}
                 regValue={Model.ACN.pattern.value}
                 message={Model.ACN.pattern.message}
+                required={Model.ACN.required}
               />
             </div>
             <div>
@@ -430,7 +431,7 @@ const EditBusiness = () => {
                 htmlFor="postcode"
                 className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
               >
-                Postcode
+                Postcode <span className="text-red-500 ">*</span>
               </label>
 
               <LoginSignupInput
@@ -443,6 +444,7 @@ const EditBusiness = () => {
                 message={
                   "Invalid postcode. Must contain alphanumeric characters only"
                 }
+                required={"Please enter postcode"}
               />
             </div>
           </div>
@@ -548,7 +550,7 @@ const EditBusiness = () => {
                 htmlFor="scope"
                 className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
               >
-                Scope or Specialisation <span className="text-red-500 ">*</span>
+                Scope or Specialisation
               </label>
               <LoginSignupInput
                 placeholder={"Enter scope or specialisation"}
@@ -560,7 +562,6 @@ const EditBusiness = () => {
                 message={
                   "Invalid scope. Must contain only alphabetic characters"
                 }
-                required={"Please scope or specialisation"}
               />
             </div>
             <div>
