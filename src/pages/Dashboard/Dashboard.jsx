@@ -94,7 +94,6 @@ export const Dashboard = () => {
 
   const tableHead = [
     "Project Name",
-    "Client Name",
     "Project Location",
     "Required By Date",
     "Status",
@@ -257,7 +256,7 @@ export const Dashboard = () => {
                           : item.name
                         : "-"}
                     </td>
-                    <td className="py-[1rem]">{item.user.name}</td>
+
                     <td className="py-[1rem]">
                       {item.address.length > 20
                         ? `${item.address.slice(0, 20)}...`
