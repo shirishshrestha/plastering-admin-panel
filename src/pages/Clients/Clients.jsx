@@ -124,7 +124,10 @@ const Clients = () => {
                       </td>
                       <td>
                         <div className="flex gap-[0.7rem]">
-                          <button className="p-[5px] rounded-md bg-editBackground">
+                          <button
+                            className="p-[5px] rounded-md bg-editBackground"
+                            onClick={() => navigate(`editClient/${user.id}`)}
+                          >
                             <EditIcon color="#8c62ff" />
                           </button>
                           <Link to="">

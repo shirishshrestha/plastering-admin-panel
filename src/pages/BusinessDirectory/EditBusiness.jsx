@@ -1,6 +1,9 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getSingleEstimator } from "../../api/Business/BusinessApiSlice";
-import { useQuery } from "@tanstack/react-query";
+import {
+  editEstimator,
+  getSingleEstimator,
+} from "../../api/Business/BusinessApiSlice";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Loader, LoginSignupInput, Model } from "../../components";
 import { useEffect } from "react";
@@ -9,13 +12,6 @@ const EditBusiness = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm();
 
   const {
     data: SingleEstimatorData,
@@ -27,46 +23,47 @@ const EditBusiness = () => {
     enabled: location.pathname.includes("editBusiness"),
   });
 
+  const EditBusiness = useMutation({
+    mutationFn: (data) => editEstimator(id, data),
+    onSuccess: () => {},
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty },
+  } = useForm();
+
   useEffect(() => {
-    setValue("id", SingleEstimatorData?.estimator?.id);
-    setValue("business_name", SingleEstimatorData?.estimator?.business_name);
-    setValue("abn", SingleEstimatorData?.estimator?.abn);
-    setValue("trade_type", SingleEstimatorData?.estimator?.trade_type);
-    setValue(
-      "business_structure",
-      SingleEstimatorData?.estimator?.business_structure
-    );
-    setValue("fullname", SingleEstimatorData?.estimator?.fullname);
-    setValue("company_role", SingleEstimatorData?.estimator?.company_role);
-    setValue("email", SingleEstimatorData?.estimator?.email);
-    setValue("phone_number", SingleEstimatorData?.estimator?.phone_number);
-    setValue("address", SingleEstimatorData?.estimator?.address);
-    setValue("city", SingleEstimatorData?.estimator?.city);
-    setValue("state", SingleEstimatorData?.estimator?.state);
-    setValue("country", SingleEstimatorData?.estimator?.country);
-    setValue("postcode", SingleEstimatorData?.estimator?.postcode);
-    setValue("billing_name", SingleEstimatorData?.estimator?.billing_name);
-    setValue(
-      "billing_address",
-      SingleEstimatorData?.estimator?.billing_address
-    );
-    setValue("billing_email", SingleEstimatorData?.estimator?.billing_email);
-    setValue("estimator_name", SingleEstimatorData?.estimator?.estimator_name);
-    setValue(
-      "estimator_email",
-      SingleEstimatorData?.estimator?.estimator_email
-    );
-    setValue(
-      "estimator_number",
-      SingleEstimatorData?.estimator?.estimator_number
-    );
-    setValue("project_type", SingleEstimatorData?.estimator?.project_type);
-    setValue("scope", SingleEstimatorData?.estimator?.scope);
-    setValue(
-      "regions_covered",
-      SingleEstimatorData?.estimator?.regions_covered
-    );
-  }, [SingleEstimatorData, setValue]);
+    if (SingleEstimatorData) {
+      reset({
+        id: SingleEstimatorData?.estimator.id,
+        business_name: SingleEstimatorData?.estimator.business_name,
+        abn: SingleEstimatorData?.estimator.abn,
+        trade_type: SingleEstimatorData?.estimator.trade_type,
+        business_structure: SingleEstimatorData?.estimator.business_structure,
+        fullname: SingleEstimatorData?.estimator.fullname,
+        company_role: SingleEstimatorData?.estimator.company_role,
+        email: SingleEstimatorData?.estimator.email,
+        phone_number: SingleEstimatorData?.estimator.phone_number,
+        address: SingleEstimatorData?.estimator.address,
+        city: SingleEstimatorData?.estimator.city,
+        state: SingleEstimatorData?.estimator.state,
+        country: SingleEstimatorData?.estimator.country,
+        postcode: SingleEstimatorData?.estimator.postcode,
+        billing_name: SingleEstimatorData?.estimator.billing_name,
+        billing_address: SingleEstimatorData?.estimator.billing_address,
+        billing_email: SingleEstimatorData?.estimator.billing_email,
+        estimator_name: SingleEstimatorData?.estimator.estimator_name,
+        estimator_email: SingleEstimatorData?.estimator.estimator_email,
+        estimator_number: SingleEstimatorData?.estimator.estimator_number,
+        project_type: SingleEstimatorData?.estimator.project_type,
+        scope: SingleEstimatorData?.estimator.scope,
+        regions_covered: SingleEstimatorData?.estimator.regions_covered,
+      });
+    }
+  }, [SingleEstimatorData, reset]);
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
@@ -81,7 +78,10 @@ const EditBusiness = () => {
           <p>Edit Business</p>
         </div>
       </div>
-      <form onSubmit={handleSubmit()} className="mt-[0.8rem] px-4">
+      <form
+        onSubmit={handleSubmit((data) => EditBusiness.mutate(data))}
+        className="mt-[0.8rem] px-4"
+      >
         <div className="mb-4">
           <p className="font-bold ">1. Business Information:</p>
           <div className="mt-2 grid grid-cols-business gap-x-4 gap-y-3">
@@ -591,7 +591,10 @@ const EditBusiness = () => {
           >
             Cancel
           </button>
-          <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light">
+          <button
+            className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400"
+            disabled={!isDirty}
+          >
             Submit
           </button>
         </div>

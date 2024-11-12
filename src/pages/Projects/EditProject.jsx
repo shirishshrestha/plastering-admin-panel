@@ -40,22 +40,25 @@ export const EditProject = () => {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
-    setValue,
     reset,
   } = useForm();
 
   useEffect(() => {
-    setValue("project_type", SingleProjectData?.project_type);
-    setValue("date", SingleProjectData?.start_date);
-    setValue("additional_info", SingleProjectData?.additional_requirements);
-    setValue("project_name", SingleProjectData?.name);
-    setValue("address", SingleProjectData?.address);
-    setValue("cloud_link", SingleProjectData?.cloud_link);
-    setValue("project_file", SingleProjectData?.files);
-    setSelectedFiles(SingleProjectData?.files);
-  }, [SingleProjectData, setValue]);
+    if (SingleProjectData) {
+      reset({
+        project_type: SingleProjectData?.project_type,
+        date: SingleProjectData?.start_date,
+        additional_info: SingleProjectData?.additional_requirements,
+        project_name: SingleProjectData?.name,
+        address: SingleProjectData?.address,
+        cloud_link: SingleProjectData?.cloud_link,
+        project_file: SingleProjectData?.files,
+      });
+      setSelectedFiles(SingleProjectData?.files);
+    }
+  }, [SingleProjectData, reset]);
 
   const { logout } = useLogout();
 
@@ -74,14 +77,14 @@ export const EditProject = () => {
 
   const { mutate: EditProject, isPending: editProjectPending } = useMutation({
     mutationFn: (data) => editProject(data, id),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries("projects");
       notifySuccess("Project edited successfully");
       setTimeout(() => {
         navigate("/projects");
       }, 2000);
     },
-    onError: (error) => {
+    onError: () => {
       notifyError("Something went wrong! Please try again");
     },
   });
@@ -120,9 +123,7 @@ export const EditProject = () => {
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-        {editProjectPending && <Loader />}
-
-        {viewProjectPending && <Loader />}
+        {(editProjectPending || viewProjectPending) && <Loader />}
 
         {logoutConfirationShow && (
           <LogoutConfirmation
@@ -429,13 +430,16 @@ export const EditProject = () => {
               >
                 Cancel
               </button>
-              <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light ">
+              <button
+                className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400"
+                disabled={!isDirty}
+              >
                 Submit
               </button>
             </div>
           </form>
         </div>
-        {<CustomToastContainer />}
+        <CustomToastContainer />
       </section>
     </>
   );

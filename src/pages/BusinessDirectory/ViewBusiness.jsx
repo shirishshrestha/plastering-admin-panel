@@ -57,7 +57,7 @@ const ViewBusiness = () => {
               </p>
             </div>
             <div>
-              <p className="text-[15px] font-[700]">
+              <p className="text-[15px] font-[600]">
                 ABN / ACN:{" "}
                 <span className="font-[500] ">
                   {" "}

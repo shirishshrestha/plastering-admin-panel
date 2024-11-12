@@ -25,3 +25,15 @@ export const getUserById = async (id) => {
     throw error;
   }
 };
+export const editClient = async (id, data) => {
+  try {
+    const response = await instance.put(`/users/${id}`, {
+      name: data.fullname,
+      email: data.email,
+      username: data.username,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
