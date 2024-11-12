@@ -84,6 +84,7 @@ const BusinessSignup = () => {
   const handleBusinessSignupForm = (data) => {
     BusinessRegister(data);
   };
+
   return (
     <section className="bg-[#f1f1e6] h-fit w-full pb-[0.5rem] relative">
       {signupBusinessPending && <Loader />}
