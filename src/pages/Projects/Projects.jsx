@@ -16,6 +16,7 @@ import {
   Loader,
   LogoutConfirmation,
   Pagination,
+  CustomToastContainer,
 } from "../../components";
 import {
   Link,
@@ -33,13 +34,13 @@ import {
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
 import { useEffect, useState } from "react";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { SearchInput } from "../../components/Input/SearchInput";
+import { Tooltip } from "flowbite-react";
 
 export const Projects = () => {
   useScrollRestoration();
@@ -359,21 +360,43 @@ export const Projects = () => {
                     <tr key={item.id} className=" last:border-none  ">
                       <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
                       <td className="py-[1rem] pl-[0.5rem]">
-                        {item.name
-                          ? item.name.length > 15
-                            ? `${item.name.slice(0, 15)}...`
-                            : item.name
-                          : "-"}
+                        {item.name ? (
+                          item.name.length > 25 ? (
+                            <Tooltip content={item.name}>
+                              {`${item.name.slice(0, 25)}...`}
+                            </Tooltip>
+                          ) : (
+                            item.name
+                          )
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="py-[1rem]">
-                        {item.user.name.length > 15
-                          ? `${item.user.name.slice(0, 15)}...`
-                          : item.user.name}
+                        {item.user.name ? (
+                          item.user.name.length > 25 ? (
+                            <Tooltip content={item.user.name}>
+                              {`${item.user.name.slice(0, 25)}...`}
+                            </Tooltip>
+                          ) : (
+                            item.user.name
+                          )
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="py-[1rem]">
-                        {item.address.length > 15
-                          ? `${item.address.slice(0, 15)}...`
-                          : item.address}
+                        {item.address ? (
+                          item.address.length > 25 ? (
+                            <Tooltip content={item.address}>
+                              {`${item.address.slice(0, 25)}...`}
+                            </Tooltip>
+                          ) : (
+                            item.address
+                          )
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="py-[1rem]">{item.start_date}</td>
                       <td className="py-[1rem] ">{item.status}</td>

@@ -7,12 +7,16 @@ import {
   Lock,
   Username,
 } from "../../assets/icons/SvgIcons";
-import { Loader, LoginSignupInput, Model } from "../../components";
+import {
+  Loader,
+  LoginSignupInput,
+  Model,
+  CustomToastContainer,
+} from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { signupClient } from "../../api/Register/RegisterApiSlice";
 import { useMutation } from "@tanstack/react-query";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 

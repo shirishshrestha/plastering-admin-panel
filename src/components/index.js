@@ -14,6 +14,7 @@ import { Model } from "./Model/Model";
 import { Pagination } from "./Pagination/Pagination";
 import ProfileTab from "./ProfileTab/ProfileTab";
 import Sidebar from "./Sidebar/Sidebar";
+import CustomToastContainer from "./Toast/ToastContainer";
 
 export {
   Sidebar,
@@ -32,4 +33,5 @@ export {
   Loader,
   ConfirmationPopup,
   EmptyData,
+  CustomToastContainer,
 };

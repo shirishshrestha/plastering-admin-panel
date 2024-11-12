@@ -5,8 +5,14 @@ import {
 } from "../../api/Business/BusinessApiSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Loader, LoginSignupInput, Model } from "../../components";
+import {
+  Loader,
+  LoginSignupInput,
+  Model,
+  CustomToastContainer,
+} from "../../components";
 import { useEffect } from "react";
+import { notifySuccess } from "../../components/Toast/Toast";
 
 const EditBusiness = () => {
   const { id } = useParams();
@@ -25,7 +31,12 @@ const EditBusiness = () => {
 
   const EditBusiness = useMutation({
     mutationFn: (data) => editEstimator(id, data),
-    onSuccess: () => {},
+    onSuccess: () => {
+      notifySuccess("Business updated successfully");
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000);
+    },
   });
 
   const {
@@ -67,7 +78,7 @@ const EditBusiness = () => {
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-      {SingleEstimatorPending && <Loader />}
+      {(SingleEstimatorPending || EditBusiness.isPending) && <Loader />}
       <div>
         <h2 className="font-bold text-[1.2rem]">
           Edit Business - {SingleEstimatorData?.estimator.business_name}
@@ -589,17 +600,19 @@ const EditBusiness = () => {
           <button
             className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
             onClick={() => navigate(-1)}
+            type="button"
           >
             Cancel
           </button>
           <button
             className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400"
-            disabled={!isDirty}
+            disabled={!isDirty || EditBusiness.isPending}
           >
             Submit
           </button>
         </div>
       </form>
+      <CustomToastContainer />
     </section>
   );
 };

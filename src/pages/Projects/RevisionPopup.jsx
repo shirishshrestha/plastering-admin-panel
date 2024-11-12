@@ -1,7 +1,11 @@
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { EditInput, Loader, Model } from "../../components";
+import {
+  EditInput,
+  Loader,
+  Model,
+  CustomToastContainer,
+} from "../../components";
 import { useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
@@ -380,7 +384,7 @@ export const RevisionPopup = ({
             </div>
           </form>
         </div>
-        {<CustomToastContainer />}
+        <CustomToastContainer />
       </div>
     </div>
   );

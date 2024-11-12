@@ -1,9 +1,8 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginBg, logo } from "../../assets/images";
-import { Loader } from "../../components";
+import { CustomToastContainer, Loader } from "../../components";
 import { useState } from "react";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { useMutation } from "@tanstack/react-query";
 import { businessLogin, login } from "../../api/Login/LoginApiSlice";
 import useAuth from "../../hooks/useAuth";

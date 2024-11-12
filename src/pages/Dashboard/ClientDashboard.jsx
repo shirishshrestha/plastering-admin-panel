@@ -251,16 +251,10 @@ export const ClientDashboard = () => {
                   .map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
                       <td className="py-[1rem] pl-[0.5rem]">
-                        {item.name
-                          ? item.name.length > 20
-                            ? `${item.name.slice(0, 20)}...`
-                            : item.name
-                          : "-"}
+                        {item.name ? item.name : "-"}
                       </td>
                       <td className="py-[1rem]">
-                        {item.address.length > 20
-                          ? `${item.address.slice(0, 20)}...`
-                          : item.address}
+                        {item.address ? item.address : "-"}
                       </td>
                       <td className="py-[1rem]">{item.start_date}</td>
 

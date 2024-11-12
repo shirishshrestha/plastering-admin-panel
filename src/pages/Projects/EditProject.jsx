@@ -1,7 +1,12 @@
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { EditInput, Loader, LogoutConfirmation, Model } from "../../components";
+import {
+  EditInput,
+  Loader,
+  LogoutConfirmation,
+  Model,
+  CustomToastContainer,
+} from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";

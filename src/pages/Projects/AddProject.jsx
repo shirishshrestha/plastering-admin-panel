@@ -1,7 +1,12 @@
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { Input, Loader, LogoutConfirmation, Model } from "../../components";
+import {
+  Input,
+  Loader,
+  LogoutConfirmation,
+  Model,
+  CustomToastContainer,
+} from "../../components";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useState } from "react";
@@ -621,7 +626,7 @@ export const AddProject = () => {
             </div>
           </form>
         </div>
-        {<CustomToastContainer />}
+        <CustomToastContainer />
       </section>
     </>
   );

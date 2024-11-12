@@ -1,11 +1,15 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { EditInput, Loader, Model } from "../../components";
+import {
+  EditInput,
+  Loader,
+  Model,
+  CustomToastContainer,
+} from "../../components";
 import { useForm } from "react-hook-form";
 import { editClient, getUserById } from "../../api/User/UserApiSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
 
 export const EditClient = () => {
   const { id } = useParams();
