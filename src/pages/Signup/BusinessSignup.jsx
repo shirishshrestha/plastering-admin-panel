@@ -145,7 +145,7 @@ const BusinessSignup = () => {
                       htmlFor="abn"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                     >
-                      ABN / ACN
+                      ABN / ACN <span className="text-red-500 ">*</span>
                     </label>
                     <LoginSignupInput
                       placeholder={Model.ACN.placeholder}
@@ -159,6 +159,7 @@ const BusinessSignup = () => {
                       maxMessage={Model.ACN.maxLength.message}
                       regValue={Model.ACN.pattern.value}
                       message={Model.ACN.pattern.message}
+                      required={Model.ACN.required}
                     />
                   </div>
                   <div>
@@ -464,7 +465,7 @@ const BusinessSignup = () => {
                       htmlFor="postcode"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                     >
-                      Postcode
+                      Postcode <span className="text-red-500 ">*</span>
                     </label>
 
                     <LoginSignupInput
@@ -477,6 +478,7 @@ const BusinessSignup = () => {
                       message={
                         "Invalid postcode. Must contain alphanumeric characters only"
                       }
+                      required={"Please enter postcode"}
                     />
                   </div>
                 </div>
