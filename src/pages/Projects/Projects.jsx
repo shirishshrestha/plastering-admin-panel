@@ -29,6 +29,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
 import { queryClient } from "../../utils/Query/Query";
+import useAuth from "../../hooks/useAuth";
 
 const tableHead = [
   "ID",
@@ -44,7 +45,8 @@ const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchName, setSearchName] = useState("");
+  const { searchName, setSearchName } = useAuth();
+
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
 
@@ -52,10 +54,6 @@ const Projects = () => {
     () => parseInt(searchParams.get("page") || "1", 10),
     [searchParams]
   );
-
-  useEffect(() => {
-    setSearchName(searchParams.get("Search") || "");
-  }, [searchParams]);
 
   const {
     isPending,
@@ -97,7 +95,7 @@ const Projects = () => {
 
   const updatePageNumber = (newPageNumber) => {
     const updatedParams = new URLSearchParams(searchParams);
-    updatedParams.set("page", newPageNumber);
+    updatedParams.set("page", newPageNumber.toString());
     setSearchParams(updatedParams);
   };
 
@@ -131,10 +129,11 @@ const Projects = () => {
               </h2>
               <div className="flex gap-[1rem]">
                 <SearchInput
-                  defaultValue={""}
+                  defaultValue={searchName}
                   setSearchParams={setSearchParams}
                   searchParams={searchParams}
                   placeholder={"Search by id or status"}
+                  setSearchName={setSearchName}
                 />
                 <Link to="addProject">
                   <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">

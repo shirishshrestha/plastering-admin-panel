@@ -87,16 +87,6 @@ export const ProjectBooks = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useLogout();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchId, setSearchId] = useState("");
-
-  const [pageNumber, setPageNumber] = useState(
-    parseInt(searchParams.get("page")) || 1
-  );
-
-  useEffect(() => {
-    setSearchId(searchParams.get("Search") || "");
-  }, [searchParams, searchParams]);
 
   const [projectName, setProjectName] = useState("");
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
@@ -290,7 +280,7 @@ export const ProjectBooks = () => {
               <h2 className="font-bold text-[1.4rem] text-start">
                 List of Project Books
               </h2>
-              <div className="flex gap-[1rem]">
+              {/* <div className="flex gap-[1rem]">
                 <SearchInput
                   defaultValue={""}
                   setSearchParams={setSearchParams}
@@ -299,7 +289,7 @@ export const ProjectBooks = () => {
                   setPageNumber={setPageNumber}
                   placeholder={"Search by id or status"}
                 />
-              </div>
+              </div> */}
             </div>
             <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
               <thead className="bg-primary text-white  ">
@@ -344,24 +334,7 @@ export const ProjectBooks = () => {
               </tbody>
             </table>
           </div>
-          {/* {ProjectData?.last_page > 1 && (
-            <div className="mb-[1rem] flex items-center justify-end">
-              <Pagination
-                nextClick={() => {
-                  const newPageNumber = pageNumber + 1;
-                  setPageNumber(newPageNumber);
-                  updatePageNumber(newPageNumber);
-                }}
-                prevClick={() => {
-                  const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
-                  setPageNumber(newPageNumber);
-                  updatePageNumber(newPageNumber);
-                }}
-                lastPage={ProjectData?.last_page}
-                pageNumber={ProjectData?.current_page}
-              />
-            </div>
-          )} */}
+
           <CustomToastContainer />
         </section>
       ) : (
