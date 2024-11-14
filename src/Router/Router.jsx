@@ -12,6 +12,7 @@ import {
   EditProject,
   Login,
   PageNotFound,
+  ProjectBooks,
   Projects,
   Signup,
   ViewBusiness,
@@ -42,7 +43,7 @@ const ProjectsPriority = () => {
   const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
   return auth?.role === "admin" || (role && role === "admin") ? (
-    <Projects />
+    <ProjectBooks />
   ) : (
     <ClientProjects />
   );
@@ -62,20 +63,26 @@ export const router = createBrowserRouter([
         element: <DashboardPriority />,
       },
       {
-        path: "/projects",
+        path: "/projectbooks",
         element: <ProjectsPriority />,
         children: [
           {
-            path: "addProject",
-            element: <AddProject />,
-          },
-          {
-            path: "viewProject/:id",
-            element: <ViewProject />,
-          },
-          {
-            path: "editProject/:id",
-            element: <EditProject />,
+            path: "projects",
+            element: <Projects />,
+            children: [
+              {
+                path: "addProject",
+                element: <AddProject />,
+              },
+              {
+                path: "viewProject/:id",
+                element: <ViewProject />,
+              },
+              {
+                path: "editProject/:id",
+                element: <EditProject />,
+              },
+            ],
           },
         ],
       },

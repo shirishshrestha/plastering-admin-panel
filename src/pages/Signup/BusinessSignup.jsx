@@ -18,7 +18,7 @@ import { ErrorMessage } from "@hookform/error-message";
 
 const BusinessSignup = () => {
   useScrollRestoration();
-
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 

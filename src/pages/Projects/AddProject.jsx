@@ -7,7 +7,7 @@ import {
   Model,
   CustomToastContainer,
 } from "../../components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigationType } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useState } from "react";
 import {
@@ -102,7 +102,7 @@ export const AddProject = () => {
   };
 
   const handleProjectCancel = () => {
-    navigate("/projects");
+    navigate("/projectbooks/projects");
   };
 
   return (
@@ -129,55 +129,6 @@ export const AddProject = () => {
             onSubmit={handleSubmit(addProjectForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
-            {role && role === "admin" && (
-              <div className="flex flex-col gap-[0.4rem]">
-                <label className="font-bold">Registered Client</label>
-                <select
-                  name="registered_client"
-                  className={`cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-[0.4px] focus:ring-blue-600 focus:border-transparent text-[14px] ${
-                    errors["registered_client"]
-                      ? "focus:ring-red-500 !border-red-500"
-                      : ""
-                  } `}
-                  {...register("registered_client", {
-                    required: "Please select a registered client",
-                  })}
-                >
-                  <option value="" hidden selected>
-                    Select a registered client
-                  </option>
-                  {userPending && <option disabled>Loading...</option>}
-                  {error && <option disabled>Error Loading</option>}
-                  {RegisteredClients?.filter(
-                    (client) => client.role !== "admin"
-                  ).length < 1 ? (
-                    <option value="" disabled>
-                      No data available
-                    </option>
-                  ) : (
-                    RegisteredClients?.filter(
-                      (client) => client.role !== "admin"
-                    ).map((client) => (
-                      <option key={client.id} value={client.id}>
-                        {client.name}
-                      </option>
-                    ))
-                  )}
-                </select>
-                <ErrorMessage
-                  errors={errors}
-                  name="registered_client"
-                  render={() => (
-                    <p
-                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                      key="registered-client"
-                    >
-                      Please select a client
-                    </p>
-                  )}
-                />
-              </div>
-            )}
             <div className="flex flex-col gap-[0.4rem]">
               <label className="font-bold">Project Name (Optional)</label>
               <Input
@@ -208,7 +159,7 @@ export const AddProject = () => {
                 required={Model.address.required}
               />
             </div>
-            <div className="flex flex-col gap-[0.4rem]">
+            {/* <div className="flex flex-col gap-[0.4rem]">
               <label className="font-bold">Cloud Link (Optional)</label>
               <Input
                 placeholder={Model.cloudLink.placeholder}
@@ -218,8 +169,8 @@ export const AddProject = () => {
                 errors={errors}
                 required={false}
               />
-            </div>
-            {role && role === "client" && (
+            </div> */}
+            {/* {role && role === "client" && (
               <div className="flex flex-col ">
                 <div className="flex flex-col gap-[0.4rem]">
                   <label className="font-bold">Required by date</label>
@@ -252,330 +203,146 @@ export const AddProject = () => {
                   )}
                 />
               </div>
-            )}
+            )} */}
 
-            {role && role === "client" && (
-              <>
-                <div className="flex flex-col gap-[1rem]">
-                  <div className=" bg-white flex flex-col gap-3  w-full">
-                    <legend className=" font-bold   select-none">
-                      Project Type
-                    </legend>
-                    <div className="">
-                      <label
-                        htmlFor="commercial"
-                        name="project_type"
-                        className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
-                          errors["project_type"] && "ring-red-500"
-                        } `}
-                      >
-                        Commercial Project
-                        <input
-                          type="radio"
-                          name="project_type"
-                          className="peer/html w-4 h-4 absolute accent-current right-3"
-                          id="commercial"
-                          value="Commercial"
-                          {...register("project_type", {
-                            required: "Select a project type",
-                          })}
-                        />
-                      </label>
-                      <label
-                        htmlFor="domestic"
-                        className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
-                          errors["project_type"] && "ring-red-500"
-                        } `}
-                      >
-                        Domestic Project
-                        <input
-                          type="radio"
-                          name="project_type"
-                          className="w-4 h-4 absolute accent-current right-3"
-                          id="domestic"
-                          value="Domestic"
-                          {...register("project_type", {
-                            required: "Select a project type",
-                          })}
-                        />
-                      </label>
-                      <ErrorMessage
-                        errors={errors}
-                        name="project_type"
-                        render={() => (
-                          <p
-                            className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                            key="registered-client"
-                          >
-                            Please select a project type
-                          </p>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-[0.4rem]  ">
-                    <label className="font-bold">Upload Files (Optional)</label>
-                    <input
-                      type="file"
-                      name="project_file"
-                      {...register("project_file", {
-                        onChange: (e) => {
-                          const newFiles = Array.from(e.target.files);
-                          const filteredFiles = newFiles.filter(
-                            (newFile) =>
-                              !selectedFiles.some(
-                                (file) =>
-                                  file.name === newFile.name &&
-                                  file.lastModified === newFile.lastModified
-                              )
-                          );
-
-                          setSelectedFiles([
-                            ...selectedFiles,
-                            ...filteredFiles,
-                          ]);
-
-                          e.target.value = null;
-                        },
-                      })}
-                      id="fileInput"
-                      className="hidden"
-                      multiple
-                    />
-                    <label
-                      htmlFor="fileInput"
-                      className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
-                    >
-                      <label
-                        className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
-                        htmlFor="fileInput"
-                      >
-                        Upload
-                      </label>
-                      Select Files
-                    </label>
-
-                    <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                      <span>Uploaded Files:</span>
-                      <div className="flex gap-x-7 gap-y-2 flex-wrap">
-                        {selectedFiles.length > 0 &&
-                          Array.from(selectedFiles).map((file, index) => (
-                            <div
-                              key={`${file.name}-${file.lastModified}`}
-                              className="flex gap-[0.5rem] items-center text-[14px]"
-                            >
-                              <Document />
-                              <p className="font-[500]">{file.name}</p>
-
-                              <button
-                                type="button"
-                                className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
-                                onClick={() => {
-                                  setSelectedFiles(
-                                    selectedFiles.filter((_, i) => i !== index)
-                                  );
-                                }}
-                              >
-                                <TrashIcon />
-                              </button>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col  gap-[0.4rem]">
-                  <label htmlFor="additional-req" className="font-bold">
-                    Additional Requirements (Optional)
-                  </label>
-                  <textarea
-                    name="additional_info"
-                    id="additional-req"
-                    className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[130px] max-h-[290px]"
-                    {...register("additional_info", {})}
-                  ></textarea>
-                </div>
-              </>
-            )}
-
-            {role && role === "admin" && (
-              <div className="flex flex-col gap-[1rem]">
-                <div class=" bg-white flex flex-col gap-3  w-full">
-                  <legend class=" font-bold   select-none">Project Type</legend>
-                  <div className="">
-                    <label
-                      htmlFor="commercial"
-                      name="project_type"
-                      class={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
-                        errors["project_type"] && "ring-red-500"
-                      } `}
-                    >
-                      Commercial Project
-                      <input
-                        type="radio"
-                        name="project_type"
-                        class="peer/html w-4 h-4 absolute accent-current right-3"
-                        id="commercial"
-                        value="Commercial"
-                        {...register("project_type", {
-                          required: "Select a project type",
-                        })}
-                      />
-                    </label>
-                    <label
-                      htmlFor="domestic"
-                      class={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
-                        errors["project_type"] && "ring-red-500"
-                      } `}
-                    >
-                      Domestic Project
-                      <input
-                        type="radio"
-                        name="project_type"
-                        class="w-4 h-4 absolute accent-current right-3"
-                        id="domestic"
-                        value="Domestic"
-                        {...register("project_type", {
-                          required: "Select a project type",
-                        })}
-                      />
-                    </label>
-                    <ErrorMessage
-                      errors={errors}
-                      name="project_type"
-                      render={() => (
-                        <p
-                          className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                          key="registered-client"
-                        >
-                          Please select a project type
-                        </p>
-                      )}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-[0.4rem] ">
-                  <label className="font-bold">Upload Files (Optional)</label>
-                  <input
-                    type="file"
-                    name="project_file"
-                    {...register("project_file", {
-                      onChange: (e) => {
-                        const newFiles = Array.from(e.target.files);
-                        const filteredFiles = newFiles.filter(
-                          (newFile) =>
-                            !selectedFiles.some(
-                              (file) =>
-                                file.name === newFile.name &&
-                                file.lastModified === newFile.lastModified
-                            )
-                        );
-
-                        setSelectedFiles([...selectedFiles, ...filteredFiles]);
-
-                        e.target.value = null;
-                      },
-                    })}
-                    id="fileInput"
-                    className="hidden"
-                    multiple
-                  />
+            <div className="flex flex-col gap-[1rem]">
+              <div className=" bg-white flex flex-col gap-3  w-full">
+                <legend className=" font-bold   select-none">
+                  Project Type
+                </legend>
+                <div className="">
                   <label
-                    htmlFor="fileInput"
-                    className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
+                    htmlFor="commercial"
+                    name="project_type"
+                    className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
+                      errors["project_type"] && "ring-red-500"
+                    } `}
                   >
-                    <label
-                      className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
-                      htmlFor="fileInput"
-                    >
-                      Upload
-                    </label>
-                    Select Files
-                  </label>
-
-                  <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                    <span>Uploaded Files:</span>
-                    <div className="flex flex-wrap gap-x-7 gap-y-2">
-                      {selectedFiles.length > 0 &&
-                        Array.from(selectedFiles).map((file, index) => (
-                          <div
-                            key={`${file.name}-${index}`}
-                            className="flex gap-[0.5rem] items-center text-[14px]"
-                          >
-                            <Document />
-                            <p className="font-[500]">{file.name}</p>
-
-                            <button
-                              type="button"
-                              className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
-                              onClick={() => {
-                                setSelectedFiles(
-                                  selectedFiles.filter((_, i) => i !== index)
-                                );
-                              }}
-                            >
-                              <TrashIcon />
-                            </button>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {role && role === "admin" && (
-              <div className="flex flex-col gap-[1rem]">
-                <div className="flex flex-col ">
-                  <div className="flex flex-col gap-[0.4rem]">
-                    <label className="font-bold">Required by date</label>
+                    Commercial Project
                     <input
-                      type="date"
-                      name="date"
-                      className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
-                        errors["date"]
-                          ? "focus:ring-red-500 border-red-500"
-                          : ""
-                      }`}
-                      {...register("date", {
-                        required: "Please select the date",
+                      type="radio"
+                      name="project_type"
+                      className="peer/html w-4 h-4 absolute accent-current right-3"
+                      id="commercial"
+                      value="Commercial"
+                      {...register("project_type", {
+                        required: "Select a project type",
                       })}
-                      min={
-                        new Date(new Date().setDate(new Date().getDate() + 6))
-                          .toISOString()
-                          .split("T")[0]
-                      }
                     />
-                  </div>
+                  </label>
+                  <label
+                    htmlFor="domestic"
+                    className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
+                      errors["project_type"] && "ring-red-500"
+                    } `}
+                  >
+                    Domestic Project
+                    <input
+                      type="radio"
+                      name="project_type"
+                      className="w-4 h-4 absolute accent-current right-3"
+                      id="domestic"
+                      value="Domestic"
+                      {...register("project_type", {
+                        required: "Select a project type",
+                      })}
+                    />
+                  </label>
                   <ErrorMessage
                     errors={errors}
-                    name="date"
+                    name="project_type"
                     render={() => (
                       <p
                         className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                        key="date"
+                        key="registered-client"
                       >
-                        Please select the date
+                        Please select a project type
                       </p>
                     )}
                   />
                 </div>
-                <div className="flex flex-col row-span-2 gap-[0.4rem]">
-                  <label htmlFor="additional-req" className="font-bold">
-                    Additional Requirements (Optional)
-                  </label>
-                  <textarea
-                    name="additional_info"
-                    id="additional-req"
-                    className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[110px] max-h-[290px]"
-                    {...register("additional_info", {})}
-                  ></textarea>
-                </div>
               </div>
-            )}
+
+              {/* <div className="flex flex-col gap-[0.4rem]  ">
+                <label className="font-bold">Upload Files (Optional)</label>
+                <input
+                  type="file"
+                  name="project_file"
+                  {...register("project_file", {
+                    onChange: (e) => {
+                      const newFiles = Array.from(e.target.files);
+                      const filteredFiles = newFiles.filter(
+                        (newFile) =>
+                          !selectedFiles.some(
+                            (file) =>
+                              file.name === newFile.name &&
+                              file.lastModified === newFile.lastModified
+                          )
+                      );
+
+                      setSelectedFiles([...selectedFiles, ...filteredFiles]);
+
+                      e.target.value = null;
+                    },
+                  })}
+                  id="fileInput"
+                  className="hidden"
+                  multiple
+                />
+                <label
+                  htmlFor="fileInput"
+                  className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
+                >
+                  <label
+                    className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
+                    htmlFor="fileInput"
+                  >
+                    Upload
+                  </label>
+                  Select Files
+                </label>
+
+                <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                  <span>Uploaded Files:</span>
+                  <div className="flex gap-x-7 gap-y-2 flex-wrap">
+                    {selectedFiles.length > 0 &&
+                      Array.from(selectedFiles).map((file, index) => (
+                        <div
+                          key={`${file.name}-${file.lastModified}`}
+                          className="flex gap-[0.5rem] items-center text-[14px]"
+                        >
+                          <Document />
+                          <p className="font-[500]">{file.name}</p>
+
+                          <button
+                            type="button"
+                            className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
+                            onClick={() => {
+                              setSelectedFiles(
+                                selectedFiles.filter((_, i) => i !== index)
+                              );
+                            }}
+                          >
+                            <TrashIcon />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div> */}
+            </div>
+
+            <div className="flex flex-col  gap-[0.4rem]">
+              <label htmlFor="additional-req" className="font-bold">
+                Additional Requirements (Optional)
+              </label>
+              <textarea
+                name="additional_info"
+                id="additional-req"
+                className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[130px] max-h-[290px]"
+                {...register("additional_info", {})}
+              ></textarea>
+            </div>
 
             <div className="w-full  col-span-2  ">
               <div className="mb-[0.5rem]">
@@ -586,7 +353,7 @@ export const AddProject = () => {
                     {...register("terms", {
                       required: true,
                     })}
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-md !outline-none !ring-0   "
                   />
                   <label
                     htmlFor="terms-conditions"
@@ -611,7 +378,7 @@ export const AddProject = () => {
                   )}
                 />
               </div>
-              <div className="flex gap-3 justify-end items-center">
+              <div className="flex gap-3 justify-end items-center mt-4">
                 <button
                   className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
                   type="button"

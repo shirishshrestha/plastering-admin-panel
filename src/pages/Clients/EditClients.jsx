@@ -10,18 +10,20 @@ import { editClient, getUserById } from "../../api/User/UserApiSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
+import { queryClient } from "../../utils/Query/Query";
 
 export const EditClient = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const pageItem = location.state?.page || 1;
+  const searchItem = location.state?.search || "";
   const {
     isPending: SingleUserPending,
     error,
     data: SingleUser,
   } = useQuery({
-    queryKey: ["singleClient"],
+    queryKey: ["singleClient", id],
     queryFn: () => getUserById(id),
     enabled: location.pathname.includes("editClient"),
     staleTime: 6000,
@@ -47,12 +49,21 @@ export const EditClient = () => {
   const EditClient = useMutation({
     mutationFn: (data) => editClient(id, data),
     onSuccess: () => {
+      queryClient.invalidateQueries("clients");
       notifySuccess("Client updated successfully");
       setTimeout(() => {
-        navigate(-1);
-      }, 2000);
+        navigate(`/clients?page=${pageItem}&search=${searchItem}`, {
+          replace: true,
+        });
+      }, 1000);
     },
   });
+
+  const handleCancel = () => {
+    navigate(`/clients?page=${pageItem}&search=${searchItem}`, {
+      replace: true,
+    });
+  };
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
@@ -116,7 +127,7 @@ export const EditClient = () => {
           <div className="col-span-2 flex gap-[0.5rem] justify-end pt-[0.6rem]  ">
             <button
               className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
-              onClick={() => navigate(-1)}
+              onClick={handleCancel}
               type="button"
             >
               Cancel

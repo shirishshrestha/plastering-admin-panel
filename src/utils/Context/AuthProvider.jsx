@@ -9,6 +9,8 @@ export const AuthProvider = ({ children }) => {
 
   const [confirmationShow, setConfirmationShow] = useState(false);
 
+  const [searchName, setSearchName] = useState("");
+
   return (
     <AuthContext.Provider
       value={{
@@ -18,6 +20,8 @@ export const AuthProvider = ({ children }) => {
         setLogoutConfirationShow,
         setConfirmationShow,
         confirmationShow,
+        setSearchName,
+        searchName,
       }}
     >
       {children}

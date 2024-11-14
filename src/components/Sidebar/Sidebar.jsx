@@ -65,7 +65,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
           </NavLink>
 
           <NavLink
-            to="/projects"
+            to="/projectbooks"
             className={({ isActive }) =>
               `${
                 isActive ? "bg-light text-primary sidebar-menu " : ""
@@ -81,7 +81,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
                 showText ? "block" : "hidden"
               }`}
             >
-              Projects
+              Project Books
             </span>
           </NavLink>
           {role === "admin" && (
