@@ -11,7 +11,19 @@ import {
   GoBack,
   PlusIcon,
   TrashIcon,
-} from "../../assets/icons/SvgIcons";
+} from "../../../assets/icons/SvgIcons";
+
+import { Tooltip } from "flowbite-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import useScrollRestoration from "../../../hooks/useScrollRestoration";
+import { useSearchContext } from "../../../hooks/useClientContext";
+import {
+  deleteProject,
+  getProjects,
+} from "../../../api/Projects/ProjectsApiSlice";
+import { notifyError, notifySuccess } from "../../../components/Toast/Toast";
+import { queryClient } from "../../../utils/Query/Query";
 import {
   CustomToastContainer,
   DeleteConfirmation,
@@ -19,19 +31,7 @@ import {
   Loader,
   Pagination,
   SearchInput,
-} from "../../components";
-import { Tooltip } from "flowbite-react";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
-import {
-  deleteProject,
-  getProjects,
-} from "../../api/Projects/ProjectsApiSlice";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { notifySuccess } from "../../components/Toast/Toast";
-import { queryClient } from "../../utils/Query/Query";
-import useAuth from "../../hooks/useAuth";
-import { useSearchContext } from "../../hooks/useClientContext";
+} from "../../../components";
 
 const tableHead = [
   "P. Id",
@@ -41,7 +41,7 @@ const tableHead = [
   "Status",
   "Actions",
 ];
-const Projects = () => {
+export const ArchivedProjects = () => {
   useScrollRestoration();
 
   const location = useLocation();
@@ -151,13 +151,13 @@ const Projects = () => {
             </div>
           </div>
           <div className="mb-[1rem] flex gap-[1rem]">
-            <button className="px-4 py-2 text-light bg-secondary font-[600]  rounded-lg shadow-inner ">
+            <button
+              className="px-4 py-2 bg-white/80 font-[600] rounded-lg shadow-inner "
+              onClick={() => navigate(`/projectbooks/projects`)}
+            >
               Active Projects
             </button>
-            <button
-              className="px-4 py-2 bg-white/80 font-[600]  rounded-lg shadow-inner"
-              onClick={() => navigate(`/projectbooks/archivedProjects`)}
-            >
+            <button className="px-4 py-2  font-[600] rounded-lg shadow-inner text-light bg-secondary">
               Archived Projects
             </button>
           </div>
@@ -255,5 +255,3 @@ const Projects = () => {
     </>
   );
 };
-
-export default Projects;

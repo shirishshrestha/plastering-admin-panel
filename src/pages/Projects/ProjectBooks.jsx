@@ -3,7 +3,7 @@ import { SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-cards";
 import { EffectCards } from "swiper/modules";
-import { PlusIcon, ProjectsSvg } from "../../assets/icons/SvgIcons";
+import { ProjectsSvg } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
   EmptyData,
@@ -12,25 +12,17 @@ import {
   Pagination,
   CustomToastContainer,
 } from "../../components";
-import {
-  Link,
-  Outlet,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   getProjects,
   getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
-import { SearchInput } from "../../components/Input/SearchInput";
-import { Tooltip } from "flowbite-react";
 
 const tableHead = [
   "PB. Id",
@@ -323,8 +315,8 @@ export const ProjectBooks = () => {
                     </td>
                     <td>
                       <button
-                        className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
-                        onClick={() => navigate(`projects`)}
+                        className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                        onClick={() => navigate(`projects`, { replace: false })}
                       >
                         View Projects
                       </button>

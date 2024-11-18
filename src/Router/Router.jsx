@@ -1,7 +1,9 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import {
+  AddJob,
   AddProject,
+  ArchivedProjects,
   BusinessSignup,
   ClientDashboard,
   ClientProjects,
@@ -10,13 +12,13 @@ import {
   EditBusiness,
   EditClient,
   EditProject,
+  JobBook,
   Login,
   PageNotFound,
   ProjectBooks,
   Projects,
   Signup,
   ViewBusiness,
-  ViewProject,
 } from "../pages";
 import ProtectedRoute, {
   ProtectedClientRoute,
@@ -26,6 +28,7 @@ import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
 import useAuth from "../hooks/useAuth";
 import { BusinessDashboard } from "../pages/Dashboard/BusinessDashboard";
 import BusinessDirectory from "../pages/BusinessDirectory/BusinessDirectory";
+import { SearchProvider } from "../utils/Context/SearchProvider";
 
 const DashboardPriority = () => {
   const role = getRoleFromLocalStorage();
@@ -67,22 +70,40 @@ export const router = createBrowserRouter([
         element: <ProjectsPriority />,
         children: [
           {
+            index: true,
+            element: <ProjectsPriority />,
+          },
+          {
             path: "projects",
-            element: <Projects />,
-            children: [
-              {
-                path: "addProject",
-                element: <AddProject />,
-              },
-              {
-                path: "viewProject/:id",
-                element: <ViewProject />,
-              },
-              {
-                path: "editProject/:id",
-                element: <EditProject />,
-              },
-            ],
+            element: (
+              <SearchProvider>
+                <Projects />
+              </SearchProvider>
+            ),
+          },
+          {
+            path: "archivedProjects",
+            element: (
+              <SearchProvider>
+                <ArchivedProjects />
+              </SearchProvider>
+            ),
+          },
+          {
+            path: "addProject",
+            element: <AddProject />,
+          },
+          {
+            path: "editProject/:id",
+            element: <EditProject />,
+          },
+          {
+            path: "jobBook/:id",
+            element: <JobBook />,
+          },
+          {
+            path: "addJob",
+            element: <AddJob />,
           },
         ],
       },
@@ -90,7 +111,9 @@ export const router = createBrowserRouter([
         path: "/clients",
         element: (
           <ProtectedClientRoute>
-            <Clients />
+            <SearchProvider>
+              <Clients />
+            </SearchProvider>
           </ProtectedClientRoute>
         ),
         children: [

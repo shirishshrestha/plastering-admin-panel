@@ -12,7 +12,7 @@ import {
 import { SearchInput } from "../../components/Input/SearchInput";
 import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
-import useAuth from "../../hooks/useAuth";
+import { useSearchContext } from "../../hooks/useClientContext";
 
 const tableHead = [
   "Id",
@@ -28,7 +28,7 @@ const Clients = () => {
   const location = useLocation();
 
   let [searchParams, setSearchParams] = useSearchParams();
-  const { searchName, setSearchName } = useAuth();
+  const { searchName, setSearchName } = useSearchContext();
 
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),

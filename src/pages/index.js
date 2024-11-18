@@ -12,16 +12,18 @@ import { EditProject } from "./Projects/EditProject";
 import { ProjectBooks } from "./Projects/ProjectBooks";
 import Projects from "./Projects/Projects";
 import { RevisionPopup } from "./Projects/RevisionPopup";
-import ViewProject from "./Projects/ViewProject";
+import JobBook from "./Projects/JobBook";
 import BusinessSignup from "./Signup/BusinessSignup";
 import Signup from "./Signup/Signup";
+import { ArchivedProjects } from "./Projects/components/ArchivedProjects";
+import { AddJob } from "./Projects/components/AddJob";
 
 export {
   Dashboard,
   Projects,
   Login,
   AddProject,
-  ViewProject,
+  JobBook,
   Signup,
   ClientProjects,
   ClientDashboard,
@@ -34,4 +36,6 @@ export {
   ViewBusiness,
   EditBusiness,
   ProjectBooks,
+  ArchivedProjects,
+  AddJob,
 };
