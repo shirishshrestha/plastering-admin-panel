@@ -18,10 +18,8 @@ import {
 } from "../../api/Projects/ProjectsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const BusinessDashboard = () => {
-  useScrollRestoration();
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
 

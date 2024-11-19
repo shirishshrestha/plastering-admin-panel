@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import useScrollRestoration from "../../../hooks/useScrollRestoration";
 import useLogout from "../../../hooks/useLogout";
 import useAuth from "../../../hooks/useAuth";
 import { addProject } from "../../../api/Projects/ProjectsApiSlice";
@@ -19,8 +18,6 @@ import {
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 
 export const AddJob = () => {
-  useScrollRestoration();
-
   const navigate = useNavigate();
   const {
     register,

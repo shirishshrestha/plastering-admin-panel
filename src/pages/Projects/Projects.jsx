@@ -21,7 +21,6 @@ import {
   SearchInput,
 } from "../../components";
 import { Tooltip } from "flowbite-react";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 import {
   deleteProject,
   getProjects,
@@ -30,8 +29,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
 import { queryClient } from "../../utils/Query/Query";
-import useAuth from "../../hooks/useAuth";
-import { useSearchContext } from "../../hooks/useClientContext";
 
 const tableHead = [
   "P. Id",
@@ -42,12 +39,9 @@ const tableHead = [
   "Actions",
 ];
 const Projects = () => {
-  useScrollRestoration();
-
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { searchName, setSearchName } = useSearchContext();
 
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
@@ -58,13 +52,18 @@ const Projects = () => {
     [searchParams]
   );
 
+  const searchItem = useMemo(
+    () => searchParams.get("search") || "",
+    [searchParams]
+  );
+
   const {
     isPending,
     error,
     data: ProjectData,
   } = useQuery({
-    queryKey: ["projects", currentPage, searchName],
-    queryFn: () => getProjects(currentPage, searchName),
+    queryKey: ["projects", currentPage, searchItem],
+    queryFn: () => getProjects(currentPage, searchItem),
     enabled: location.pathname.includes("/projects"),
     staleTime: 6000,
   });
@@ -122,9 +121,7 @@ const Projects = () => {
           <div className="mb-[0.5rem] text-[12px] font-[500]">
             <div
               className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
-              onClick={() => {
-                navigate("/projectbooks");
-              }}
+              onClick={() => navigate("/projectbooks", { replace: true })}
             >
               <GoBack />
               Go Back
@@ -135,13 +132,7 @@ const Projects = () => {
               List of Projects
             </h2>
             <div className="flex gap-[1rem]">
-              <SearchInput
-                defaultValue={searchName}
-                setSearchParams={setSearchParams}
-                searchParams={searchParams}
-                placeholder={"Search by id or status"}
-                setSearchName={setSearchName}
-              />
+              <SearchInput placeholder={"Search by id or status"} />
               <Link to="/projectbooks/addProject">
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}

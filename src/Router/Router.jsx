@@ -28,18 +28,15 @@ import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
 import useAuth from "../hooks/useAuth";
 import { BusinessDashboard } from "../pages/Dashboard/BusinessDashboard";
 import BusinessDirectory from "../pages/BusinessDirectory/BusinessDirectory";
-import { SearchProvider } from "../utils/Context/SearchProvider";
 
 const DashboardPriority = () => {
   const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
-  return auth?.role === "admin" || (role && role === "admin") ? (
-    <Dashboard />
-  ) : auth?.role === "client" || (role && role === "client") ? (
-    <ClientDashboard />
-  ) : (
-    <BusinessDashboard />
-  );
+  if (auth?.role === "admin" || (role && role === "admin"))
+    return <Dashboard />;
+  if (auth?.role === "client" || (role && role === "client"))
+    return <ClientDashboard />;
+  return <BusinessDashboard />;
 };
 
 const ProjectsPriority = () => {
@@ -76,17 +73,13 @@ export const router = createBrowserRouter([
           {
             path: "projects",
             element: (
-              <SearchProvider>
                 <Projects />
-              </SearchProvider>
             ),
           },
           {
             path: "archivedProjects",
             element: (
-              <SearchProvider>
                 <ArchivedProjects />
-              </SearchProvider>
             ),
           },
           {
@@ -111,9 +104,7 @@ export const router = createBrowserRouter([
         path: "/clients",
         element: (
           <ProtectedClientRoute>
-            <SearchProvider>
               <Clients />
-            </SearchProvider>
           </ProtectedClientRoute>
         ),
         children: [

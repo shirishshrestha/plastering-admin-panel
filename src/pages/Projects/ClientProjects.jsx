@@ -31,11 +31,9 @@ import {
 
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { useState } from "react";
 
 export const ClientProjects = () => {
-  useScrollRestoration();
 
   const location = useLocation();
   const navigate = useNavigate();

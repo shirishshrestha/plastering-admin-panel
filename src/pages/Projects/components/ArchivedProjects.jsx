@@ -16,8 +16,6 @@ import {
 import { Tooltip } from "flowbite-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import useScrollRestoration from "../../../hooks/useScrollRestoration";
-import { useSearchContext } from "../../../hooks/useClientContext";
 import {
   deleteProject,
   getProjects,
@@ -42,12 +40,11 @@ const tableHead = [
   "Actions",
 ];
 export const ArchivedProjects = () => {
-  useScrollRestoration();
 
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { searchName, setSearchName } = useSearchContext();
+  const [searchName, setSearchName] = useState("");
 
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
@@ -65,7 +62,7 @@ export const ArchivedProjects = () => {
   } = useQuery({
     queryKey: ["projects", currentPage, searchName],
     queryFn: () => getProjects(currentPage, searchName),
-    enabled: location.pathname.includes("/projects"),
+    // enabled: location.pathname.includes("/projects"),
     staleTime: 6000,
   });
 

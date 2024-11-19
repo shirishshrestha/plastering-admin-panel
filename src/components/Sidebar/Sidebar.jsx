@@ -9,10 +9,8 @@ import {
 import { NavLink } from "react-router-dom";
 import { LogoutComp } from "../../utils/Logout/Logout";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
-  useScrollRestoration();
   const [showText, setShowText] = useState(false);
 
   const role = getRoleFromLocalStorage();

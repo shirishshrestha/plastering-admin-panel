@@ -20,7 +20,6 @@ import {
   SearchInput,
 } from "../../components";
 import { Tooltip } from "flowbite-react";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 import {
   deleteProject,
   getProjects,
@@ -79,8 +78,6 @@ const tableData = [
 ];
 
 const JobBook = () => {
-  useScrollRestoration();
-
   const location = useLocation();
   const navigate = useNavigate();
   // const [searchParams, setSearchParams] = useSearchParams();

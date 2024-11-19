@@ -17,7 +17,8 @@ export const EditClient = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const pageItem = location.state?.page || 1;
-  const searchItem = location.state?.search || "";
+  const searchItem = location.state?.searchItem || "";
+
   const {
     isPending: SingleUserPending,
     error,
@@ -52,7 +53,7 @@ export const EditClient = () => {
       queryClient.invalidateQueries("clients");
       notifySuccess("Client updated successfully");
       setTimeout(() => {
-        navigate(`/clients?page=${pageItem}&search=${searchItem}`, {
+        navigate(`/clients`, {
           replace: true,
         });
       }, 1000);

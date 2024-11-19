@@ -22,6 +22,9 @@ export default {
         custom: "repeat(auto-fit, minmax(230px, 1fr))",
         business: "repeat(auto-fit, minmax(250px, 1fr))",
       },
+      animation: {
+        "pulse-fast": "pulse 1s linear infinite",
+      },
     },
   },
   plugins: [flowbite.plugin()],

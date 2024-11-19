@@ -21,11 +21,8 @@ import { queryClient } from "../../utils/Query/Query";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const AddProject = () => {
-  useScrollRestoration();
-
   const navigate = useNavigate();
   const role = getRoleFromLocalStorage();
   const {

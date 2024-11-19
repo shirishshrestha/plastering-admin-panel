@@ -12,12 +12,10 @@ import {
   setRoleToLocalStorage,
   setTokenToLocalStorage,
 } from "../../utils/Storage/StorageUtils";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { UserLogin } from "./UserLogin";
 import { BusinessLogin } from "./BusinessLogin";
 
 const Login = () => {
-  useScrollRestoration();
 
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);

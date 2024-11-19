@@ -12,7 +12,6 @@ import {
 import { SearchInput } from "../../components/Input/SearchInput";
 import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
-import { useSearchContext } from "../../hooks/useClientContext";
 
 const tableHead = [
   "Id",
@@ -28,10 +27,14 @@ const Clients = () => {
   const location = useLocation();
 
   let [searchParams, setSearchParams] = useSearchParams();
-  const { searchName, setSearchName } = useSearchContext();
 
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
+    [searchParams]
+  );
+
+  const searchItem = useMemo(
+    () => searchParams.get("search") || "",
     [searchParams]
   );
 
@@ -40,8 +43,8 @@ const Clients = () => {
     error,
     data: UserData,
   } = useQuery({
-    queryKey: ["clients", currentPage, searchName],
-    queryFn: () => getClients(currentPage, searchName),
+    queryKey: ["clients", currentPage, searchItem],
+    queryFn: () => getClients(currentPage, searchItem),
     enabled: location.pathname === "/clients",
     staleTime: 6000,
   });
@@ -60,7 +63,7 @@ const Clients = () => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());
     setSearchParams(updatedParams);
-  };
+  }
 
   const processedUserData = useMemo(() => {
     if (!UserData) return [];
@@ -77,13 +80,7 @@ const Clients = () => {
       <div className="flex items-center pb-[0.5rem] justify-between">
         <h2 className="font-bold text-[1.4rem] text-start">List of Clients</h2>
         <div className="flex gap-[1rem]">
-          <SearchInput
-            defaultValue={searchName}
-            setSearchParams={setSearchParams}
-            searchParams={searchParams}
-            placeholder={"Search by name"}
-            setSearchName={setSearchName}
-          />
+          <SearchInput placeholder={"Search by name"} />
         </div>
       </div>
       <table className="w-full bg-white shadow-md rounded-lg overflow-hidden ">
@@ -131,7 +128,10 @@ const Clients = () => {
                         className="p-[5px] rounded-md bg-editBackground"
                         onClick={() =>
                           navigate(`editClient/${user.id}`, {
-                            state: { page: currentPage, search: searchName },
+                            state: {
+                              page: currentPage,
+                              searchItem: searchItem,
+                            },
                           })
                         }
                       >

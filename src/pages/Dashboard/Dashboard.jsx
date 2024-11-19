@@ -1,4 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  ScrollRestoration,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import {
   Calendar,
   CompletedProjects,
@@ -8,6 +13,7 @@ import {
   DoughnutChart,
   EmptyData,
   Loader,
+  LogoLoader,
   LogoutConfirmation,
 } from "../../components";
 import { useQuery } from "@tanstack/react-query";
@@ -15,15 +21,26 @@ import {
   getProjects,
   getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
-import { clientDashboard, curve, spiral, square } from "../../assets/images";
+import {
+  clientDashboard,
+  curve,
+  logo,
+  spiral,
+  square,
+} from "../../assets/images";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 
-export const Dashboard = () => {
-  useScrollRestoration();
+const tableHead = [
+  "Project Name",
+  "Project Location",
+  "Required By Date",
+  "Status",
+];
 
+export const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { logout } = useLogout();
 
@@ -47,6 +64,7 @@ export const Dashboard = () => {
   } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(1, ""),
+    enabled: location.pathname === "/",
   });
 
   const {
@@ -90,13 +108,6 @@ export const Dashboard = () => {
     },
   ];
 
-  const tableHead = [
-    "Project Name",
-    "Project Location",
-    "Required By Date",
-    "Status",
-  ];
-
   return (
     <section className="pt-[1rem]">
       {logoutConfirationShow && (
@@ -105,8 +116,7 @@ export const Dashboard = () => {
           setLogoutConfirationShow={setLogoutConfirationShow}
         />
       )}
-      {projectPending && <Loader />}
-      {projectStatusPending && <Loader />}
+      {(projectPending || projectStatusPending) && <LogoLoader />}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1.2rem] w-full h-full">
         <div className="w-full h-full flex flex-col gap-[1rem] justify-center">
           <div className="w-full bg-white rounded-lg shadow-lg py-[1rem] px-[2rem] relative overflow-hidden">
@@ -116,12 +126,8 @@ export const Dashboard = () => {
                   Welcome to the Admin Dashboard
                 </h3>
               </div>
-              <figure className="w-[150px] relative z-10">
-                <img
-                  src={clientDashboard}
-                  alt="dashboard"
-                  className="object-cover"
-                />
+              <figure className="w-[140px] relative z-10">
+                <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
               <img
                 src={square}
@@ -269,7 +275,7 @@ export const Dashboard = () => {
             </tbody>
           </table>
           <div className="mt-[1rem] ">
-            <Link to="/projects">
+            <Link to="/projectbooks">
               <button className="bg-primary font-semibold px-[30px] py-[10px] text-light rounded-lg hover:bg-secondary transition-all ease-in-out duration-200 hover:text-primary ">
                 See More
               </button>

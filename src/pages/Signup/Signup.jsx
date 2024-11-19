@@ -18,11 +18,8 @@ import { useState } from "react";
 import { signupClient } from "../../api/Register/RegisterApiSlice";
 import { useMutation } from "@tanstack/react-query";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const Signup = () => {
-  useScrollRestoration();
-
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 

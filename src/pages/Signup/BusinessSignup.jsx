@@ -12,12 +12,10 @@ import { signupBusiness } from "../../api/Register/RegisterApiSlice";
 import { useMutation } from "@tanstack/react-query";
 
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { EyeIcon, EyeSlash } from "../../assets/icons/SvgIcons";
 import { ErrorMessage } from "@hookform/error-message";
 
 const BusinessSignup = () => {
-  useScrollRestoration();
   
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);

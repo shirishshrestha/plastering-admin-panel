@@ -2,7 +2,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Tooltip } from "chart.js";
 import { EditIcon, EyeIcon, TrashIcon } from "../../assets/icons/SvgIcons";
-import { EmptyData, Loader, CustomToastContainer } from "../../components";
+import {
+  EmptyData,
+  Loader,
+  CustomToastContainer,
+  SearchInput,
+} from "../../components";
 import {
   deleteEstimator,
   getEstimators,
@@ -11,6 +16,15 @@ import { notifySuccess } from "../../components/Toast/Toast";
 import { useState } from "react";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
 import { queryClient } from "../../utils/Query/Query";
+
+const tableHead = [
+  "Id",
+  "Business Name",
+  "Username",
+  "Email",
+  "Registered Date",
+  "Actions",
+];
 
 const BusinessDirectory = () => {
   const navigate = useNavigate();
@@ -40,18 +54,10 @@ const BusinessDirectory = () => {
     },
   });
 
-  const tableHead = [
-    "Id",
-    "Business Name",
-    "Username",
-    "Email",
-    "Registered Date",
-    "Actions",
-  ];
-
   const handleProceedClick = () => {
     DeleteEstimator.mutate(projectId);
   };
+
   return (
     <>
       {location.pathname === "/business" ? (
@@ -65,10 +71,11 @@ const BusinessDirectory = () => {
               deleteLoading={DeleteEstimator.isPending}
             />
           )}
-          <div className="mb-2">
+          <div className="mb-2 flex justify-between">
             <h2 class="font-bold text-[1.4rem] text-start">
               List of Businesses
             </h2>
+            <SearchInput placeholder={"Search"} />
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden ">
             <thead className="bg-primary text-white  ">

@@ -22,7 +22,6 @@ import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/Delet
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const tableHead = [
   "PB. Id",
@@ -74,7 +73,6 @@ const doughnutBorderColor = [
 ];
 
 export const ProjectBooks = () => {
-  useScrollRestoration();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -296,7 +294,7 @@ export const ProjectBooks = () => {
               </thead>
               <tbody>
                 {ProjectBookData?.map((projectBook) => (
-                  <tr>
+                  <tr key={projectBook.id}>
                     <td className="py-[1rem] pl-[0.5rem]">{projectBook.id}</td>
                     <td className="py-[1rem] pl-[0.5rem]">
                       {projectBook.client_name}
