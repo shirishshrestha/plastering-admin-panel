@@ -9,6 +9,10 @@ export const AuthProvider = ({ children }) => {
 
   const [confirmationShow, setConfirmationShow] = useState(false);
 
+  const [isOpen, setIsOpen] = useState(false);
+  const openDrawer = () => setIsOpen(true);
+  const closeDrawer = () => setIsOpen(false);
+
   return (
     <AuthContext.Provider
       value={{
@@ -18,6 +22,9 @@ export const AuthProvider = ({ children }) => {
         setLogoutConfirationShow,
         setConfirmationShow,
         confirmationShow,
+        isOpen,
+        closeDrawer,
+        openDrawer,
       }}
     >
       {children}

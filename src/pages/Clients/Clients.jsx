@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { getClients } from "../../api/User/UserApiSlice";
-import { EmptyData, Loader, Pagination } from "../../components";
+import { FilterDrawer, EmptyData, Loader, Pagination } from "../../components";
 import {
   Link,
   Outlet,
@@ -12,6 +12,7 @@ import {
 import { SearchInput } from "../../components/Input/SearchInput";
 import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
+import useAuth from "../../hooks/useAuth";
 
 const tableHead = [
   "Id",
@@ -38,6 +39,15 @@ const Clients = () => {
     [searchParams]
   );
 
+  const registeredDate = useMemo(
+    () => searchParams.get("date") || "",
+    [searchParams]
+  );
+
+  console.log(registeredDate);
+
+  const { openDrawer } = useAuth();
+
   const {
     isPending: UserPending,
     error,
@@ -63,7 +73,7 @@ const Clients = () => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());
     setSearchParams(updatedParams);
-  }
+  };
 
   const processedUserData = useMemo(() => {
     if (!UserData) return [];
@@ -77,10 +87,23 @@ const Clients = () => {
   return (
     <div className="mt-[.5rem] pb-[1rem]">
       {UserPending && <Loader />}
+      <FilterDrawer
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      >
+        <FilterDrawer.RegisteredDate />
+        <FilterDrawer.Status />
+      </FilterDrawer>
       <div className="flex items-center pb-[0.5rem] justify-between">
         <h2 className="font-bold text-[1.4rem] text-start">List of Clients</h2>
-        <div className="flex gap-[1rem]">
+        <div className="flex gap-[1rem] items-end">
           <SearchInput placeholder={"Search by name"} />
+          <button
+            className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none"
+            onClick={openDrawer}
+          >
+            Filter
+          </button>
         </div>
       </div>
       <table className="w-full bg-white shadow-md rounded-lg overflow-hidden ">

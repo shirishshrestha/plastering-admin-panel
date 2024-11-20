@@ -33,8 +33,16 @@ import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 
-export const ClientProjects = () => {
+const tableHead = [
+  "Project Name",
+  "Add. Requirements",
+  "Project Location",
+  "Required by Date",
+  "Status",
+  "Action",
+];
 
+export const ClientProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -65,7 +73,7 @@ export const ClientProjects = () => {
   } = useQuery({
     queryKey: ["userProjects", pageNumber],
     queryFn: () => getUserProjects(user_id, pageNumber),
-    enabled: location.pathname === "/projects",
+    enabled: location.pathname === "/projectbooks",
     staleTime: 6000,
   });
 
@@ -74,17 +82,9 @@ export const ClientProjects = () => {
       queryKey: ["userRecentProjects"],
       queryFn: () => getUserProjects(user_id, 1),
       keepPreviousData: true,
-      enabled: location.pathname === "/projects",
+      enabled: location.pathname === "/projectbooks",
       staleTime: 6000,
     });
-
-  const updatePageNumber = (newPageNumber) => {
-    const updatedParams = new URLSearchParams(searchParams);
-
-    updatedParams.set("page", newPageNumber);
-
-    setSearchParams(updatedParams);
-  };
 
   const {
     isPending: projectStatusPending,
@@ -94,7 +94,7 @@ export const ClientProjects = () => {
     queryKey: ["projectStatus"],
     queryFn: () => getProjectsStatus(user_id),
     staleTime: 6000,
-    enabled: location.pathname === "/projects",
+    enabled: location.pathname === "/projectbooks",
   });
 
   const doughnutData = [
@@ -128,22 +128,13 @@ export const ClientProjects = () => {
     },
   ];
 
-  const tableHead = [
-    "Project Name",
-    "Add. Requirements",
-    "Project Location",
-    "Required by Date",
-    "Status",
-    "Action",
-  ];
-
   const handleViewProject = (id) => {
     navigate(`/projects/viewProject/${id}`);
   };
 
   return (
     <>
-      {location.pathname === "/projects" ? (
+      {location.pathname === "/projectbooks" ? (
         <section>
           {isPending && <Loader />}
           {projectStatusPending && <Loader />}
@@ -161,11 +152,17 @@ export const ClientProjects = () => {
                 </h2>
                 <div className="w-full flex justify-evenly">
                   <div className="max-w-[240px] pb-[1rem]">
-                    <DoughnutChart
-                      dealData={doughnutData}
-                      datasets={doughnutDatasets}
-                      legendPosition="bottom"
-                    />
+                    {ProjectStatusData?.total_projects > 0 ? (
+                      <DoughnutChart
+                        dealData={doughnutData}
+                        datasets={doughnutDatasets}
+                        legendPosition="bottom"
+                      />
+                    ) : (
+                      <h4 className="font-semibold text-[1rem]">
+                        No data available
+                      </h4>
+                    )}
                   </div>
                   <div className="p-[2rem] flex flex-col gap-[1rem] ">
                     {doughnutData.map((item, index) => (
@@ -177,7 +174,7 @@ export const ClientProjects = () => {
                        ${item.type === "Running" ? "bg-[#4bc0c0]" : ""}`}
                       >
                         <span className="font-bold text-[1.4rem]">
-                          {item.value}
+                          {item.value || 0}
                         </span>
                         {item.type}
                       </p>
@@ -267,7 +264,7 @@ export const ClientProjects = () => {
               <h2 className="font-bold text-[1.4rem] text-start">
                 List of Projects
               </h2>
-              <Link to="/projects/addProject">
+              <Link to="/projectbooks/addProject">
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}
                   <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
@@ -353,20 +350,9 @@ export const ClientProjects = () => {
           </div>
           {ProjectData?.total_pages > 1 && (
             <div className="mb-[1rem] flex items-center justify-end">
-              <Pagination
-                nextClick={() => {
-                  const newPageNumber = pageNumber + 1;
-                  setPageNumber(newPageNumber);
-                  updatePageNumber(newPageNumber);
-                }}
-                prevClick={() => {
-                  const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
-                  setPageNumber(newPageNumber);
-                  updatePageNumber(newPageNumber);
-                }}
-                lastPage={ProjectData?.total_pages}
-                pageNumber={pageNumber}
-              />
+              {/* <Pagination
+               
+              /> */}
             </div>
           )}
         </section>

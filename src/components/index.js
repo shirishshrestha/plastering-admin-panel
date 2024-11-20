@@ -17,6 +17,7 @@ import ProfileTab from "./ProfileTab/ProfileTab";
 import Sidebar from "./Sidebar/Sidebar";
 import CustomToastContainer from "./Toast/ToastContainer";
 import Pagination from "./Pagination/Pagination";
+import { FilterDrawer } from "./Drawer/Drawer";
 
 export {
   Sidebar,
@@ -39,4 +40,5 @@ export {
   SearchInput,
   DeleteConfirmation,
   LogoLoader,
+  FilterDrawer,
 };

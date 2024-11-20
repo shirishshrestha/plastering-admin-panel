@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import {
   AddJob,
@@ -11,6 +11,7 @@ import {
   Dashboard,
   EditBusiness,
   EditClient,
+  EditJob,
   EditProject,
   JobBook,
   Login,
@@ -72,15 +73,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "projects",
-            element: (
-                <Projects />
-            ),
+            element: <Projects />,
           },
           {
             path: "archivedProjects",
-            element: (
-                <ArchivedProjects />
-            ),
+            element: <ArchivedProjects />,
           },
           {
             path: "addProject",
@@ -98,13 +95,17 @@ export const router = createBrowserRouter([
             path: "addJob",
             element: <AddJob />,
           },
+          {
+            path: "editJob/:id",
+            element: <EditJob />,
+          },
         ],
       },
       {
         path: "/clients",
         element: (
           <ProtectedClientRoute>
-              <Clients />
+            <Clients />
           </ProtectedClientRoute>
         ),
         children: [

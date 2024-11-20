@@ -102,8 +102,7 @@ export const ClientDashboard = () => {
 
   return (
     <section className="pt-[1rem]">
-      {projectPending && <Loader />}
-      {projectStatusPending && <Loader />}
+      {(projectPending || projectStatusPending) && <Loader />}
 
       {logoutConfirationShow && (
         <LogoutConfirmation
@@ -199,10 +198,7 @@ export const ClientDashboard = () => {
             <h4 className="font-bold text-start text-[18px]">Project Status</h4>
 
             <div className="max-w-[340px] mt-[0.5rem]">
-              {ProjectStatusData?.pending_projects +
-                ProjectStatusData?.completed_projects +
-                ProjectStatusData?.running_projects <
-              1 ? (
+              {ProjectStatusData?.total_projects ? (
                 <h4>No data available</h4>
               ) : (
                 <DoughnutChart
@@ -231,18 +227,8 @@ export const ClientDashboard = () => {
               ))}
             </thead>
             <tbody className="capitalize">
-              {projectPending ? (
-                [...Array(5)].map((_, index) => (
-                  <tr key={index} className="h-[1.5rem]">
-                    {[...Array(4)].map((_, index) => (
-                      <td key={index} className="py-[1.5rem] first:pl-[0.5rem]">
-                        <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : ProjectData?.data.filter((item) => user_id === item.user_id)
-                  .length > 0 ? (
+              {ProjectData?.data.filter((item) => user_id === item.user_id)
+                .length > 0 ? (
                 ProjectData?.data
                   .filter((item) => user_id === item.user_id)
                   .slice(0, 4)

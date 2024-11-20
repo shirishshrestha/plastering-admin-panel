@@ -17,6 +17,7 @@ import BusinessSignup from "./Signup/BusinessSignup";
 import Signup from "./Signup/Signup";
 import { ArchivedProjects } from "./Projects/components/ArchivedProjects";
 import { AddJob } from "./Projects/components/AddJob";
+import { EditJob } from "./Projects/components/EditJob";
 
 export {
   Dashboard,
@@ -38,4 +39,5 @@ export {
   ProjectBooks,
   ArchivedProjects,
   AddJob,
+  EditJob,
 };
