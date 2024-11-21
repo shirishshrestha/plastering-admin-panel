@@ -72,21 +72,23 @@ const BusinessDirectory = () => {
             />
           )}
           <div className="mb-2 flex justify-between">
-            <h2 class="font-bold text-[1.4rem] text-start">
+            <h2 className="font-bold text-[1.4rem] text-start">
               List of Businesses
             </h2>
             <SearchInput placeholder={"Search"} />
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden ">
             <thead className="bg-primary text-white  ">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[1rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[1rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody className="">
               {EstimatorData?.estimators.length > 0 ? (

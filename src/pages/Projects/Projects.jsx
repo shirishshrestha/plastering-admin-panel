@@ -16,6 +16,7 @@ import {
   CustomToastContainer,
   DeleteConfirmation,
   EmptyData,
+  FilterDrawer,
   Loader,
   Pagination,
   SearchInput,
@@ -29,11 +30,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
 import { queryClient } from "../../utils/Query/Query";
+import useAuth from "../../hooks/useAuth";
 
 const tableHead = [
   "P. Id",
   "Project Name",
-  "Address",
+  "Project Location",
+  "Project Type",
+  "Additional Info",
   "Start Date",
   "Status",
   "Actions",
@@ -46,6 +50,8 @@ const Projects = () => {
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+
+  const { openDrawer } = useAuth();
 
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
@@ -117,16 +123,12 @@ const Projects = () => {
           />
         )}
         {isPending && <Loader />}
+        <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
+          <FilterDrawer.Status />
+          <FilterDrawer.ProjectType />
+          <FilterDrawer.RegisteredDate />
+        </FilterDrawer>
         <div>
-          <div className="mb-[0.5rem] text-[12px] font-[500]">
-            <div
-              className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
-              onClick={() => navigate("/projectbooks", { replace: true })}
-            >
-              <GoBack />
-              Go Back
-            </div>
-          </div>
           <div className="flex items-center pb-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">
               List of Projects
@@ -141,27 +143,37 @@ const Projects = () => {
               </Link>
             </div>
           </div>
-          <div className="mb-[1rem] flex gap-[1rem]">
-            <button className="px-4 py-2 text-light bg-secondary font-[600]  rounded-lg shadow-inner ">
-              Active Projects
-            </button>
+          <div className="flex justify-between items-center">
+            <div className="mb-[1rem] flex gap-[1rem]">
+              <button className="px-4 py-2 text-light bg-secondary font-[600]  rounded-lg shadow-inner ">
+                Active Projects
+              </button>
+              <button
+                className="px-4 py-2 bg-white/80 font-[600]  rounded-lg shadow-inner"
+                onClick={() => navigate(`/projectbooks/archivedProjects`)}
+              >
+                Archived Projects
+              </button>
+            </div>
             <button
-              className="px-4 py-2 bg-white/80 font-[600]  rounded-lg shadow-inner"
-              onClick={() => navigate(`/projectbooks/archivedProjects`)}
+              className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
+              onClick={openDrawer}
             >
-              Archived Projects
+              Filter
             </button>
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
             <thead className="bg-primary text-white">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody>
               {processedProjectData.length > 0 ? (
@@ -189,6 +201,20 @@ const Projects = () => {
                           </Tooltip>
                         ) : (
                           item.address
+                        )
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                    <td className="py-[1rem]">{item.project_type}</td>
+                    <td className="py-[1rem]">
+                      {item.additional_requirements ? (
+                        item.additional_requirements.length > 30 ? (
+                          <Tooltip content={item.additional_requirements}>
+                            {`${item.additional_requirements.slice(0, 30)}...`}
+                          </Tooltip>
+                        ) : (
+                          item.additional_requirements
                         )
                       ) : (
                         "-"

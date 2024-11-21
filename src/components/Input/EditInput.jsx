@@ -18,35 +18,6 @@ export const EditInput = ({
   errors,
   register,
 }) => {
-  // Register the input and set defaultValue
-  // useEffect(() => {
-  //   register(name, {
-  //     required: required,
-  //     pattern: {
-  //       value: new RegExp(regValue),
-  //       message: message,
-  //     },
-  //     minLength: {
-  //       value: minLength,
-  //       message: minMessage,
-  //     },
-  //     maxLength: {
-  //       value: maxLength,
-  //       message: maxMessage,
-  //     },
-  //   });
-  // }, [
-  //   register,
-  //   name,
-  //   required,
-  //   regValue,
-  //   message,
-  //   minLength,
-  //   minMessage,
-  //   maxLength,
-  //   maxMessage,
-  // ]);
-
   return (
     <div>
       <input

@@ -44,8 +44,6 @@ const Clients = () => {
     [searchParams]
   );
 
-  console.log(registeredDate);
-
   const { openDrawer } = useAuth();
 
   const {
@@ -88,11 +86,10 @@ const Clients = () => {
     <div className="mt-[.5rem] pb-[1rem]">
       {UserPending && <Loader />}
       <FilterDrawer
-        searchParams={searchParams}
         setSearchParams={setSearchParams}
+        dateName={"registered date"}
       >
         <FilterDrawer.RegisteredDate />
-        <FilterDrawer.Status />
       </FilterDrawer>
       <div className="flex items-center pb-[0.5rem] justify-between">
         <h2 className="font-bold text-[1.4rem] text-start">List of Clients</h2>
@@ -108,14 +105,16 @@ const Clients = () => {
       </div>
       <table className="w-full bg-white shadow-md rounded-lg overflow-hidden ">
         <thead className="bg-primary text-white  ">
-          {tableHead.map((item, index) => (
-            <th
-              key={index}
-              className="py-[1rem] font-semibold text-start first:pl-[1rem]"
-            >
-              {item}
-            </th>
-          ))}
+          <tr>
+            {tableHead.map((item, index) => (
+              <th
+                key={index}
+                className="py-[1rem] font-semibold text-start first:pl-[1rem]"
+              >
+                {item}
+              </th>
+            ))}
+          </tr>
         </thead>
         <tbody className="">
           {processedUserData.length > 0 ? (

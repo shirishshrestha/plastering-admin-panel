@@ -156,51 +156,6 @@ export const AddProject = () => {
                 required={Model.address.required}
               />
             </div>
-            {/* <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Cloud Link (Optional)</label>
-              <Input
-                placeholder={Model.cloudLink.placeholder}
-                type={Model.cloudLink.type}
-                name={Model.cloudLink.name}
-                register={register}
-                errors={errors}
-                required={false}
-              />
-            </div> */}
-            {/* {role && role === "client" && (
-              <div className="flex flex-col ">
-                <div className="flex flex-col gap-[0.4rem]">
-                  <label className="font-bold">Required by date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
-                      errors["date"] ? "focus:ring-red-500 border-red-500" : ""
-                    }`}
-                    {...register("date", {
-                      required: "Please select the date",
-                    })}
-                    min={
-                      new Date(new Date().setDate(new Date().getDate() + 6))
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                  />
-                </div>
-                <ErrorMessage
-                  errors={errors}
-                  name="date"
-                  render={() => (
-                    <p
-                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                      key="date"
-                    >
-                      Please select the date
-                    </p>
-                  )}
-                />
-              </div>
-            )} */}
 
             <div className="flex flex-col gap-[1rem]">
               <div className=" bg-white flex flex-col gap-3  w-full">
@@ -259,74 +214,6 @@ export const AddProject = () => {
                   />
                 </div>
               </div>
-
-              {/* <div className="flex flex-col gap-[0.4rem]  ">
-                <label className="font-bold">Upload Files (Optional)</label>
-                <input
-                  type="file"
-                  name="project_file"
-                  {...register("project_file", {
-                    onChange: (e) => {
-                      const newFiles = Array.from(e.target.files);
-                      const filteredFiles = newFiles.filter(
-                        (newFile) =>
-                          !selectedFiles.some(
-                            (file) =>
-                              file.name === newFile.name &&
-                              file.lastModified === newFile.lastModified
-                          )
-                      );
-
-                      setSelectedFiles([...selectedFiles, ...filteredFiles]);
-
-                      e.target.value = null;
-                    },
-                  })}
-                  id="fileInput"
-                  className="hidden"
-                  multiple
-                />
-                <label
-                  htmlFor="fileInput"
-                  className={` border border-gray-300 rounded-lg py-2 px-4 cursor-pointer hover:bg-primary hover:text-light text-gray-400 translation-all duration-300 ease-in-out text-[14px]  `}
-                >
-                  <label
-                    className={`bg-primary px-[20px] py-[5px] rounded-lg text-light mr-[1rem] cursor-pointer`}
-                    htmlFor="fileInput"
-                  >
-                    Upload
-                  </label>
-                  Select Files
-                </label>
-
-                <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                  <span>Uploaded Files:</span>
-                  <div className="flex gap-x-7 gap-y-2 flex-wrap">
-                    {selectedFiles.length > 0 &&
-                      Array.from(selectedFiles).map((file, index) => (
-                        <div
-                          key={`${file.name}-${file.lastModified}`}
-                          className="flex gap-[0.5rem] items-center text-[14px]"
-                        >
-                          <Document />
-                          <p className="font-[500]">{file.name}</p>
-
-                          <button
-                            type="button"
-                            className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
-                            onClick={() => {
-                              setSelectedFiles(
-                                selectedFiles.filter((_, i) => i !== index)
-                              );
-                            }}
-                          >
-                            <TrashIcon />
-                          </button>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div> */}
             </div>
 
             <div className="flex flex-col  gap-[0.4rem]">

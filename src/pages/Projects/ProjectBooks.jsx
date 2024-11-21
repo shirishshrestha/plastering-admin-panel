@@ -28,7 +28,6 @@ const tableHead = [
   "Client Name",
   "Project Book",
   "Project Location",
-  "Project Created",
   "Status",
   "Actions",
 ];
@@ -38,24 +37,21 @@ const ProjectBookData = [
     id: 1,
     client_name: "John Doe",
     project_book: "John's Project Book",
-    project_location: "New York",
-    project_created: "12/12/2021",
+    project_location: "Sydney",
     status: "Pending",
   },
   {
     id: 2,
     client_name: "Michael Brown",
     project_book: "Michael's Home Improvements",
-    project_location: "Chicago",
-    project_created: "08/22/2022",
+    project_location: "Melbourne",
     status: "Completed",
   },
   {
     id: 3,
     client_name: "Emily Davis",
     project_book: "Emily's Office Design",
-    project_location: "San Francisco",
-    project_created: "04/15/2024",
+    project_location: "Brisbane",
     status: "Pending",
   },
 ];
@@ -73,7 +69,6 @@ const doughnutBorderColor = [
 ];
 
 export const ProjectBooks = () => {
-
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useLogout();
@@ -250,10 +245,10 @@ export const ProjectBooks = () => {
                         </p>
                         <p className="text-sm font-[500] text-end mt-[0.6rem]">
                           {project.additional_requirements
-                            ? project.additional_requirements.length > 25
+                            ? project.additional_requirements.length > 45
                               ? `${project.additional_requirements.slice(
                                   0,
-                                  25
+                                  45
                                 )}...`
                               : project.additional_requirements
                             : "-"}
@@ -283,14 +278,16 @@ export const ProjectBooks = () => {
             </div>
             <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
               <thead className="bg-primary text-white  ">
-                {tableHead.map((item, index) => (
-                  <th
-                    key={index}
-                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                  >
-                    {item}
-                  </th>
-                ))}
+                <tr>
+                  {tableHead.map((item, index) => (
+                    <th
+                      key={index}
+                      className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                    >
+                      {item}
+                    </th>
+                  ))}
+                </tr>
               </thead>
               <tbody>
                 {ProjectBookData?.map((projectBook) => (
@@ -304,9 +301,6 @@ export const ProjectBooks = () => {
                     </td>
                     <td className="py-[1rem] pl-[0.5rem]">
                       {projectBook.project_location}
-                    </td>
-                    <td className="py-[1rem] pl-[0.5rem]">
-                      {projectBook.project_created}
                     </td>
                     <td className="py-[1rem] pl-[0.5rem]">
                       {projectBook.status}

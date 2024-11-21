@@ -1,10 +1,9 @@
-import { Button, Drawer, Label, Select, Textarea } from "flowbite-react";
+import { Button, Drawer, Label, Select } from "flowbite-react";
 import useAuth from "../../hooks/useAuth";
 import { Input } from "../Input/Input";
 import { useForm } from "react-hook-form";
 import { createContext, useContext } from "react";
 import { ErrorMessage } from "@hookform/error-message";
-import { useSearchParams } from "react-router-dom";
 
 const DrawerContext = createContext();
 const useDrawerContext = () => {
@@ -15,15 +14,21 @@ const useDrawerContext = () => {
   return context;
 };
 
-export function FilterDrawer({ children, setSearchParams }) {
+export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
   const { isOpen, closeDrawer } = useAuth();
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      status: "",
+      date: "",
+      project_type: "",
+    },
+  });
 
   const FilterSubmit = (data) => {
     let updatedParams = {};
@@ -35,11 +40,12 @@ export function FilterDrawer({ children, setSearchParams }) {
     }
 
     setSearchParams(updatedParams);
+    closeDrawer();
   };
 
   return (
     <>
-      <DrawerContext.Provider value={{ register, errors, reset }}>
+      <DrawerContext.Provider value={{ register, errors, reset, dateName }}>
         <Drawer
           open={isOpen}
           onClose={closeDrawer}
@@ -56,7 +62,8 @@ export function FilterDrawer({ children, setSearchParams }) {
               <div className="mb-6">
                 <Button
                   type="submit"
-                  className="w-full bg-primary focus:ring-0 transition-all duration-300 ease-in-out"
+                  disabled={!isDirty}
+                  className="w-full bg-primary focus:ring-0 transition-all duration-300 ease-in-out disabled:!bg-gray-400 disabled:cursor-not-allowed"
                 >
                   Apply Filter
                 </Button>
@@ -70,19 +77,14 @@ export function FilterDrawer({ children, setSearchParams }) {
 }
 
 FilterDrawer.Status = function FilterDrawerStatus() {
-  const { register, errors } = useDrawerContext();
+  const { register } = useDrawerContext();
   return (
     <div className="mb-6 mt-3">
       <Label htmlFor="status" className="mb-2 block">
         Filter by status
       </Label>
-      <Select
-        className={`${
-          errors["status"] ? "focus:ring-red-500 border-red-500" : ""
-        }`}
-        {...register("status")}
-      >
-        <option value="" disabled hidden selected>
+      <Select className={``} {...register("status")} defaultValue={""}>
+        <option value="" disabled hidden>
           Select Status
         </option>
         <option value="pending">Pending</option>
@@ -90,30 +92,16 @@ FilterDrawer.Status = function FilterDrawerStatus() {
         <option value="completed">Completed</option>
         <option value="canceled">Canceled</option>
       </Select>
-      <ErrorMessage
-        errors={errors}
-        name={name}
-        render={({ message }) =>
-          message && (
-            <p
-              className="text-[12px] text-red-500 pt-[0.3rem] pl-[0.5rem]"
-              key={type}
-            >
-              {message}
-            </p>
-          )
-        }
-      />
     </div>
   );
 };
 
 FilterDrawer.RegisteredDate = function FilterDrawerDate() {
-  const { register, errors } = useDrawerContext();
+  const { register, errors, dateName } = useDrawerContext();
   return (
     <div className="mb-6 mt-3">
       <Label htmlFor="date" className="mb-2 block">
-        Filter by registered date
+        Filter by {dateName}
       </Label>
       <Input
         type="date"
@@ -123,6 +111,25 @@ FilterDrawer.RegisteredDate = function FilterDrawerDate() {
         register={register}
         errors={errors}
       />
+    </div>
+  );
+};
+
+FilterDrawer.ProjectType = function FilterByProjectType() {
+  const { register } = useDrawerContext();
+
+  return (
+    <div className="mb-6 mt-3">
+      <Label htmlFor="project_type" className="mb-2 block">
+        Filter by project type
+      </Label>
+      <Select className={``} {...register("project_type")} defaultValue={""}>
+        <option value="" disabled hidden>
+          Select project type
+        </option>
+        <option value="pending">Commercial</option>
+        <option value="running">Residential</option>
+      </Select>
     </div>
   );
 };

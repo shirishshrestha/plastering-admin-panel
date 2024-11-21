@@ -40,7 +40,6 @@ const tableHead = [
   "Actions",
 ];
 export const ArchivedProjects = () => {
-
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -116,17 +115,6 @@ export const ArchivedProjects = () => {
         )}
         {isPending && <Loader />}
         <div>
-          <div className="mb-[0.5rem] text-[12px] font-[500]">
-            <div
-              className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
-              onClick={() => {
-                navigate("/projectbooks");
-              }}
-            >
-              <GoBack />
-              Go Back
-            </div>
-          </div>
           <div className="flex items-center pb-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">
               List of Projects
@@ -160,14 +148,16 @@ export const ArchivedProjects = () => {
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
             <thead className="bg-primary text-white">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody>
               {processedProjectData.length > 0 ? (

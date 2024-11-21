@@ -161,7 +161,7 @@ const JobBook = () => {
                   setSearchParams={setSearchParams}
                   searchParams={searchParams}
                   placeholder={"Search by id or status"}
-                  setSearchName={setSearchName}
+               
                 /> */}
               <Link to="/projectbooks/addJob">
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
@@ -172,14 +172,16 @@ const JobBook = () => {
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
             <thead className="bg-primary text-white">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody>
               {tableData.length > 0 ? (
@@ -216,12 +218,19 @@ const JobBook = () => {
                     <td className="py-[1rem]">{job.status}</td>
                     <td>
                       <div className="flex gap-[0.7rem]">
-                        <button className="p-[5px] rounded-md bg-viewBackground">
+                        <button
+                          className="p-[5px] rounded-md bg-viewBackground"
+                          onClick={() =>
+                            navigate(`/projectbooks/viewJob/${job.id}`)
+                          }
+                        >
                           <EyeIcon strokeColor="#3e84f4" />
                         </button>
                         <button
                           className="p-[5px] rounded-md bg-editBackground"
-                          onClick={() => navigate(`editJob/${job.id}`)}
+                          onClick={() =>
+                            navigate(`/projectbooks/editJob/${job.id}`)
+                          }
                         >
                           <EditIcon color="#8c62ff" />
                         </button>

@@ -90,11 +90,11 @@ export const EditJob = () => {
           />
         )}
         <div>
-          <h2 className="font-bold text-[1.2rem]">Add Job</h2>
+          <h2 className="font-bold text-[1.2rem]">Edit Job</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">
             <p>Job</p>
-            <div className="rounded-[100%] w-[10px] h-[10px] bg-green-600 "></div>
-            <p>Add new Job</p>
+            <div className="rounded-[100%] w-[10px] h-[10px] bg-[#8c62ff] "></div>
+            <p>Edit existing Job</p>
           </div>
         </div>
         <div className="mt-[1rem]">
@@ -302,39 +302,6 @@ export const EditJob = () => {
             </div>
 
             <div className="w-full  col-span-2  ">
-              <div className="mb-[0.5rem]">
-                <div className="flex items-center gap-[0.5rem] justify-end  ">
-                  <input
-                    type="checkbox"
-                    name="terms"
-                    {...register("terms", {
-                      required: true,
-                    })}
-                    className="cursor-pointer rounded-md !outline-none !ring-0   "
-                  />
-                  <label
-                    htmlFor="terms-conditions"
-                    className={`font-semibold text-[14px] text-secondary ${
-                      errors["terms"] ? "text-delete  " : ""
-                    } `}
-                  >
-                    Terms & Conditions
-                  </label>
-                </div>
-                <ErrorMessage
-                  errors={errors}
-                  name="terms"
-                  render={() => (
-                    <p
-                      className="text-[12px] text-red-500  pt-[0.1rem]  pl-[0.5rem] text-end"
-                      key="terms"
-                    >
-                      You must agree to the terms and conditions before
-                      proceeding.
-                    </p>
-                  )}
-                />
-              </div>
               <div className="flex gap-3 justify-end items-center mt-4">
                 <button
                   className="bg-delete rounded-lg px-[30px] py-[10px] text-light"

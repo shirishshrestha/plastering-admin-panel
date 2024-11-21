@@ -217,14 +217,16 @@ export const ClientDashboard = () => {
         <div className="overflow-x-scroll table__container  mt-[0.4rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody className="capitalize">
               {ProjectData?.data.filter((item) => user_id === item.user_id)

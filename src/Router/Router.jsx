@@ -20,6 +20,7 @@ import {
   Projects,
   Signup,
   ViewBusiness,
+  ViewJob,
 } from "../pages";
 import ProtectedRoute, {
   ProtectedClientRoute,
@@ -98,6 +99,10 @@ export const router = createBrowserRouter([
           {
             path: "editJob/:id",
             element: <EditJob />,
+          },
+          {
+            path: "viewJob/:id",
+            element: <ViewJob />,
           },
         ],
       },
