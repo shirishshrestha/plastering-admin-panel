@@ -28,7 +28,6 @@ import {
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
-
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
@@ -42,7 +41,7 @@ const tableHead = [
   "Action",
 ];
 
-export const ClientProjects = () => {
+export const BusinessProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -73,8 +72,12 @@ export const ClientProjects = () => {
   } = useQuery({
     queryKey: ["userProjects", pageNumber],
     queryFn: () => getUserProjects(user_id, pageNumber),
-    enabled: location.pathname === "/projectbooks",
-    staleTime: 6000,
+    // enabled: location.pathname.includes("assingedProjects"),
+    staleTime: 50000,
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
+    refetchInterval: false,
+    refetchOnReconnect: false,
   });
 
   const { isPending: recentProjectsPending, data: RecentProjectData } =
@@ -82,8 +85,12 @@ export const ClientProjects = () => {
       queryKey: ["userRecentProjects"],
       queryFn: () => getUserProjects(user_id, 1),
       keepPreviousData: true,
-      enabled: location.pathname === "/projectbooks",
-      staleTime: 6000,
+      //   enabled: location.pathname.includes("assingedProjects"),
+      staleTime: 50000,
+      refetchOnWindowFocus: false,
+      refetchIntervalInBackground: false,
+      refetchInterval: false,
+      refetchOnReconnect: false,
     });
 
   const {
@@ -93,8 +100,12 @@ export const ClientProjects = () => {
   } = useQuery({
     queryKey: ["projectStatus"],
     queryFn: () => getProjectsStatus(user_id),
-    staleTime: 6000,
-    enabled: location.pathname === "/projectbooks",
+    staleTime: 50000,
+    // enabled: location.pathname.includes("assingedProjects"),
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
+    refetchInterval: false,
+    refetchOnReconnect: false,
   });
 
   const doughnutData = [
@@ -134,7 +145,7 @@ export const ClientProjects = () => {
 
   return (
     <>
-      {location.pathname === "/projectbooks" ? (
+      {location.pathname === "/assignedProjects" ? (
         <section>
           {isPending && <Loader />}
           {projectStatusPending && <Loader />}
@@ -160,7 +171,7 @@ export const ClientProjects = () => {
                       />
                     ) : (
                       <h4 className="font-semibold text-[1rem]">
-                        No projects added
+                        No data available
                       </h4>
                     )}
                   </div>
@@ -185,7 +196,7 @@ export const ClientProjects = () => {
             </div>
             <div className="overflow-hidden h-full flex flex-col items-center">
               <h2 className="font-bold text-[1.4rem] text-center mb-[1rem]">
-                Recent Projects
+                Recent Assigned Projects
               </h2>
               <SwiperComponent
                 effect={"cards"}
@@ -252,7 +263,7 @@ export const ClientProjects = () => {
                 ) : (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">
-                      <p className="text-[1.2rem]">No recent projects</p>
+                      <p className="text-[1.2rem]">No projects assigned</p>
                     </div>
                   </SwiperSlide>
                 )}
@@ -262,14 +273,8 @@ export const ClientProjects = () => {
           <div className="pt-[2rem] pb-[1rem]">
             <div className="flex items-center pb-[0.5rem] justify-between">
               <h2 className="font-bold text-[1.4rem] text-start">
-                List of Projects
+                List of Assigned Projects
               </h2>
-              <Link to="/projectbooks/addProject">
-                <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
-                  Add New Project{" "}
-                  <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
-                </button>
-              </Link>
             </div>
             <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
               <thead className="bg-primary text-white  ">

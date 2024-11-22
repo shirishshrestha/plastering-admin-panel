@@ -4,6 +4,7 @@ import {
   AddJob,
   AddProject,
   ArchivedProjects,
+  BusinessProjects,
   BusinessSignup,
   ClientDashboard,
   ClientProjects,
@@ -23,7 +24,8 @@ import {
   ViewJob,
 } from "../pages";
 import ProtectedRoute, {
-  ProtectedClientRoute,
+  ProtectedAdminRoute,
+  ProtectedBusinessRoute,
   ProtectedLoginSignupRoute,
 } from "./ProtectedRoute";
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
@@ -44,11 +46,10 @@ const DashboardPriority = () => {
 const ProjectsPriority = () => {
   const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
-  return auth?.role === "admin" || (role && role === "admin") ? (
-    <ProjectBooks />
-  ) : (
-    <ClientProjects />
-  );
+  if (auth?.role === "admin" || (role && role === "admin"))
+    return <ProjectBooks />;
+  if (auth?.role === "client" || (role && role === "client"))
+    return <ClientProjects />;
 };
 
 export const router = createBrowserRouter([
@@ -65,16 +66,24 @@ export const router = createBrowserRouter([
         element: <DashboardPriority />,
       },
       {
+        path: "/assignedProjects",
+        element: <BusinessProjects />,
+      },
+      {
         path: "/projectbooks",
-        element: <ProjectsPriority />,
+        element: (
+          <ProtectedBusinessRoute>
+            <ProjectsPriority />
+          </ProtectedBusinessRoute>
+        ),
         children: [
           {
-            index: true,
-            element: <ProjectsPriority />,
-          },
-          {
             path: "projects",
-            element: <Projects />,
+            element: (
+              <ProtectedAdminRoute>
+                <Projects />
+              </ProtectedAdminRoute>
+            ),
           },
           {
             path: "archivedProjects",
@@ -109,9 +118,9 @@ export const router = createBrowserRouter([
       {
         path: "/clients",
         element: (
-          <ProtectedClientRoute>
+          <ProtectedAdminRoute>
             <Clients />
-          </ProtectedClientRoute>
+          </ProtectedAdminRoute>
         ),
         children: [
           {
@@ -123,9 +132,9 @@ export const router = createBrowserRouter([
       {
         path: "/business",
         element: (
-          <ProtectedClientRoute>
+          <ProtectedAdminRoute>
             <BusinessDirectory />
-          </ProtectedClientRoute>
+          </ProtectedAdminRoute>
         ),
         children: [
           {

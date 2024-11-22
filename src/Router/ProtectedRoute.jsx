@@ -35,7 +35,7 @@ export const ProtectedLoginSignupRoute = ({ children }) => {
   );
 };
 
-export const ProtectedClientRoute = ({ children }) => {
+export const ProtectedAdminRoute = ({ children }) => {
   const { auth } = useAuth();
 
   const role = getRoleFromLocalStorage();
@@ -44,5 +44,17 @@ export const ProtectedClientRoute = ({ children }) => {
     children
   ) : (
     <Navigate to="/" />
+  );
+};
+
+export const ProtectedBusinessRoute = ({ children }) => {
+  const { auth } = useAuth();
+
+  const role = getRoleFromLocalStorage();
+
+  return auth?.role === "estimator" || (role && role === "estimator") ? (
+    <Navigate to="/" />
+  ) : (
+    children
   );
 };

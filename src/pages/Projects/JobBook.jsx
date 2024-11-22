@@ -15,6 +15,7 @@ import {
   CustomToastContainer,
   DeleteConfirmation,
   EmptyData,
+  FilterDrawer,
   Loader,
   Pagination,
   SearchInput,
@@ -34,7 +35,7 @@ const tableHead = [
   "ID",
   "Job Name",
   "Additional Info",
-  "Start Date",
+  "Required By Date",
   "Status",
   "Actions",
 ];
@@ -44,44 +45,44 @@ const tableData = [
     id: 1,
     jobName: "Living Room Plastering",
     additionalInfo: "Wall cracks repair and ceiling smoothing",
-    startDate: "2024-11-20",
-    status: "In Progress",
+    requiredDate: "2024-11-20",
+    status: "Running",
   },
   {
     id: 2,
     jobName: "Commercial Office Renovation",
     additionalInfo: "Drywall installation and plaster finishing",
-    startDate: "2024-11-18",
+    requiredDate: "2024-11-18",
     status: "Completed",
   },
   {
     id: 3,
     jobName: "Kitchen Ceiling Repair",
     additionalInfo: "Repairing water damage and repainting",
-    startDate: "2024-11-25",
-    status: "Scheduled",
+    requiredDate: "2024-11-25",
+    status: "Pending",
   },
   {
     id: 4,
     jobName: "Home Exterior Plastering",
     additionalInfo: "Applying weatherproof plaster for walls",
-    startDate: "2024-11-15",
+    requiredDate: "2024-11-15",
     status: "Completed",
   },
   {
     id: 5,
     jobName: "Bathroom Remodeling",
     additionalInfo: "Plastering and waterproofing shower walls",
-    startDate: "2024-11-22",
-    status: "In Progress",
+    requiredDate: "2024-11-22",
+    status: "Running",
   },
 ];
 
 const JobBook = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  // const [searchParams, setSearchParams] = useSearchParams();
-  // const { searchName, setSearchName } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { openDrawer } = useAuth();
 
   // const [projectId, setProjectId] = useState();
   // const [projectName, setProjectName] = useState();
@@ -152,10 +153,17 @@ const JobBook = () => {
             />
           )} */}
         {/* {isPending && <Loader />} */}
+        <FilterDrawer
+          setSearchParams={setSearchParams}
+          dateName="required by date"
+        >
+          <FilterDrawer.Status />
+          <FilterDrawer.RegisteredDate />
+        </FilterDrawer>
         <div>
           <div className="flex items-center pb-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">List of Jobs</h2>
-            <div className="flex gap-[1rem]">
+            <div className="flex items-end gap-[1rem]">
               {/* <SearchInput
                   defaultValue={searchName}
                   setSearchParams={setSearchParams}
@@ -168,6 +176,13 @@ const JobBook = () => {
                   Add New Job <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>
               </Link>
+
+              <button
+                className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
+                onClick={openDrawer}
+              >
+                Filter
+              </button>
             </div>
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
@@ -214,7 +229,7 @@ const JobBook = () => {
                         "-"
                       )}
                     </td>
-                    <td className="py-[1rem]">{job.startDate}</td>
+                    <td className="py-[1rem]">{job.requiredDate}</td>
                     <td className="py-[1rem]">{job.status}</td>
                     <td>
                       <div className="flex gap-[0.7rem]">

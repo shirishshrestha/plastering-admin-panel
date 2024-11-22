@@ -119,18 +119,6 @@ export const AddJob = () => {
                 />
               </div>
 
-              <div className="flex flex-col gap-[0.4rem]">
-                <label className="font-bold">Cloud Link (Optional)</label>
-                <Input
-                  placeholder={Model.cloudLink.placeholder}
-                  type={Model.cloudLink.type}
-                  name={Model.cloudLink.name}
-                  register={register}
-                  errors={errors}
-                  required={false}
-                />
-              </div>
-
               <div className="flex flex-col ">
                 <div className="flex flex-col gap-[0.4rem]">
                   <label className="font-bold">Required by date</label>
@@ -233,61 +221,17 @@ export const AddJob = () => {
               </div>
             </div>
             <div className="flex flex-col gap-[1rem]">
-              <div className=" bg-white flex flex-col gap-[0.4rem]  w-full">
-                <legend className="font-bold select-none">Project Type</legend>
-                <div className="">
-                  <label
-                    htmlFor="commercial"
-                    name="project_type"
-                    className={`font-medium ring-1 cursor-pointer ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
-                      errors["project_type"] && "ring-red-500"
-                    } `}
-                  >
-                    Commercial Project
-                    <input
-                      type="radio"
-                      name="project_type"
-                      className="peer/html w-4 h-4 absolute accent-current right-3"
-                      id="commercial"
-                      value="Commercial"
-                      {...register("project_type", {
-                        required: "Select a project type",
-                      })}
-                    />
-                  </label>
-                  <label
-                    htmlFor="domestic"
-                    className={`font-medium ring-1 cursor-pointer ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
-                      errors["project_type"] && "ring-red-500"
-                    } `}
-                  >
-                    Domestic Project
-                    <input
-                      type="radio"
-                      name="project_type"
-                      className="w-4 h-4 absolute accent-current right-3"
-                      id="domestic"
-                      value="Domestic"
-                      {...register("project_type", {
-                        required: "Select a project type",
-                      })}
-                    />
-                  </label>
-                  <ErrorMessage
-                    errors={errors}
-                    name="project_type"
-                    render={() => (
-                      <p
-                        className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                        key="registered-client"
-                      >
-                        Please select a project type
-                      </p>
-                    )}
-                  />
-                </div>
+              <div className="flex flex-col gap-[0.4rem]">
+                <label className="font-bold">Cloud Link (Optional)</label>
+                <Input
+                  placeholder={Model.cloudLink.placeholder}
+                  type={Model.cloudLink.type}
+                  name={Model.cloudLink.name}
+                  register={register}
+                  errors={errors}
+                  required={false}
+                />
               </div>
-
               <div className="flex flex-col  gap-[0.4rem]">
                 <label htmlFor="additional-req" className="font-bold">
                   Additional Requirements (Optional)

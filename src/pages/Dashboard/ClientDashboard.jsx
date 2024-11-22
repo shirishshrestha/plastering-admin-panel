@@ -7,7 +7,7 @@ import {
 import {
   DoughnutChart,
   EmptyData,
-  Loader,
+  LogoLoader,
   LogoutConfirmation,
 } from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
@@ -102,7 +102,7 @@ export const ClientDashboard = () => {
 
   return (
     <section className="pt-[1rem]">
-      {(projectPending || projectStatusPending) && <Loader />}
+      {(projectPending || projectStatusPending) && <LogoLoader />}
 
       {logoutConfirationShow && (
         <LogoutConfirmation
@@ -194,19 +194,19 @@ export const ClientDashboard = () => {
           </div>
         </div>
         <div>
-          <div className="h-fit p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+          <div className="h-full p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start text-[18px]">Project Status</h4>
 
             <div className="max-w-[340px] mt-[0.5rem]">
-              {ProjectStatusData?.total_projects ? (
-                <h4>No data available</h4>
-              ) : (
+              {ProjectStatusData?.total_projects > 0 ? (
                 <DoughnutChart
                   dealData={doughnutData}
                   datasets={doughnutDatasets}
                   legendPosition={"bottom"}
                   legendTextColor={"#fff"}
                 />
+              ) : (
+                <h4>No data available</h4>
               )}
             </div>
           </div>

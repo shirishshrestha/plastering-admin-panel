@@ -26,10 +26,12 @@ import {
   CustomToastContainer,
   DeleteConfirmation,
   EmptyData,
+  FilterDrawer,
   Loader,
   Pagination,
   SearchInput,
 } from "../../../components";
+import useAuth from "../../../hooks/useAuth";
 
 const tableHead = [
   "P. Id",
@@ -48,6 +50,8 @@ export const ArchivedProjects = () => {
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+
+  const { openDrawer } = useAuth();
 
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
@@ -114,6 +118,11 @@ export const ArchivedProjects = () => {
           />
         )}
         {isPending && <Loader />}
+        <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
+          <FilterDrawer.Status />
+          <FilterDrawer.ProjectType />
+          <FilterDrawer.RegisteredDate />
+        </FilterDrawer>
         <div>
           <div className="flex items-center pb-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">
@@ -135,15 +144,23 @@ export const ArchivedProjects = () => {
               </Link>
             </div>
           </div>
-          <div className="mb-[1rem] flex gap-[1rem]">
+          <div className="flex justify-between items-center">
+            <div className="mb-[1rem] flex gap-[1rem]">
+              <button
+                className="px-4 py-2 bg-white/80 font-[600] rounded-lg shadow-inner "
+                onClick={() => navigate(`/projectbooks/projects`)}
+              >
+                Active Projects
+              </button>
+              <button className="px-4 py-2  font-[600] rounded-lg shadow-inner text-light bg-secondary">
+                Archived Projects
+              </button>
+            </div>
             <button
-              className="px-4 py-2 bg-white/80 font-[600] rounded-lg shadow-inner "
-              onClick={() => navigate(`/projectbooks/projects`)}
+              className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
+              onClick={openDrawer}
             >
-              Active Projects
-            </button>
-            <button className="px-4 py-2  font-[600] rounded-lg shadow-inner text-light bg-secondary">
-              Archived Projects
+              Filter
             </button>
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">

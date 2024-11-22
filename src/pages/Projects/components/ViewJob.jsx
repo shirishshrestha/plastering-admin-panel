@@ -23,6 +23,17 @@ import { RevisionPopup } from "../RevisionPopup";
 import { Document, Download, GoBack } from "../../../assets/icons/SvgIcons";
 import useAuth from "../../../hooks/useAuth";
 
+const jobData = [
+  {
+    id: 1,
+    jobName: "Living Room Plastering",
+    additionalInfo: "Wall cracks repair and ceiling smoothing",
+    requiredDate: "2024-11-20",
+    cloudLink: "https://www.google.com",
+    status: "Running",
+  },
+];
+
 const ViewJob = () => {
   const navigate = useNavigate();
   const { id } = useParams();

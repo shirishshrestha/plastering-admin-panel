@@ -3,7 +3,7 @@ import { Calendar, TotalProjects } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
   EmptyData,
-  Loader,
+  LogoLoader,
   LogoutConfirmation,
 } from "../../components";
 import { clientDashboard, curve, spiral, square } from "../../assets/images";
@@ -18,6 +18,13 @@ import {
 } from "../../api/Projects/ProjectsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
+
+const tableHead = [
+  "Project Name",
+  "Project Location",
+  "Required By Date",
+  "Status",
+];
 
 export const BusinessDashboard = () => {
   const userName = getNameFromLocalStorage();
@@ -89,17 +96,9 @@ export const BusinessDashboard = () => {
     },
   ];
 
-  const tableHead = [
-    "Project Name",
-    "Project Location",
-    "Required By Date",
-    "Status",
-  ];
-
   return (
     <section className="pt-[1rem]">
-      {projectPending && <Loader />}
-      {projectStatusPending && <Loader />}
+      {(projectPending || projectStatusPending) && <LogoLoader />}
 
       {logoutConfirationShow && (
         <LogoutConfirmation
@@ -179,26 +178,26 @@ export const BusinessDashboard = () => {
           </div>
         </div>
         <div>
-          <div className="h-fit p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+          <div className="h-full p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start text-[18px]">Project Status</h4>
 
             <div className="max-w-[340px] mt-[0.5rem] ">
-              {ProjectStatusData?.pending_projects < 1 ? (
-                <h4>No data available</h4>
-              ) : (
+              {ProjectStatusData?.total_projects > 0 ? (
                 <DoughnutChart
                   dealData={doughnutData}
                   datasets={doughnutDatasets}
                   legendPosition={"bottom"}
                   legendTextColor={"#fff"}
                 />
+              ) : (
+                <h4>No data available</h4>
               )}
             </div>
           </div>
         </div>
       </div>
       <div className="mt-[1rem]">
-        <h2 className="font-bold text-[1.4rem]">Recent Projects</h2>
+        <h2 className="font-bold text-[1.4rem]">Recently Assigned Projects</h2>
         <div className="overflow-x-scroll table__container  mt-[0.4rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">

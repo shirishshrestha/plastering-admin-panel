@@ -205,7 +205,7 @@ export const Dashboard = () => {
           </div>
         </div>
         <div>
-          <div className="h-fit  p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+          <div className="h-full  p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start pb-[1.2rem]">Project Status</h4>
 
             <div className="max-w-[340px] ">
