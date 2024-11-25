@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import useLogout from "../../../hooks/useLogout";
 import useAuth from "../../../hooks/useAuth";
 import { addProject } from "../../../api/Projects/ProjectsApiSlice";
@@ -196,24 +196,29 @@ export const AddJob = () => {
                   <div className="flex gap-x-7 gap-y-2 flex-wrap">
                     {selectedFiles.length > 0 &&
                       Array.from(selectedFiles).map((file, index) => (
-                        <div
-                          key={`${file.name}-${file.lastModified}`}
-                          className="flex gap-[0.5rem] items-center text-[14px]"
-                        >
-                          <Document />
-                          <p className="font-[500]">{file.name}</p>
-
-                          <button
-                            type="button"
-                            className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
-                            onClick={() => {
-                              setSelectedFiles(
-                                selectedFiles.filter((_, i) => i !== index)
-                              );
-                            }}
+                        <div>
+                          <div
+                            key={`${file.name}-${file.lastModified}`}
+                            className="flex gap-[0.5rem] items-center text-[14px]"
                           >
-                            <TrashIcon />
-                          </button>
+                            <Document />
+                            <p className="font-[500]">{file.name}</p>
+
+                            <button
+                              type="button"
+                              className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
+                              onClick={() => {
+                                setSelectedFiles(
+                                  selectedFiles.filter((_, i) => i !== index)
+                                );
+                              }}
+                            >
+                              <TrashIcon />
+                            </button>
+                          </div>
+                          <div className="text-[12px]">
+                            Size: {(file.size / 1024).toFixed(2)} KB
+                          </div>
                         </div>
                       ))}
                   </div>

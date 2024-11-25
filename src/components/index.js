@@ -18,6 +18,8 @@ import Sidebar from "./Sidebar/Sidebar";
 import CustomToastContainer from "./Toast/ToastContainer";
 import Pagination from "./Pagination/Pagination";
 import { FilterDrawer } from "./Drawer/Drawer";
+import { notifyError, notifySuccess } from "./Toast/Toast";
+import PopupModal from "./PopupModal/PopupModal";
 
 export {
   Sidebar,
@@ -41,4 +43,7 @@ export {
   DeleteConfirmation,
   LogoLoader,
   FilterDrawer,
+  notifySuccess,
+  notifyError,
+  PopupModal,
 };

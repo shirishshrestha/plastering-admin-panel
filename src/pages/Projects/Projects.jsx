@@ -1,14 +1,11 @@
 import {
   Link,
-  Outlet,
   useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
 import {
   EditIcon,
-  EyeIcon,
-  GoBack,
   PlusIcon,
   TrashIcon,
 } from "../../assets/icons/SvgIcons";

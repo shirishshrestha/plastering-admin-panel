@@ -16,7 +16,6 @@ import { UserLogin } from "./UserLogin";
 import { BusinessLogin } from "./BusinessLogin";
 
 const Login = () => {
-
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loginFlag, setLoginFlag] = useState("user");
@@ -58,9 +57,6 @@ const Login = () => {
         setAuth({ role, id, token, businessName });
 
         notifySuccess("Business Login Successful");
-        setTimeout(() => {
-          console.log("hello");
-        }, 2000);
       },
       onError: () => {
         notifyError("Incorrect Email / Username or Password");

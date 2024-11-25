@@ -19,7 +19,7 @@ import {
   CustomToastContainer,
   Loader,
 } from "../../../components";
-import { RevisionPopup } from "../RevisionPopup";
+import { RevisionPopup } from "./RevisionPopup";
 import { Document, Download, GoBack } from "../../../assets/icons/SvgIcons";
 import useAuth from "../../../hooks/useAuth";
 

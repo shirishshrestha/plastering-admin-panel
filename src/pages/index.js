@@ -11,7 +11,7 @@ import { ClientProjects } from "./Projects/ClientProjects";
 import { EditProject } from "./Projects/EditProject";
 import { ProjectBooks } from "./Projects/ProjectBooks";
 import Projects from "./Projects/Projects";
-import { RevisionPopup } from "./Projects/RevisionPopup";
+import { RevisionPopup } from "./Projects/components/RevisionPopup";
 import JobBook from "./Projects/JobBook";
 import BusinessSignup from "./Signup/BusinessSignup";
 import Signup from "./Signup/Signup";

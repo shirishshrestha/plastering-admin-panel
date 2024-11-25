@@ -1,11 +1,4 @@
 import { useForm } from "react-hook-form";
-import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import {
-  EditInput,
-  Loader,
-  Model,
-  CustomToastContainer,
-} from "../../components";
 import { useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
@@ -13,8 +6,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getProjectById,
   requestRevision,
-} from "../../api/Projects/ProjectsApiSlice";
-import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
+} from "../../../api/Projects/ProjectsApiSlice";
+import {
+  CustomToastContainer,
+  EditInput,
+  Loader,
+  Model,
+} from "../../../components";
+import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 
 export const RevisionPopup = ({
   setRevisionFlag,
@@ -312,7 +311,7 @@ export const RevisionPopup = ({
                           onClick={() => {
                             setDeletedFiles([...deletedFiles, file]);
                             setSelectedFiles(
-                              selectedFiles.filter((file, i) => i !== index)
+                              selectedFiles.filter((_, i) => i !== index)
                             );
                           }}
                         >

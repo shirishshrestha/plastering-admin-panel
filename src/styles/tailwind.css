@@ -124,3 +124,7 @@ input:-webkit-autofill:focus {
 sider-quick-compose-btn {
   display: none;
 }
+
+.modal__header h3 {
+  color: #e8eaeb;
+}
