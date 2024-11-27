@@ -13,6 +13,7 @@ import { SearchInput } from "../../components/Input/SearchInput";
 import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
 import useAuth from "../../hooks/useAuth";
+import { getTokenFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
 const tableHead = [
   "Id",
@@ -26,7 +27,6 @@ const tableHead = [
 const Clients = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   let [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = useMemo(
@@ -159,11 +159,12 @@ const Clients = () => {
                       >
                         <EditIcon color="#8c62ff" />
                       </button>
-                      <Link to="">
-                        <button className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg ">
-                          Project Details
-                        </button>
-                      </Link>
+                      <button
+                        className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                        onClick={() => navigate(`/projectbooks/projects`)}
+                      >
+                        Project Details
+                      </button>
                     </div>
                   </td>
                 </tr>

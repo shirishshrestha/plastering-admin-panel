@@ -6,7 +6,13 @@ import {
   LogoLoader,
   LogoutConfirmation,
 } from "../../components";
-import { clientDashboard, curve, spiral, square } from "../../assets/images";
+import {
+  clientDashboard,
+  curve,
+  logo,
+  spiral,
+  square,
+} from "../../assets/images";
 import {
   getIdFromLocalStorage,
   getNameFromLocalStorage,
@@ -116,12 +122,8 @@ export const BusinessDashboard = () => {
                 </h3>
                 <h4 className="capitalize">{userName}</h4>
               </div>
-              <figure className="w-[150px] relative z-10">
-                <img
-                  src={clientDashboard}
-                  alt="dashboard"
-                  className="object-cover"
-                />
+              <figure className="w-[140px] relative z-10">
+                <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
               <img
                 src={square}

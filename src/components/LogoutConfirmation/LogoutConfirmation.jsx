@@ -32,7 +32,7 @@ export const LogoutConfirmation = ({
             Stay Logged In
           </button>
           <button
-            className="bg-secondary rounded-lg px-[30px] py-[10px] text-primary"
+            className="bg-secondary font-semibold rounded-lg px-[30px] py-[10px] text-primary"
             onClick={handleLogoutClick}
           >
             Log Out

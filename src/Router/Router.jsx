@@ -17,6 +17,7 @@ import {
   JobBook,
   Login,
   PageNotFound,
+  ProfilePage,
   ProjectBooks,
   Projects,
   Signup,
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <DashboardPriority />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
       },
       {
         path: "/assignedProjects",

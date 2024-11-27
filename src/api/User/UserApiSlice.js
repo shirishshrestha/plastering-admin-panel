@@ -25,6 +25,7 @@ export const getUserById = async (id) => {
     throw error;
   }
 };
+
 export const editClient = async (id, data) => {
   try {
     const response = await instance.put(`/users/${id}`, {
