@@ -4,7 +4,7 @@ import { profile } from "../../../assets/images";
 
 const ProfilePicture = () => {
   const userAvatar = useAvatarGenerator();
-  const [userImage, setUserImage] = useState(true);
+  const [userImage, setUserImage] = useState(false);
 
   return (
     <div className="flex items-center ">

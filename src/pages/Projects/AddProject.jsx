@@ -99,7 +99,9 @@ export const AddProject = () => {
   };
 
   const handleProjectCancel = () => {
-    navigate("/projectbooks/projects");
+    role === "admin"
+      ? navigate("/projectbooks/projects")
+      : navigate("/projectbooks");
   };
 
   return (

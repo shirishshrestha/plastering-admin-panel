@@ -4,11 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import {
-  EditIcon,
-  PlusIcon,
-  TrashIcon,
-} from "../../assets/icons/SvgIcons";
+import { EditIcon, PlusIcon, TrashIcon } from "../../assets/icons/SvgIcons";
 import {
   CustomToastContainer,
   DeleteConfirmation,
@@ -39,6 +35,7 @@ const tableHead = [
   "Status",
   "Actions",
 ];
+
 const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();

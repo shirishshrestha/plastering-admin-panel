@@ -37,7 +37,9 @@ const Login = () => {
       setAuth({ role, id, token, userName });
     },
     onError: () => {
-      notifyError("Incorrect Email / Username or Password");
+      notifyError(
+        "Invalid email, username, password, or attempt to log in with business account"
+      );
     },
   });
 
@@ -55,11 +57,11 @@ const Login = () => {
         const token = data.token;
         const businessName = data.estimator.business_name;
         setAuth({ role, id, token, businessName });
-
-        notifySuccess("Business Login Successful");
       },
       onError: () => {
-        notifyError("Incorrect Email / Username or Password");
+        notifyError(
+          "Invalid email, username, password, or attempt to log in with client account"
+        );
       },
     });
 

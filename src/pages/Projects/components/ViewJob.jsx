@@ -162,14 +162,28 @@ const ViewJob = () => {
       {clientFlag && <ClientEstimation setClientFlag={setClientFlag} id={id} />} */}
 
       <div className="mb-[0.5rem] text-[12px] font-[500]">
-        <div
-          className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          <GoBack />
-          Go Back
+        <div className="flex justify-between">
+          <div
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <GoBack />
+            Go Back
+          </div>
+          <div>
+            <select
+              name="revision"
+              id="revision"
+              defaultValue="revision0"
+              className="rounded-lg focus:ring-primary"
+            >
+              <option value="revision0">Revision 0</option>
+              <option value="revision1">Revision 1</option>
+              <option value="revision2">Revision 2</option>
+            </select>
+          </div>
         </div>
       </div>
       <div>

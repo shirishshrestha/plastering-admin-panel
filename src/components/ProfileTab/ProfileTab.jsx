@@ -75,11 +75,9 @@ const ProfileTab = ({ sidebarToggle, setSidebarToggle }) => {
             <Dropdown.Header>
               <span className="block text-sm font-semibold">{userName}</span>
             </Dropdown.Header>
-            <Dropdown.Item>
-              <Link to="/profile" className="font-[500]">
-                Profile
-              </Link>
-            </Dropdown.Item>
+            <Link to="/profile" className="font-[500]">
+              <Dropdown.Item>Profile</Dropdown.Item>
+            </Link>
             <Dropdown.Item onClick={handleLogoutPopup} className="font-[500]">
               Logout
             </Dropdown.Item>

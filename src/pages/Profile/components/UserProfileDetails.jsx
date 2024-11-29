@@ -52,6 +52,30 @@ export const UserProfileDetails = () => {
           </div>
         </div>
       </div>
+      <div className="flex flex-col gap-4 bg-white shadow-md rounded-lg py-[1.5rem] px-[3rem] mt-[1.5rem]">
+        <h4 className="font-bold text-[1.2rem] leading-[1.6rem] pb-[1rem] border-b-[2px] border-gray-200">
+          Address Details
+        </h4>
+        <div className="grid grid-cols-3 gap-6">
+          <div className="flex flex-col gap-[0.4rem]">
+            <p className="font-[600] text-primary/80">City</p>
+            <p className="font-bold">-</p>
+          </div>
+          <div className="flex flex-col gap-[0.4rem]">
+            <p className="font-[600] text-primary/80">State</p>
+            <p className="font-bold">-</p>
+          </div>
+          <div className="flex flex-col gap-[0.4rem]">
+            <p className="font-[600] text-primary/80">Country</p>
+            <p className="font-bold">-</p>
+          </div>
+          {/* <div></div> */}
+          <div className="flex flex-col gap-[0.4rem]">
+            <p className="font-[600] text-primary/80">Post Code</p>
+            <p className="font-bold">-</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

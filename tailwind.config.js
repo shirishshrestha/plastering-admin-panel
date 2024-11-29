@@ -17,6 +17,7 @@ export default {
         deleteBackground: "#fee9f1",
         accent: "#649df9",
         highlight: "#FF5733",
+        
       },
       gridTemplateColumns: {
         custom: "repeat(auto-fit, minmax(230px, 1fr))",

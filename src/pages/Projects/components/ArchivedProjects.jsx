@@ -36,11 +36,14 @@ import useAuth from "../../../hooks/useAuth";
 const tableHead = [
   "P. Id",
   "Project Name",
-  "Address",
+  "Project Location",
+  "Project Type",
+  "Additional Info",
   "Start Date",
   "Status",
   "Actions",
 ];
+
 export const ArchivedProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -207,6 +210,20 @@ export const ArchivedProjects = () => {
                         "-"
                       )}
                     </td>
+                    <td className="py-[1rem]">{item.project_type}</td>
+                    <td className="py-[1rem]">
+                      {item.additional_requirements ? (
+                        item.additional_requirements.length > 30 ? (
+                          <Tooltip content={item.additional_requirements}>
+                            {`${item.additional_requirements.slice(0, 30)}...`}
+                          </Tooltip>
+                        ) : (
+                          item.additional_requirements
+                        )
+                      ) : (
+                        "-"
+                      )}
+                    </td>
                     <td className="py-[1rem]">{item.start_date}</td>
                     <td className="py-[1rem]">{item.status}</td>
                     <td>
@@ -221,7 +238,7 @@ export const ArchivedProjects = () => {
                         >
                           View Jobs
                         </button>
-                        <button
+                        {/* <button
                           className="p-[5px] rounded-md bg-editBackground"
                           onClick={() =>
                             navigate(`/projectbooks/editProject/${item.id}`)
@@ -238,7 +255,7 @@ export const ArchivedProjects = () => {
                           }}
                         >
                           <TrashIcon />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
