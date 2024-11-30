@@ -1,3 +1,4 @@
+import { Loader } from "../../../components";
 import { useGetBusinessDetails } from "../hooks/query/useGetBusinessDetails";
 import ProfilePicture from "./ProfilePicture";
 
@@ -5,6 +6,7 @@ export const EstimatorProfileDetails = () => {
   const GetEstimatorDetails = useGetBusinessDetails();
   return (
     <div>
+      {GetEstimatorDetails.isLoading && <Loader />}
       <div className="flex gap-8 bg-white shadow-md rounded-lg py-[1.5rem] px-[3rem]">
         <ProfilePicture />
         <div className="flex flex-col gap-1 justify-center">

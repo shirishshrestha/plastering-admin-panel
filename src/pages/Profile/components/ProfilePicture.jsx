@@ -16,7 +16,7 @@ const ProfilePicture = () => {
             className="w-[100%] h-[100%] rounded-full object-cover"
           />
         ) : (
-          <div className="w-[100%] h-[100%] rounded-full flex justify-center items-center bg-primary text-light font-semibold">
+          <div className="w-[100%] h-[100%] rounded-full flex justify-center items-center bg-primary text-light font-semibold text-[2rem]">
             {userAvatar()}
           </div>
         )}

@@ -1,3 +1,4 @@
+import { Loader } from "../../../components";
 import { getRoleFromLocalStorage } from "../../../utils/Storage/StorageUtils";
 import { useGetUserDetails } from "../hooks/query/useGetUserDetails";
 import ProfilePicture from "./ProfilePicture";
@@ -8,6 +9,7 @@ export const UserProfileDetails = () => {
 
   return (
     <div>
+      {GetUserDetails.isLoading && <Loader />}
       <div className="flex gap-8 bg-white shadow-md rounded-lg py-[1.5rem] px-[3rem]">
         <ProfilePicture />
         <div className="flex flex-col gap-1 justify-center">
