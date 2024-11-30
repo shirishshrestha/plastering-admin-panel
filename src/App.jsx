@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import { ProfileTab, Sidebar } from "./components";
 
 const App = () => {
@@ -7,6 +7,7 @@ const App = () => {
 
   return (
     <main className="flex bg-[#f0fbff] min-h-[100vh] admin_container">
+      <ScrollRestoration />
       <Sidebar
         sidebarToggle={sidebarToggle}
         setSidebarToggle={setSidebarToggle}

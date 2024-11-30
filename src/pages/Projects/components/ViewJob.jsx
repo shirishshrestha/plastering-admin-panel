@@ -1,34 +1,40 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Document, Download, GoBack } from "../../assets/icons/SvgIcons";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   acceptProject,
   downloadFile,
   getProjectById,
   requestCancellation,
   sendEmailToClient,
-} from "../../api/Projects/ProjectsApiSlice";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+} from "../../../api/Projects/ProjectsApiSlice";
 import {
   getIdFromLocalStorage,
   getRoleFromLocalStorage,
-} from "../../utils/Storage/StorageUtils";
+} from "../../../utils/Storage/StorageUtils";
+import { queryClient } from "../../../utils/Query/Query";
+import { notifyError, notifySuccess } from "../../../components/Toast/Toast";
 import {
-  AdminEstimation,
-  ClientEstimation,
   ConfirmationPopup,
+  CustomToastContainer,
   Loader,
-} from "../../components";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
-import { queryClient } from "../../utils/Query/Query";
-import useAuth from "../../hooks/useAuth";
-import { notifyError, notifySuccess } from "../../components/Toast/Toast";
+} from "../../../components";
 import { RevisionPopup } from "./RevisionPopup";
+import { Document, Download, GoBack } from "../../../assets/icons/SvgIcons";
+import useAuth from "../../../hooks/useAuth";
 
-const ViewProject = () => {
-  useScrollRestoration();
+const jobData = [
+  {
+    id: 1,
+    jobName: "Living Room Plastering",
+    additionalInfo: "Wall cracks repair and ceiling smoothing",
+    requiredDate: "2024-11-20",
+    cloudLink: "https://www.google.com",
+    status: "Running",
+  },
+];
 
+const ViewJob = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -85,7 +91,6 @@ const ViewProject = () => {
         notifySuccess("Project accepted");
       },
       onError: (error) => {
-        console.log(error);
         notifyError("Something went wrong! Please try again");
         setConfirmationShow(false);
       },
@@ -153,24 +158,38 @@ const ViewProject = () => {
         />
       )}
 
-      {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} id={id} />}
-      {clientFlag && <ClientEstimation setClientFlag={setClientFlag} id={id} />}
+      {/* {adminFlag && <AdminEstimation setAdminFlag={setAdminFlag} id={id} />}
+      {clientFlag && <ClientEstimation setClientFlag={setClientFlag} id={id} />} */}
 
       <div className="mb-[0.5rem] text-[12px] font-[500]">
-        <div
-          className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          <GoBack />
-          Go Back
+        <div className="flex justify-between">
+          <div
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <GoBack />
+            Go Back
+          </div>
+          <div>
+            <select
+              name="revision"
+              id="revision"
+              defaultValue="revision0"
+              className="rounded-lg focus:ring-primary"
+            >
+              <option value="revision0">Revision 0</option>
+              <option value="revision1">Revision 1</option>
+              <option value="revision2">Revision 2</option>
+            </select>
+          </div>
         </div>
       </div>
       <div>
-        <h2 className="font-bold text-[0.8rem]">
+        {/* <h2 className="font-bold text-[0.8rem]">
           {SingleProjectData?.user.name}
-        </h2>
+        </h2> */}
         <h2 className="font-bold text-[1.2rem]">
           {SingleProjectData?.name} -{" "}
           <span className="font-semibold text-[14px]">
@@ -188,7 +207,6 @@ const ViewProject = () => {
           </p>
           <div
             className="list-disc font-[500] focus:ring-2 focus:ring-blue-500 rounded-lg focus:outline-none"
-            // contentEditable
             spellCheck="false"
           >
             {SingleProjectData?.additional_requirements}
@@ -199,7 +217,7 @@ const ViewProject = () => {
             Uploaded Files:
           </p>
           <div className="flex justify-evenly items-center flex-wrap">
-            {SingleProjectData?.files.length < 1 ? (
+            {/* {SingleProjectData?.files.length < 1 ? (
               <p className="font-[500]">No files uploaded</p>
             ) : (
               SingleProjectData?.files.map((file, index) => (
@@ -219,11 +237,11 @@ const ViewProject = () => {
                   </button>
                 </div>
               ))
-            )}
+            )} */}
           </div>
         </div>
 
-        {role === "admin" ? (
+        {/* {role === "admin" ? (
           <div
             className="border-[2px] border-gray-300 rounded-lg p-[1rem] hover:text-light hover:bg-primary hover:border-primary cursor-pointer transition-all ease-in-out duration-300 font-[500] text-[1rem] text-center"
             onClick={() => setAdminFlag(true)}
@@ -237,7 +255,7 @@ const ViewProject = () => {
           >
             Estimator Uploaded Files
           </div>
-        )}
+        )} */}
 
         <div className="grid grid-cols-2">
           <div className="flex items-center justify-center">
@@ -335,4 +353,4 @@ const ViewProject = () => {
   );
 };
 
-export default ViewProject;
+export default ViewJob;

@@ -9,10 +9,8 @@ import {
 import { NavLink } from "react-router-dom";
 import { LogoutComp } from "../../utils/Logout/Logout";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
-  useScrollRestoration();
   const [showText, setShowText] = useState(false);
 
   const role = getRoleFromLocalStorage();
@@ -64,26 +62,49 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
             </span>
           </NavLink>
 
-          <NavLink
-            to="/projects"
-            className={({ isActive }) =>
-              `${
-                isActive ? "bg-light text-primary sidebar-menu " : ""
-              } flex gap-[0.5rem] items-center rounded-lg p-[0.7rem] ${
-                sidebarToggle ? "w-full" : "w-fit"
-              } `
-            }
-            title="Projects"
-          >
-            <ProjectsSvg />
-            <span
-              className={`transition-all duration-300 w-fit ${
-                showText ? "block" : "hidden"
-              }`}
+          {role === "estimator" ? (
+            <NavLink
+              to="/assignedProjects"
+              className={({ isActive }) =>
+                `${
+                  isActive ? "bg-light text-primary sidebar-menu " : ""
+                } flex gap-[0.5rem] items-center rounded-lg p-[0.7rem] ${
+                  sidebarToggle ? "w-full" : "w-fit"
+                } `
+              }
+              title={role === "admin" ? "Project Books" : "Projects"}
             >
-              Projects
-            </span>
-          </NavLink>
+              <ProjectsSvg />
+              <span
+                className={`transition-all duration-300 w-fit ${
+                  showText ? "block" : "hidden"
+                }`}
+              >
+                Assigned Projects
+              </span>
+            </NavLink>
+          ) : (
+            <NavLink
+              to="/projectbooks"
+              className={({ isActive }) =>
+                `${
+                  isActive ? "bg-light text-primary sidebar-menu " : ""
+                } flex gap-[0.5rem] items-center rounded-lg p-[0.7rem] ${
+                  sidebarToggle ? "w-full" : "w-fit"
+                } `
+              }
+              title={role === "admin" ? "Project Books" : "Projects"}
+            >
+              <ProjectsSvg />
+              <span
+                className={`transition-all duration-300 w-fit ${
+                  showText ? "block" : "hidden"
+                }`}
+              >
+                {role === "admin" ? " Project Books" : "Projects"}
+              </span>
+            </NavLink>
+          )}
           {role === "admin" && (
             <NavLink
               to="/clients"

@@ -1,10 +1,27 @@
 import {
   Link,
+  Outlet,
   useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { EditIcon, PlusIcon, TrashIcon } from "../../assets/icons/SvgIcons";
+import {
+  EditIcon,
+  EyeIcon,
+  GoBack,
+  PlusIcon,
+  TrashIcon,
+} from "../../../assets/icons/SvgIcons";
+
+import { Tooltip } from "flowbite-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import {
+  deleteProject,
+  getProjects,
+} from "../../../api/Projects/ProjectsApiSlice";
+import { notifyError, notifySuccess } from "../../../components/Toast/Toast";
+import { queryClient } from "../../../utils/Query/Query";
 import {
   CustomToastContainer,
   DeleteConfirmation,
@@ -13,17 +30,8 @@ import {
   Loader,
   Pagination,
   SearchInput,
-} from "../../components";
-import { Tooltip } from "flowbite-react";
-import {
-  deleteProject,
-  getProjects,
-} from "../../api/Projects/ProjectsApiSlice";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { notifySuccess } from "../../components/Toast/Toast";
-import { queryClient } from "../../utils/Query/Query";
-import useAuth from "../../hooks/useAuth";
+} from "../../../components";
+import useAuth from "../../../hooks/useAuth";
 
 const tableHead = [
   "P. Id",
@@ -36,10 +44,11 @@ const tableHead = [
   "Actions",
 ];
 
-const Projects = () => {
+export const ArchivedProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchName, setSearchName] = useState("");
 
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
@@ -52,19 +61,14 @@ const Projects = () => {
     [searchParams]
   );
 
-  const searchItem = useMemo(
-    () => searchParams.get("search") || "",
-    [searchParams]
-  );
-
   const {
     isPending,
     error,
     data: ProjectData,
   } = useQuery({
-    queryKey: ["projects", currentPage, searchItem],
-    queryFn: () => getProjects(currentPage, searchItem),
-    enabled: location.pathname.includes("/projects"),
+    queryKey: ["projects", currentPage, searchName],
+    queryFn: () => getProjects(currentPage, searchName),
+    // enabled: location.pathname.includes("/projects"),
     staleTime: 6000,
   });
 
@@ -128,7 +132,13 @@ const Projects = () => {
               List of Projects
             </h2>
             <div className="flex gap-[1rem]">
-              <SearchInput placeholder={"Search by id or status"} />
+              <SearchInput
+                defaultValue={searchName}
+                setSearchParams={setSearchParams}
+                searchParams={searchParams}
+                placeholder={"Search by id or status"}
+                setSearchName={setSearchName}
+              />
               <Link to="/projectbooks/addProject">
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}
@@ -139,13 +149,13 @@ const Projects = () => {
           </div>
           <div className="flex justify-between items-center">
             <div className="mb-[1rem] flex gap-[1rem]">
-              <button className="px-4 py-2 text-light bg-secondary font-[600]  rounded-lg shadow-inner ">
+              <button
+                className="px-4 py-2 bg-white/80 font-[600] rounded-lg shadow-inner "
+                onClick={() => navigate(`/projectbooks/projects`)}
+              >
                 Active Projects
               </button>
-              <button
-                className="px-4 py-2 bg-white/80 font-[600]  rounded-lg shadow-inner"
-                onClick={() => navigate(`/projectbooks/archivedProjects`)}
-              >
+              <button className="px-4 py-2  font-[600] rounded-lg shadow-inner text-light bg-secondary">
                 Archived Projects
               </button>
             </div>
@@ -228,7 +238,7 @@ const Projects = () => {
                         >
                           View Jobs
                         </button>
-                        <button
+                        {/* <button
                           className="p-[5px] rounded-md bg-editBackground"
                           onClick={() =>
                             navigate(`/projectbooks/editProject/${item.id}`)
@@ -245,7 +255,7 @@ const Projects = () => {
                           }}
                         >
                           <TrashIcon />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
@@ -266,5 +276,3 @@ const Projects = () => {
     </>
   );
 };
-
-export default Projects;

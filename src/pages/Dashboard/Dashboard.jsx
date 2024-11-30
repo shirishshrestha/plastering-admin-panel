@@ -1,14 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  ScrollRestoration,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import {
   Calendar,
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
 import {
-  BarChart,
   DoughnutChart,
-  LineChart,
+  EmptyData,
   Loader,
+  LogoLoader,
   LogoutConfirmation,
 } from "../../components";
 import { useQuery } from "@tanstack/react-query";
@@ -16,16 +21,26 @@ import {
   getProjects,
   getTotalProjectsStatus,
 } from "../../api/Projects/ProjectsApiSlice";
-import EmptyData from "../../components/EmptyData/EmptyData";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
-import { clientDashboard, curve, spiral, square } from "../../assets/images";
+import {
+  clientDashboard,
+  curve,
+  logo,
+  spiral,
+  square,
+} from "../../assets/images";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 
-export const Dashboard = () => {
-  useScrollRestoration();
+const tableHead = [
+  "Project Name",
+  "Project Location",
+  "Required By Date",
+  "Status",
+];
 
+export const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { logout } = useLogout();
 
@@ -49,6 +64,7 @@ export const Dashboard = () => {
   } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(1, ""),
+    enabled: location.pathname === "/",
   });
 
   const {
@@ -92,13 +108,6 @@ export const Dashboard = () => {
     },
   ];
 
-  const tableHead = [
-    "Project Name",
-    "Project Location",
-    "Required By Date",
-    "Status",
-  ];
-
   return (
     <section className="pt-[1rem]">
       {logoutConfirationShow && (
@@ -107,8 +116,7 @@ export const Dashboard = () => {
           setLogoutConfirationShow={setLogoutConfirationShow}
         />
       )}
-      {projectPending && <Loader />}
-      {projectStatusPending && <Loader />}
+      {(projectPending || projectStatusPending) && <LogoLoader />}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1.2rem] w-full h-full">
         <div className="w-full h-full flex flex-col gap-[1rem] justify-center">
           <div className="w-full bg-white rounded-lg shadow-lg py-[1rem] px-[2rem] relative overflow-hidden">
@@ -118,12 +126,8 @@ export const Dashboard = () => {
                   Welcome to the Admin Dashboard
                 </h3>
               </div>
-              <figure className="w-[150px] relative z-10">
-                <img
-                  src={clientDashboard}
-                  alt="dashboard"
-                  className="object-cover"
-                />
+              <figure className="w-[140px] relative z-10">
+                <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
               <img
                 src={square}
@@ -201,7 +205,7 @@ export const Dashboard = () => {
           </div>
         </div>
         <div>
-          <div className="h-fit  p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+          <div className="h-full  p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start pb-[1.2rem]">Project Status</h4>
 
             <div className="max-w-[340px] ">
@@ -224,14 +228,16 @@ export const Dashboard = () => {
         <div className="overflow-x-scroll table__container  mt-[1rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody className="">
               {projectPending ? (
@@ -271,7 +277,7 @@ export const Dashboard = () => {
             </tbody>
           </table>
           <div className="mt-[1rem] ">
-            <Link to="/projects">
+            <Link to="/projectbooks">
               <button className="bg-primary font-semibold px-[30px] py-[10px] text-light rounded-lg hover:bg-secondary transition-all ease-in-out duration-200 hover:text-primary ">
                 See More
               </button>

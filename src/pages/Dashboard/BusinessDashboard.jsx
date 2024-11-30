@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
+import { Calendar, TotalProjects } from "../../assets/icons/SvgIcons";
 import {
-  Calendar,
-  CompletedProjects,
-  TotalProjects,
-} from "../../assets/icons/SvgIcons";
-import { DoughnutChart, Loader, LogoutConfirmation } from "../../components";
-import { clientDashboard, curve, spiral, square } from "../../assets/images";
+  DoughnutChart,
+  EmptyData,
+  LogoLoader,
+  LogoutConfirmation,
+} from "../../components";
+import {
+  clientDashboard,
+  curve,
+  logo,
+  spiral,
+  square,
+} from "../../assets/images";
 import {
   getIdFromLocalStorage,
   getNameFromLocalStorage,
@@ -15,13 +22,17 @@ import {
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
-import EmptyData from "../../components/EmptyData/EmptyData";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
+
+const tableHead = [
+  "Project Name",
+  "Project Location",
+  "Required By Date",
+  "Status",
+];
 
 export const BusinessDashboard = () => {
-  useScrollRestoration();
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
 
@@ -91,17 +102,9 @@ export const BusinessDashboard = () => {
     },
   ];
 
-  const tableHead = [
-    "Project Name",
-    "Project Location",
-    "Required By Date",
-    "Status",
-  ];
-
   return (
     <section className="pt-[1rem]">
-      {projectPending && <Loader />}
-      {projectStatusPending && <Loader />}
+      {(projectPending || projectStatusPending) && <LogoLoader />}
 
       {logoutConfirationShow && (
         <LogoutConfirmation
@@ -119,12 +122,8 @@ export const BusinessDashboard = () => {
                 </h3>
                 <h4 className="capitalize">{userName}</h4>
               </div>
-              <figure className="w-[150px] relative z-10">
-                <img
-                  src={clientDashboard}
-                  alt="dashboard"
-                  className="object-cover"
-                />
+              <figure className="w-[140px] relative z-10">
+                <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
               <img
                 src={square}
@@ -181,37 +180,39 @@ export const BusinessDashboard = () => {
           </div>
         </div>
         <div>
-          <div className="h-fit p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+          <div className="h-full p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start text-[18px]">Project Status</h4>
 
             <div className="max-w-[340px] mt-[0.5rem] ">
-              {ProjectStatusData?.pending_projects < 1 ? (
-                <h4>No data available</h4>
-              ) : (
+              {ProjectStatusData?.total_projects > 0 ? (
                 <DoughnutChart
                   dealData={doughnutData}
                   datasets={doughnutDatasets}
                   legendPosition={"bottom"}
                   legendTextColor={"#fff"}
                 />
+              ) : (
+                <h4>No data available</h4>
               )}
             </div>
           </div>
         </div>
       </div>
       <div className="mt-[1rem]">
-        <h2 className="font-bold text-[1.4rem]">Recent Projects</h2>
+        <h2 className="font-bold text-[1.4rem]">Recently Assigned Projects</h2>
         <div className="overflow-x-scroll table__container  mt-[0.4rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody className="capitalize">
               {projectPending ? (

@@ -35,6 +35,7 @@ export const DeleteConfirmation = ({
           <button
             className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
             onClick={handleCancelClick}
+            type="button"
           >
             Cancel
           </button>

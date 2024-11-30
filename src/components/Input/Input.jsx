@@ -17,6 +17,7 @@ export const Input = ({
   maxLength,
   errors,
   register,
+  ...props
 }) => {
   const [inputValue, setInputValue] = useState(defaultValue);
 
@@ -54,6 +55,7 @@ export const Input = ({
             message: maxMessage,
           },
         })}
+        {...props}
       />
       <ErrorMessage
         errors={errors}

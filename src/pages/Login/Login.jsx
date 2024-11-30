@@ -1,9 +1,8 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginBg, logo } from "../../assets/images";
-import { Loader } from "../../components";
+import { CustomToastContainer, Loader } from "../../components";
 import { useState } from "react";
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
 import { useMutation } from "@tanstack/react-query";
 import { businessLogin, login } from "../../api/Login/LoginApiSlice";
 import useAuth from "../../hooks/useAuth";
@@ -13,13 +12,10 @@ import {
   setRoleToLocalStorage,
   setTokenToLocalStorage,
 } from "../../utils/Storage/StorageUtils";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { UserLogin } from "./UserLogin";
 import { BusinessLogin } from "./BusinessLogin";
 
 const Login = () => {
-  useScrollRestoration();
-
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loginFlag, setLoginFlag] = useState("user");
@@ -41,7 +37,9 @@ const Login = () => {
       setAuth({ role, id, token, userName });
     },
     onError: () => {
-      notifyError("Incorrect Email / Username or Password");
+      notifyError(
+        "Invalid email, username, password, or attempt to log in with business account"
+      );
     },
   });
 
@@ -59,14 +57,11 @@ const Login = () => {
         const token = data.token;
         const businessName = data.estimator.business_name;
         setAuth({ role, id, token, businessName });
-
-        notifySuccess("Business Login Successful");
-        setTimeout(() => {
-          console.log("hello");
-        }, 2000);
       },
       onError: () => {
-        notifyError("Incorrect Email / Username or Password");
+        notifyError(
+          "Invalid email, username, password, or attempt to log in with client account"
+        );
       },
     });
 

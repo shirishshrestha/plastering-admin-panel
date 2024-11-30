@@ -23,7 +23,6 @@ export const LogoutComp = ({ sidebarToggle, showText }) => {
       navigate("/login");
     });
   };
-
   return (
     <>
       {logoutConfirationShow && (

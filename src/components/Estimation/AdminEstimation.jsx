@@ -9,8 +9,7 @@ import {
   postEstimatesNote,
 } from "../../api/Projects/ProjectsApiSlice";
 import { notifySuccess } from "../Toast/Toast";
-import CustomToastContainer from "../Toast/ToastContainer";
-import { Loader } from "../index";
+import { CustomToastContainer, Loader } from "../index";
 
 const AdminEstimation = ({ setAdminFlag, id }) => {
   const [newProjectPart, setNewProjectPart] = useState(false);

@@ -1,22 +1,32 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import {
+  AddJob,
   AddProject,
+  ArchivedProjects,
+  BusinessProjects,
   BusinessSignup,
   ClientDashboard,
   ClientProjects,
   Clients,
   Dashboard,
+  EditBusiness,
   EditClient,
+  EditJob,
   EditProject,
+  JobBook,
   Login,
   PageNotFound,
+  ProfilePage,
+  ProjectBooks,
   Projects,
   Signup,
-  ViewProject,
+  ViewBusiness,
+  ViewJob,
 } from "../pages";
 import ProtectedRoute, {
-  ProtectedClientRoute,
+  ProtectedAdminRoute,
+  ProtectedBusinessRoute,
   ProtectedLoginSignupRoute,
 } from "./ProtectedRoute";
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
@@ -27,23 +37,20 @@ import BusinessDirectory from "../pages/BusinessDirectory/BusinessDirectory";
 const DashboardPriority = () => {
   const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
-  return auth?.role === "admin" || (role && role === "admin") ? (
-    <Dashboard />
-  ) : auth?.role === "client" || (role && role === "client") ? (
-    <ClientDashboard />
-  ) : (
-    <BusinessDashboard />
-  );
+  if (auth?.role === "admin" || (role && role === "admin"))
+    return <Dashboard />;
+  if (auth?.role === "client" || (role && role === "client"))
+    return <ClientDashboard />;
+  return <BusinessDashboard />;
 };
 
 const ProjectsPriority = () => {
   const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
-  return auth?.role === "admin" || (role && role === "admin") ? (
-    <Projects />
-  ) : (
-    <ClientProjects />
-  );
+  if (auth?.role === "admin" || (role && role === "admin"))
+    return <ProjectBooks />;
+  if (auth?.role === "client" || (role && role === "client"))
+    return <ClientProjects />;
 };
 
 export const router = createBrowserRouter([
@@ -60,29 +67,65 @@ export const router = createBrowserRouter([
         element: <DashboardPriority />,
       },
       {
-        path: "/projects",
-        element: <ProjectsPriority />,
+        path: "/profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "/assignedProjects",
+        element: <BusinessProjects />,
+      },
+      {
+        path: "/projectbooks",
+        element: (
+          <ProtectedBusinessRoute>
+            <ProjectsPriority />
+          </ProtectedBusinessRoute>
+        ),
         children: [
+          {
+            path: "projects",
+            element: (
+              <ProtectedAdminRoute>
+                <Projects />
+              </ProtectedAdminRoute>
+            ),
+          },
+          {
+            path: "archivedProjects",
+            element: <ArchivedProjects />,
+          },
           {
             path: "addProject",
             element: <AddProject />,
           },
           {
-            path: "viewProject/:id",
-            element: <ViewProject />,
-          },
-          {
             path: "editProject/:id",
             element: <EditProject />,
+          },
+          {
+            path: "jobBook/:id",
+            element: <JobBook />,
+          },
+          {
+            path: "addJob",
+            element: <AddJob />,
+          },
+          {
+            path: "editJob/:id",
+            element: <EditJob />,
+          },
+          {
+            path: "viewJob/:id",
+            element: <ViewJob />,
           },
         ],
       },
       {
         path: "/clients",
         element: (
-          <ProtectedClientRoute>
+          <ProtectedAdminRoute>
             <Clients />
-          </ProtectedClientRoute>
+          </ProtectedAdminRoute>
         ),
         children: [
           {
@@ -94,10 +137,20 @@ export const router = createBrowserRouter([
       {
         path: "/business",
         element: (
-          <ProtectedClientRoute>
+          <ProtectedAdminRoute>
             <BusinessDirectory />
-          </ProtectedClientRoute>
+          </ProtectedAdminRoute>
         ),
+        children: [
+          {
+            path: "viewBusiness/:id",
+            element: <ViewBusiness />,
+          },
+          {
+            path: "editBusiness/:id",
+            element: <EditBusiness />,
+          },
+        ],
       },
     ],
   },

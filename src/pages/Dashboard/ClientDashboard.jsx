@@ -4,8 +4,13 @@ import {
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
-import { DoughnutChart, Loader, LogoutConfirmation } from "../../components";
-import { clientDashboard, curve, spiral, square } from "../../assets/images";
+import {
+  DoughnutChart,
+  EmptyData,
+  LogoLoader,
+  LogoutConfirmation,
+} from "../../components";
+import { clientDashboard, curve, logo, spiral, square } from "../../assets/images";
 import {
   getIdFromLocalStorage,
   getNameFromLocalStorage,
@@ -15,13 +20,10 @@ import {
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
-import EmptyData from "../../components/EmptyData/EmptyData";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 export const ClientDashboard = () => {
-  useScrollRestoration();
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
 
@@ -100,8 +102,7 @@ export const ClientDashboard = () => {
 
   return (
     <section className="pt-[1rem]">
-      {projectPending && <Loader />}
-      {projectStatusPending && <Loader />}
+      {(projectPending || projectStatusPending) && <LogoLoader />}
 
       {logoutConfirationShow && (
         <LogoutConfirmation
@@ -119,12 +120,8 @@ export const ClientDashboard = () => {
                 </h3>
                 <h4 className="capitalize">{userName}</h4>
               </div>
-              <figure className="w-[150px] relative z-10">
-                <img
-                  src={clientDashboard}
-                  alt="dashboard"
-                  className="object-cover"
-                />
+              <figure className="w-[140px] relative z-10">
+                <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
               <img
                 src={square}
@@ -193,22 +190,19 @@ export const ClientDashboard = () => {
           </div>
         </div>
         <div>
-          <div className="h-fit p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
+          <div className="h-full p-[1rem] bg-primary text-white flex flex-col justify-center items-center shadow-lg rounded-lg">
             <h4 className="font-bold text-start text-[18px]">Project Status</h4>
 
             <div className="max-w-[340px] mt-[0.5rem]">
-              {ProjectStatusData?.pending_projects +
-                ProjectStatusData?.completed_projects +
-                ProjectStatusData?.running_projects <
-              1 ? (
-                <h4>No data available</h4>
-              ) : (
+              {ProjectStatusData?.total_projects > 0 ? (
                 <DoughnutChart
                   dealData={doughnutData}
                   datasets={doughnutDatasets}
                   legendPosition={"bottom"}
                   legendTextColor={"#fff"}
                 />
+              ) : (
+                <h4>No data available</h4>
               )}
             </div>
           </div>
@@ -219,44 +213,30 @@ export const ClientDashboard = () => {
         <div className="overflow-x-scroll table__container  mt-[0.4rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">
-              {tableHead.map((item, index) => (
-                <th
-                  key={index}
-                  className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
-                >
-                  {item}
-                </th>
-              ))}
+              <tr>
+                {tableHead.map((item, index) => (
+                  <th
+                    key={index}
+                    className="py-[1rem] font-semibold text-start first:pl-[0.5rem]"
+                  >
+                    {item}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody className="capitalize">
-              {projectPending ? (
-                [...Array(5)].map((_, index) => (
-                  <tr key={index} className="h-[1.5rem]">
-                    {[...Array(4)].map((_, index) => (
-                      <td key={index} className="py-[1.5rem] first:pl-[0.5rem]">
-                        <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : ProjectData?.data.filter((item) => user_id === item.user_id)
-                  .length > 0 ? (
+              {ProjectData?.data.filter((item) => user_id === item.user_id)
+                .length > 0 ? (
                 ProjectData?.data
                   .filter((item) => user_id === item.user_id)
                   .slice(0, 4)
                   .map((item) => (
                     <tr key={item.id} className=" last:border-none  ">
                       <td className="py-[1rem] pl-[0.5rem]">
-                        {item.name
-                          ? item.name.length > 20
-                            ? `${item.name.slice(0, 20)}...`
-                            : item.name
-                          : "-"}
+                        {item.name ? item.name : "-"}
                       </td>
                       <td className="py-[1rem]">
-                        {item.address.length > 20
-                          ? `${item.address.slice(0, 20)}...`
-                          : item.address}
+                        {item.address ? item.address : "-"}
                       </td>
                       <td className="py-[1rem]">{item.start_date}</td>
 

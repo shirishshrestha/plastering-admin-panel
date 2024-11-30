@@ -1,3 +1,5 @@
+import EditBusiness from "./BusinessDirectory/EditBusiness";
+import ViewBusiness from "./BusinessDirectory/ViewBusiness";
 import Clients from "./Clients/Clients";
 import { EditClient } from "./Clients/EditClients";
 import { ClientDashboard } from "./Dashboard/ClientDashboard";
@@ -7,18 +9,25 @@ import PageNotFound from "./PageNotFound/PageNotFound";
 import { AddProject } from "./Projects/AddProject";
 import { ClientProjects } from "./Projects/ClientProjects";
 import { EditProject } from "./Projects/EditProject";
-import { Projects } from "./Projects/Projects";
-import { RevisionPopup } from "./Projects/RevisionPopup";
-import ViewProject from "./Projects/ViewProject";
+import { ProjectBooks } from "./Projects/ProjectBooks";
+import Projects from "./Projects/Projects";
+import { RevisionPopup } from "./Projects/components/RevisionPopup";
+import JobBook from "./Projects/JobBook";
 import BusinessSignup from "./Signup/BusinessSignup";
 import Signup from "./Signup/Signup";
+import { ArchivedProjects } from "./Projects/components/ArchivedProjects";
+import { AddJob } from "./Projects/components/AddJob";
+import { EditJob } from "./Projects/components/EditJob";
+import ViewJob from "./Projects/components/ViewJob";
+import { BusinessProjects } from "./Projects/BusinessProjects";
+import ProfilePage from "./Profile/ProfilePage";
 
 export {
   Dashboard,
   Projects,
   Login,
   AddProject,
-  ViewProject,
+  JobBook,
   Signup,
   ClientProjects,
   ClientDashboard,
@@ -28,4 +37,13 @@ export {
   BusinessSignup,
   EditClient,
   PageNotFound,
+  ViewBusiness,
+  EditBusiness,
+  ProjectBooks,
+  ArchivedProjects,
+  AddJob,
+  EditJob,
+  ViewJob,
+  BusinessProjects,
+  ProfilePage,
 };

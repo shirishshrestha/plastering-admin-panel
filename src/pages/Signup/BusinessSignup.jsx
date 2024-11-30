@@ -1,19 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
 import { signup, logo } from "../../assets/images";
-import { Loader, LoginSignupInput, Model } from "../../components";
+import {
+  Loader,
+  LoginSignupInput,
+  Model,
+  CustomToastContainer,
+} from "../../components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { signupBusiness } from "../../api/Register/RegisterApiSlice";
 import { useMutation } from "@tanstack/react-query";
-import CustomToastContainer from "../../components/Toast/ToastContainer";
+
 import { notifyError, notifySuccess } from "../../components/Toast/Toast";
-import useScrollRestoration from "../../hooks/useScrollRestoration";
 import { EyeIcon, EyeSlash } from "../../assets/icons/SvgIcons";
 import { ErrorMessage } from "@hookform/error-message";
 
 const BusinessSignup = () => {
-  useScrollRestoration();
-
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 
@@ -584,8 +587,7 @@ const BusinessSignup = () => {
                       htmlFor="scope"
                       className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
                     >
-                      Scope or Specialisation{" "}
-                      <span className="text-red-500 ">*</span>
+                      Scope or Specialisation
                     </label>
                     <LoginSignupInput
                       placeholder={"Enter scope or specialisation"}
@@ -597,7 +599,6 @@ const BusinessSignup = () => {
                       message={
                         "Invalid scope. Must contain only alphabetic characters"
                       }
-                      required={"Please scope or specialisation"}
                     />
                   </div>
                   <div>
@@ -622,7 +623,7 @@ const BusinessSignup = () => {
               </div>
 
               <div className="mb-4">
-                <p className="font-bold ">6. Login and Account Details:</p>
+                <p className="font-bold ">7. Login and Account Details:</p>
                 <div className="mt-2 grid grid-cols-custom gap-x-4 gap-y-3">
                   <div>
                     <label
