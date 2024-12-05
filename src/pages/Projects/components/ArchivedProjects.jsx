@@ -132,13 +132,7 @@ export const ArchivedProjects = () => {
               List of Projects
             </h2>
             <div className="flex gap-[1rem]">
-              <SearchInput
-                defaultValue={searchName}
-                setSearchParams={setSearchParams}
-                searchParams={searchParams}
-                placeholder={"Search by id or status"}
-                setSearchName={setSearchName}
-              />
+              <SearchInput placeholder={"Search by id or status"} />
               <Link to="/projectbooks/addProject">
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}

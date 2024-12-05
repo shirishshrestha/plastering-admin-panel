@@ -83,7 +83,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           {
-            path: "projects",
+            path: "projects/:id",
             element: (
               <ProtectedAdminRoute>
                 <Projects />

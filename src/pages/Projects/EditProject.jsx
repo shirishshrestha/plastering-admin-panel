@@ -49,6 +49,7 @@ export const EditProject = () => {
 
   useEffect(() => {
     if (SingleProjectData) {
+      console.log(SingleProjectData)
       reset({
         project_type: SingleProjectData?.project_type,
         date: SingleProjectData?.start_date,

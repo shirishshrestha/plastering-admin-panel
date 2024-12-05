@@ -2,6 +2,7 @@ import {
   Link,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from "react-router-dom";
 import { EditIcon, PlusIcon, TrashIcon } from "../../assets/icons/SvgIcons";
@@ -20,7 +21,7 @@ import {
   getProjects,
 } from "../../api/Projects/ProjectsApiSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
@@ -39,6 +40,7 @@ const tableHead = [
 const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [projectId, setProjectId] = useState();
@@ -68,10 +70,7 @@ const Projects = () => {
     staleTime: 6000,
   });
 
-  const processedProjectData = useMemo(() => {
-    if (!ProjectData) return [];
-    return ProjectData.data;
-  }, [ProjectData]);
+  const processedProjectData = () => ProjectData?.data || [];
 
   const paginationProps = useMemo(
     () => ({

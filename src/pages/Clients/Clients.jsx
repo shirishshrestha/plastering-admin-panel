@@ -73,10 +73,7 @@ const Clients = () => {
     setSearchParams(updatedParams);
   };
 
-  const processedUserData = useMemo(() => {
-    if (!UserData) return [];
-    return UserData.data;
-  }, [UserData]);
+  const processedUserData = UserData?.clients?.data || [];
 
   if (location.pathname !== "/clients") {
     return <Outlet />;
@@ -118,57 +115,54 @@ const Clients = () => {
         </thead>
         <tbody className="">
           {processedUserData.length > 0 ? (
-            processedUserData
-              .filter((user) => user.role === "client")
-              .map((user) => (
-                <tr key={user.id} className=" last:border-none  ">
-                  <td className="py-[1rem] pl-[1rem] pr-[1rem]">{user.id}</td>
-                  <td className="py-[1rem] pl-[0.5rem]">
-                    {" "}
-                    {user.name && user.name.length > 20 ? (
-                      <Tooltip content={user.name}>
-                        {`${user.name.slice(0, 20)}...`}
-                      </Tooltip>
-                    ) : (
-                      user.name || "-"
-                    )}
-                  </td>
-                  <td className="py-[1rem] pl-[0.5rem]">{user.username} </td>
-                  <td className="py-[1rem]">
-                    {user.email && user.email.length > 25 ? (
-                      <Tooltip content={user.email}>
-                        {`${user.email.slice(0, 25)}...`}
-                      </Tooltip>
-                    ) : (
-                      user.email || "-"
-                    )}
-                  </td>
-                  <td className="py-[1rem]">{user.created_at.split("T")[0]}</td>
-                  <td>
-                    <div className="flex gap-[0.7rem]">
-                      <button
-                        className="p-[5px] rounded-md bg-editBackground"
-                        onClick={() =>
-                          navigate(`editClient/${user.id}`, {
-                            state: {
-                              page: currentPage,
-                              searchItem: searchItem,
-                            },
-                          })
-                        }
-                      >
-                        <EditIcon color="#8c62ff" />
-                      </button>
-                      <button
-                        className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
-                        onClick={() => navigate(`/projectbooks/projects`)}
-                      >
-                        Project Details
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+            processedUserData.map((user) => (
+              <tr key={user.id} className=" last:border-none  ">
+                <td className="py-[1rem] pl-[1rem] pr-[1rem]">{user.id}</td>
+                <td className="py-[1rem] pl-[0.5rem]">
+                  {user.name && user.name.length > 20 ? (
+                    <Tooltip content={user.name}>
+                      {`${user.name.slice(0, 20)}...`}
+                    </Tooltip>
+                  ) : (
+                    user.name || "-"
+                  )}
+                </td>
+                <td className="py-[1rem] pl-[0.5rem]">{user.username} </td>
+                <td className="py-[1rem]">
+                  {user.email && user.email.length > 25 ? (
+                    <Tooltip content={user.email}>
+                      {`${user.email.slice(0, 25)}...`}
+                    </Tooltip>
+                  ) : (
+                    user.email || "-"
+                  )}
+                </td>
+                <td className="py-[1rem]">{user.created_at.split(" ")[0]}</td>
+                <td>
+                  <div className="flex gap-[0.7rem]">
+                    <button
+                      className="p-[5px] rounded-md bg-editBackground"
+                      onClick={() =>
+                        navigate(`editClient/${user.id}`, {
+                          state: {
+                            page: currentPage,
+                            searchItem: searchItem,
+                          },
+                        })
+                      }
+                    >
+                      <EditIcon color="#8c62ff" />
+                    </button>
+                    <button
+                      className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                      onClick={() => navigate(`/projectbooks/projects`)}
+                    >
+                      Project Details
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
           ) : (
             <EmptyData />
           )}

@@ -89,7 +89,7 @@ FilterDrawer.Status = function FilterDrawerStatus() {
         <option value="pending">Pending</option>
         <option value="running">Running</option>
         <option value="completed">Completed</option>
-        <option value="canceled">Canceled</option>
+        <option value="cancelled">Cancelled</option>
       </Select>
     </div>
   );

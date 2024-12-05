@@ -11,49 +11,29 @@ import {
   LogoutConfirmation,
   Pagination,
   CustomToastContainer,
+  FilterDrawer,
+  SearchInput,
 } from "../../components";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import {
-  getProjects,
-  getTotalProjectsStatus,
-} from "../../api/Projects/ProjectsApiSlice";
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
+import { useGetProjectBooks } from "./hooks/query/useGetProjectBooks";
+import { useGetTotalProjectStatus } from "./hooks/query/useGetTotalProjectStatus";
 
 const tableHead = [
   "PB. Id",
-  "Client Name",
   "Project Book",
-  "Project Location",
+  "Total Projects",
+  "Created At",
   "Status",
   "Actions",
-];
-
-const ProjectBookData = [
-  {
-    id: 1,
-    client_name: "John Doe",
-    project_book: "John's Project Book",
-    project_location: "Sydney",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    client_name: "Michael Brown",
-    project_book: "Michael's Home Improvements",
-    project_location: "Melbourne",
-    status: "Completed",
-  },
-  {
-    id: 3,
-    client_name: "Emily Davis",
-    project_book: "Emily's Office Design",
-    project_location: "Brisbane",
-    status: "Pending",
-  },
 ];
 
 const doughnutBackgroundColor = [
@@ -72,55 +52,75 @@ export const ProjectBooks = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useLogout();
-
   const [projectName, setProjectName] = useState("");
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
+  const currentPage = useMemo(
+    () => parseInt(searchParams.get("page") || "1", 10),
+    [searchParams]
+  );
 
-  const { isPending: recentProjectsPending, data: RecentProjectData } =
-    useQuery({
-      queryKey: ["recentProjects"],
-      queryFn: () => getProjects(1, ""),
-      enabled: location.pathname === "/projectbooks",
-      staleTime: 6000,
-    });
+  const searchItem = useMemo(
+    () => searchParams.get("search") || "",
+    [searchParams]
+  );
+
+  const registeredDate = useMemo(
+    () => searchParams.get("date") || "",
+    [searchParams]
+  );
+
+  const status = useMemo(
+    () => searchParams.get("status") || "",
+    [searchParams]
+  );
 
   const {
-    isPending: projectStatusPending,
-    error: projectStatusError,
-    data: TotalProjectStatusData,
-  } = useQuery({
-    queryKey: ["totalProjectStatus"],
-    queryFn: () => getTotalProjectsStatus(),
-    staleTime: 6000,
-    enabled: location.pathname === "/projectbooks",
-  });
+    setLogoutConfirationShow,
+    logoutConfirationShow,
+    setAuth,
+    openDrawer,
+  } = useAuth();
 
-  const handleLogout = () => {
+  // queries
+  const { data: ProjectBooks, isPending: ProjectBooksPending } =
+    useGetProjectBooks(
+      "projectBooks",
+      "/projectbooks",  
+      registeredDate,
+      status,
+      currentPage,
+      searchItem
+    );
+  const { data: RecentProjectBooks, isPending: recentProjectsBookPending } =
+    useGetProjectBooks("recentProjectBooks", "/projectbooks", "", "", 1, "");
+  const { data: TotalProjectStatusData, isPending: projectStatusPending } =
+    useGetTotalProjectStatus("totalProjectStatus");
+
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [setAuth, setLogoutConfirationShow, logout, navigate]);
 
-  const doughnutData = [
-    {
-      type: "Pending",
-      value: TotalProjectStatusData?.pending_projects,
+  const handleViewProjects = useCallback(
+    (user_id) => {
+      navigate(`projects/${user_id}`);
     },
-    {
-      type: "Running",
-      value: TotalProjectStatusData?.running_projects,
-    },
-    {
-      type: "Completed",
-      value: TotalProjectStatusData?.completed_projects,
-    },
-  ];
+    [navigate]
+  );
+
+  const doughnutData = useMemo(() => {
+    return [
+      { type: "Pending", value: TotalProjectStatusData?.pending },
+      { type: "Completed", value: TotalProjectStatusData?.completed },
+      { type: "Cancelled", value: TotalProjectStatusData?.cancelled },
+    ];
+  }, [TotalProjectStatusData]);
 
   const doughnutDatasets = [
     {
@@ -129,6 +129,22 @@ export const ProjectBooks = () => {
       borderColor: doughnutBorderColor,
     },
   ];
+
+  const paginationProps = useMemo(
+    () => ({
+      pageNumber: currentPage,
+      lastPage: ProjectBooks?.last_page || 1,
+      nextClick: () => updatePageNumber(currentPage + 1),
+      prevClick: () => updatePageNumber(currentPage - 1),
+    }),
+    [currentPage, ProjectBooks]
+  );
+
+  const updatePageNumber = (newPageNumber) => {
+    const updatedParams = new URLSearchParams(searchParams);
+    updatedParams.set("page", newPageNumber.toString());
+    setSearchParams(updatedParams);
+  };
 
   return (
     <>
@@ -148,7 +164,18 @@ export const ProjectBooks = () => {
               setLogoutConfirationShow={setLogoutConfirationShow}
             />
           )}
-          {(recentProjectsPending || projectStatusPending) && <Loader />}
+
+          {(projectStatusPending ||
+            ProjectBooksPending ||
+            recentProjectsBookPending) && <Loader />}
+
+          <FilterDrawer
+            setSearchParams={setSearchParams}
+            dateName={"created date"}
+          >
+            <FilterDrawer.Status />
+            <FilterDrawer.RegisteredDate />
+          </FilterDrawer>
 
           <div className="grid grid-cols-2">
             <div>
@@ -158,11 +185,20 @@ export const ProjectBooks = () => {
                 </h2>
                 <div className="w-full flex justify-evenly">
                   <div className="max-w-[240px] pb-[1rem]">
-                    <DoughnutChart
-                      dealData={doughnutData}
-                      datasets={doughnutDatasets}
-                      legendPosition="bottom"
-                    />
+                    {TotalProjectStatusData?.total < 1 ? (
+                      <h4 className="font-semibold text-center mt-2">
+                        No project data is available at the moment. Please check
+                        back later.
+                      </h4>
+                    ) : (
+                      <>
+                        <DoughnutChart
+                          dealData={doughnutData}
+                          datasets={doughnutDatasets}
+                          legendPosition="bottom"
+                        />
+                      </>
+                    )}
                   </div>
                   <div className="p-[2rem] flex flex-col gap-[1rem] ">
                     {doughnutData.map((item, index) => (
@@ -170,11 +206,11 @@ export const ProjectBooks = () => {
                         key={index}
                         className={`flex gap-[0.7rem] items-center py-[0.1rem] px-[0.5rem] rounded-lg  ${
                           item.type === "Pending" ? "bg-[#ffce56]  " : ""
-                        } ${item.type === "Completed" ? "bg-[#ff6384]" : ""}
-                       ${item.type === "Running" ? "bg-[#4bc0c0]" : ""}`}
+                        } ${item.type === "Cancelled" ? "bg-[#ff6384]" : ""}
+                       ${item.type === "Completed" ? "bg-[#4bc0c0]" : ""}`}
                       >
                         <span className="font-bold text-[1.4rem]">
-                          {item.value}
+                          {item.value || 0}
                         </span>
                         {item.type}
                       </p>
@@ -185,7 +221,7 @@ export const ProjectBooks = () => {
             </div>
             <div className="overflow-hidden h-full flex flex-col items-center">
               <h2 className="font-bold text-[1.4rem] text-center mb-[1rem]">
-                Recent Projects
+                Recent Project Books
               </h2>
               <SwiperComponent
                 effect={"cards"}
@@ -193,14 +229,14 @@ export const ProjectBooks = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {RecentProjectData?.data.length < 1 ? (
+                {RecentProjectBooks?.length < 1 ? (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">
-                      <p className="text-[1.2rem]">No recent projects</p>
+                      <p className="text-[1.2rem]">No recent project books</p>
                     </div>
                   </SwiperSlide>
                 ) : (
-                  RecentProjectData?.data.slice(0, 5).map((project) => (
+                  RecentProjectBooks?.data.slice(0, 5).map((project) => (
                     <SwiperSlide key={project.id}>
                       <div className="flex flex-col p-4">
                         <div className="flex justify-between">
@@ -209,15 +245,12 @@ export const ProjectBooks = () => {
                           </div>
                           <div className="flex flex-col items-end">
                             <h2 className="text-lg font-semibold text-end ">
-                              {project.name
-                                ? project.name.length > 25
-                                  ? `${project.name.slice(0, 25)}...`
-                                  : project.name
+                              {project.title
+                                ? project.title.length > 35
+                                  ? `${project.title.slice(0, 35)}...`
+                                  : project.title
                                 : "-"}
                             </h2>
-                            {/* <p className="text-sm font-[500] text-end">
-                              {project.user.name}
-                            </p> */}
                             <div
                               className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
                                 project.status === "pending"
@@ -229,8 +262,8 @@ export const ProjectBooks = () => {
                                   : ""
                               }
                                 ${
-                                  project.status === "running"
-                                    ? "bg-blue-600"
+                                  project.status === "cancelled"
+                                    ? "bg-red-500"
                                     : ""
                                 }`}
                             >
@@ -241,17 +274,10 @@ export const ProjectBooks = () => {
                           </div>
                         </div>
                         <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                          {project.address}
+                          {project.projects.length} total projects
                         </p>
                         <p className="text-sm font-[500] text-end mt-[0.6rem]">
-                          {project.additional_requirements
-                            ? project.additional_requirements.length > 45
-                              ? `${project.additional_requirements.slice(
-                                  0,
-                                  45
-                                )}...`
-                              : project.additional_requirements
-                            : "-"}
+                          {project.created_at.split("T")[0]}
                         </p>
                       </div>
                     </SwiperSlide>
@@ -265,16 +291,15 @@ export const ProjectBooks = () => {
               <h2 className="font-bold text-[1.4rem] text-start">
                 List of Project Books
               </h2>
-              {/* <div className="flex gap-[1rem]">
-                <SearchInput
-                  defaultValue={""}
-                  setSearchParams={setSearchParams}
-                  searchParams={searchParams}
-                  pageNumber={pageNumber}
-                  setPageNumber={setPageNumber}
-                  placeholder={"Search by id or status"}
-                />
-              </div> */}
+              <div className="flex gap-[1rem] items-end">
+                <SearchInput placeholder={"Search by id or status"} />
+                <button
+                  className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
+                  onClick={openDrawer}
+                >
+                  Filter
+                </button>
+              </div>
             </div>
             <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
               <thead className="bg-primary text-white  ">
@@ -290,33 +315,52 @@ export const ProjectBooks = () => {
                 </tr>
               </thead>
               <tbody>
-                {ProjectBookData?.map((projectBook) => (
-                  <tr key={projectBook.id}>
-                    <td className="py-[1rem] pl-[0.5rem]">{projectBook.id}</td>
-                    <td className="py-[1rem] pl-[0.5rem]">
-                      {projectBook.client_name}
-                    </td>
-                    <td className="py-[1rem] pl-[0.5rem]">
-                      {projectBook.project_book}
-                    </td>
-                    <td className="py-[1rem] pl-[0.5rem]">
-                      {projectBook.project_location}
-                    </td>
-                    <td className="py-[1rem] pl-[0.5rem]">
-                      {projectBook.status}
-                    </td>
-                    <td>
-                      <button
-                        className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
-                        onClick={() => navigate(`projects`, { replace: false })}
-                      >
-                        View Projects
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {ProjectBooks?.data.length < 1 ? (
+                  <EmptyData />
+                ) : (
+                  <>
+                    {ProjectBooks?.data.map((projectBook) => (
+                      <tr key={projectBook.id}>
+                        <td className="py-[1rem] pl-[0.5rem]">
+                          {projectBook.id}
+                        </td>
+
+                        <td className="py-[1rem] pl-[0.5rem]">
+                          {projectBook.title}
+                        </td>
+
+                        <td className="py-[1rem] pl-[0.5rem]">
+                          {projectBook.projects.length}
+                        </td>
+
+                        <td className="py-[1rem] pl-[0.5rem]">
+                          {projectBook.created_at.split("T")[0]}
+                        </td>
+
+                        <td className="py-[1rem] pl-[0.5rem]">
+                          {projectBook.status}
+                        </td>
+                        <td>
+                          <button
+                            className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                            onClick={() =>
+                              handleViewProjects(projectBook.user_id)
+                            }
+                          >
+                            View Projects
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
               </tbody>
             </table>
+            {ProjectBooks?.data.last_page > 1 && (
+              <div className="mt-[1rem]">
+                <Pagination {...paginationProps} />
+              </div>
+            )}
           </div>
 
           <CustomToastContainer />

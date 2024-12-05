@@ -30,6 +30,8 @@ import {
 } from "../../assets/images";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
+import { useCallback, useMemo } from "react";
+import { useGetTotalProjectStatus } from "../Projects/hooks/query/useGetTotalProjectStatus";
 
 const tableHead = [
   "Project Name",
@@ -41,13 +43,15 @@ const tableHead = [
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const { logout } = useLogout();
 
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const { data: TotalProjectStatusData, isPending: projectStatusPending } =
+    useGetTotalProjectStatus("dashboardProjectStatus", location.pathname);
+
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -55,7 +59,7 @@ export const Dashboard = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const {
     isPending: projectPending,
@@ -67,30 +71,13 @@ export const Dashboard = () => {
     enabled: location.pathname === "/",
   });
 
-  const {
-    isPending: projectStatusPending,
-    error: projectStatusError,
-    data: TotalProjectStatusData,
-  } = useQuery({
-    queryKey: ["totalProjectStatus"],
-    queryFn: () => getTotalProjectsStatus(),
-    staleTime: 6000,
-  });
-
-  const doughnutData = [
-    {
-      type: "Pending",
-      value: TotalProjectStatusData?.pending_projects,
-    },
-    {
-      type: "Running",
-      value: TotalProjectStatusData?.running_projects,
-    },
-    {
-      type: "Completed",
-      value: TotalProjectStatusData?.completed_projects,
-    },
-  ];
+  const doughnutData = useMemo(() => {
+    return [
+      { type: "Pending", value: TotalProjectStatusData?.pending },
+      { type: "Completed", value: TotalProjectStatusData?.completed },
+      { type: "Cancelled", value: TotalProjectStatusData?.cancelled },
+    ];
+  }, [TotalProjectStatusData]);
 
   const doughnutDatasets = [
     {
@@ -167,7 +154,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {TotalProjectStatusData?.total_projects}
+                  {TotalProjectStatusData?.total}
                 </p>
                 <p className="text-[12px]">
                   All running and completed projects
@@ -183,7 +170,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {TotalProjectStatusData?.completed_projects}
+                  {TotalProjectStatusData?.completed}
                 </p>
                 <p className="text-[12px]">Projects successfully completed</p>
               </div>
@@ -197,7 +184,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {TotalProjectStatusData?.running_projects}
+                  {TotalProjectStatusData?.pending}
                 </p>
                 <p className="text-[12px]">Ongoing projects</p>
               </div>
@@ -240,40 +227,26 @@ export const Dashboard = () => {
               </tr>
             </thead>
             <tbody className="">
-              {projectPending ? (
-                [...Array(5)].map((_, index) => (
-                  <tr key={index} className="h-[1.5rem]">
-                    {[...Array(5)].map((_, index) => (
-                      <td key={index} className="py-[1.5rem] first:pl-[0.5rem]">
-                        <span className="h-[8px] w-[80%]  rounded-sm bg-secondary block"></span>
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : ProjectData?.data.length < 1 ? (
-                <EmptyData />
-              ) : (
-                ProjectData?.data.slice(0, 4).map((item) => (
-                  <tr key={item.id} className=" last:border-none  ">
-                    <td className="py-[1rem] pl-[0.5rem]">
-                      {item.name
-                        ? item.name.length > 20
-                          ? `${item.name.slice(0, 20)}...`
-                          : item.name
-                        : "-"}
-                    </td>
+              {ProjectData?.slice(0, 4).map((item) => (
+                <tr key={item.id} className=" last:border-none  ">
+                  <td className="py-[1rem] pl-[0.5rem]">
+                    {item.name
+                      ? item.name.length > 20
+                        ? `${item.name.slice(0, 20)}...`
+                        : item.name
+                      : "-"}
+                  </td>
 
-                    <td className="py-[1rem]">
-                      {item.address.length > 20
-                        ? `${item.address.slice(0, 20)}...`
-                        : item.address}
-                    </td>
-                    <td className="py-[1rem]">{item.start_date}</td>
+                  <td className="py-[1rem]">
+                    {item.address.length > 20
+                      ? `${item.address.slice(0, 20)}...`
+                      : item.address}
+                  </td>
+                  <td className="py-[1rem]">{item.start_date}</td>
 
-                    <td className="py-[1rem] ">{item.status}</td>
-                  </tr>
-                ))
-              )}
+                  <td className="py-[1rem] ">{item.status}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <div className="mt-[1rem] ">
