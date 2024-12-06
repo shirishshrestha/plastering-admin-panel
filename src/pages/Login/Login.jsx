@@ -14,7 +14,6 @@ import {
 } from "../../utils/Storage/StorageUtils";
 import { UserLogin } from "./UserLogin";
 import { BusinessLogin } from "./BusinessLogin";
-import { configureAxios } from "../../utils/Axios/configureAxios";
 
 const Login = () => {
   const { setAuth } = useAuth();
