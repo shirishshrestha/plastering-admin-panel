@@ -147,7 +147,7 @@ export const Model = {
       message: "Business Name should be less than 128 characters",
     },
     pattern: {
-      value: "^[a-zA-Z ]+$",
+      value: "^[a-zA-Z. ]+$",
       message:
         "Invalid business name. Business Name must contain only alphabetic characters",
     },

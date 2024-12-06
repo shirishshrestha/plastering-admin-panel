@@ -14,27 +14,26 @@ import {
 } from "../../utils/Storage/StorageUtils";
 import { UserLogin } from "./UserLogin";
 import { BusinessLogin } from "./BusinessLogin";
+import { configureAxios } from "../../utils/Axios/configureAxios";
 
 const Login = () => {
   const { setAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loginFlag, setLoginFlag] = useState("user");
 
-  const navigate = useNavigate();
-
   const { mutate: Login, isPending: loginPending } = useMutation({
     mutationFn: (formData) => login(formData),
     onSuccess: (data) => {
-      setTokenToLocalStorage(data.access_token);
-      setRoleToLocalStorage(data.user.role);
-      setNameToLocalStorage(data.user.name);
-      setIdToLocalStorage(data.user.id);
-
       const role = data.user.role;
       const id = data.user.id;
       const token = data.access_token;
       const userName = data.user.name;
       setAuth({ role, id, token, userName });
+
+      setTokenToLocalStorage(data.access_token);
+      setRoleToLocalStorage(data.user.role);
+      setNameToLocalStorage(data.user.name);
+      setIdToLocalStorage(data.user.id);
     },
     onError: () => {
       notifyError(

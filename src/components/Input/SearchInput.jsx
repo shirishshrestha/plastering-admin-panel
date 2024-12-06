@@ -1,21 +1,25 @@
 import { Search } from "../../assets/icons/SvgIcons";
-import { Form, useSearchParams, useSubmit } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { debounce } from "../../utils/Debounce/debounce";
 
-export const SearchInput = ({ placeholder }) => {
-  const submit = useSubmit();
-
+export const SearchInput = ({ placeholder, setSearchParams }) => {
   const [searchParams] = useSearchParams();
 
-  const debounceSubmit = debounce((form) => submit(form), 500);
+  const debounceSubmit = debounce((value) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value) {
+      newParams.set("search", value);
+    } else {
+      newParams.delete("search");
+    }
+    setSearchParams(newParams);
+  }, 500);
 
-  const handleSubmit = (event) => debounceSubmit(event.currentTarget);
+  const handleChange = (event) => debounceSubmit(event.target.value);
 
   return (
-    <Form
-      method="get"
-      onChange={handleSubmit}
-      className={`border px-2 py-2 border-[#FF5733] shadow-sm rounded-md focus-within:ring-indigo-500 transition-all duration-75 ease-in-out focus-within:border-indigo-500 flex gap-3 items-center text-[14px]  `}
+    <form
+      className={`border px-2 py-2 border-[#FF5733] shadow-sm rounded-md focus-within:ring-indigo-500 transition-all duration-75 ease-in-out focus-within:border-indigo-500 flex gap-3 items-center text-[14px] w-[270px] `}
     >
       <Search />
       <input
@@ -24,8 +28,9 @@ export const SearchInput = ({ placeholder }) => {
         defaultValue={searchParams.get("search") || ""}
         autoComplete="off"
         placeholder={placeholder}
+        onChange={handleChange}
         className={`focus:border-transparent  w-full focus:outline-none bg-transparent !ring-0 !outline-none border-none p-0 text-[0.8rem]`}
       />
-    </Form>
+    </form>
   );
 };

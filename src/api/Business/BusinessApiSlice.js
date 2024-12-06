@@ -1,8 +1,10 @@
-import { instance } from "../../utils/Axios/Instance";
+import { createAxiosInstance } from "../../utils/Axios/Instance";
+
+const instance = createAxiosInstance();
 
 export const getEstimators = async () => {
   try {
-    const response = await instance.get(`/estimator`);
+    const response = await instance.get(`/estimators`);
     return response.data;
   } catch (error) {
     throw error;
@@ -11,7 +13,7 @@ export const getEstimators = async () => {
 
 export const getSingleEstimator = async (id) => {
   try {
-    const response = await instance.get(`/estimator/${id}`);
+    const response = await instance.get(`/estimators/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -20,7 +22,7 @@ export const getSingleEstimator = async (id) => {
 
 export const deleteEstimator = async (id) => {
   try {
-    const response = await instance.delete(`/estimator/${id}`);
+    const response = await instance.delete(`/estimators/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -29,7 +31,7 @@ export const deleteEstimator = async (id) => {
 
 export const editEstimator = async (id, data) => {
   try {
-    const response = await instance.put(`/estimator/${id}`, {
+    const response = await instance.put(`/estimators/${id}`, {
       business_name: data.business_name,
       abn: data.abn,
       trade_type: data.trade_type,

@@ -3,6 +3,7 @@ import useAuth from "../../hooks/useAuth";
 import { Input } from "../Input/Input";
 import { useForm } from "react-hook-form";
 import { createContext, useContext } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const DrawerContext = createContext();
 const useDrawerContext = () => {
@@ -15,6 +16,8 @@ const useDrawerContext = () => {
 
 export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
   const { isOpen, closeDrawer } = useAuth();
+
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -30,16 +33,43 @@ export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
   });
 
   const FilterSubmit = (data) => {
-    let updatedParams = {};
+    const newParams = new URLSearchParams(searchParams);
+
     if (data.status) {
-      updatedParams["status"] = data.status;
-    }
-    if (data.date) {
-      updatedParams["date"] = data.date;
+      newParams.set("status", data.status);
+    } else {
+      newParams.delete("status");
     }
 
-    setSearchParams(updatedParams);
+    if (data.project_type) {
+      newParams.set("project_type", data.project_type);
+    } else {
+      newParams.delete("project_type");
+    }
+
+    if (data.date) {
+      newParams.set("date", data.date);
+    } else {
+      newParams.delete("date");
+    }
+
+    setSearchParams(newParams);
     closeDrawer();
+  };
+
+  const handleFilterClear = () => {
+    const newParams = new URLSearchParams(searchParams);
+    if (newParams.has("status")) {
+      newParams.delete("status");
+    }
+    if (newParams.has("date")) {
+      newParams.delete("date");
+    }
+    if (newParams.has("project_type")) {
+      newParams.delete("project_type");
+    }
+    setSearchParams(newParams);
+    reset();
   };
 
   return (
@@ -58,7 +88,14 @@ export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
           <Drawer.Items>
             <form onSubmit={handleSubmit(FilterSubmit)}>
               {children}
-              <div className="mb-6">
+              <div className="flex gap-2 mb-6">
+                <Button
+                  type="button"
+                  onClick={handleFilterClear}
+                  className="w-full bg-primary focus:ring-0 transition-all duration-300 ease-in-out disabled:!bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  Clear Filter
+                </Button>
                 <Button
                   type="submit"
                   disabled={!isDirty}
@@ -75,7 +112,7 @@ export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
   );
 }
 
-FilterDrawer.Status = function FilterDrawerStatus() {
+FilterDrawer.Status = function FilterDrawerStatus({ options }) {
   const { register } = useDrawerContext();
   return (
     <div className="mb-6 mt-3">
@@ -86,10 +123,11 @@ FilterDrawer.Status = function FilterDrawerStatus() {
         <option value="" disabled hidden>
           Select Status
         </option>
-        <option value="pending">Pending</option>
-        <option value="running">Running</option>
-        <option value="completed">Completed</option>
-        <option value="cancelled">Cancelled</option>
+        {options?.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
       </Select>
     </div>
   );
@@ -126,8 +164,8 @@ FilterDrawer.ProjectType = function FilterByProjectType() {
         <option value="" disabled hidden>
           Select project type
         </option>
-        <option value="pending">Commercial</option>
-        <option value="running">Residential</option>
+        <option value="commercial">Commercial</option>
+        <option value="residential">Residential</option>
       </Select>
     </div>
   );

@@ -91,7 +91,10 @@ const Clients = () => {
       <div className="flex items-center pb-[0.5rem] justify-between">
         <h2 className="font-bold text-[1.4rem] text-start">List of Clients</h2>
         <div className="flex gap-[1rem] items-end">
-          <SearchInput placeholder={"Search by name"} />
+          <SearchInput
+            setSearchParams={setSearchParams}
+            placeholder={"Search by name"}
+          />
           <button
             className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none"
             onClick={openDrawer}
@@ -155,7 +158,7 @@ const Clients = () => {
                     </button>
                     <button
                       className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
-                      onClick={() => navigate(`/projectbooks/projects`)}
+                      onClick={() => navigate(`/projectbooks/projects/${user.id}`)}
                     >
                       Project Details
                     </button>

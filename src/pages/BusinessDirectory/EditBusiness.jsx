@@ -12,7 +12,7 @@ import {
   CustomToastContainer,
 } from "../../components";
 import { useEffect } from "react";
-import { notifySuccess } from "../../components/Toast/Toast";
+import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 
 const EditBusiness = () => {
   const { id } = useParams();
@@ -36,6 +36,9 @@ const EditBusiness = () => {
       setTimeout(() => {
         navigate(-1);
       }, 2000);
+    },
+    onError: () => {
+      notifyError("Primary Email, abn or username already exists");
     },
   });
 
@@ -72,6 +75,7 @@ const EditBusiness = () => {
         project_type: SingleEstimatorData?.estimator.project_type,
         scope: SingleEstimatorData?.estimator.scope,
         regions_covered: SingleEstimatorData?.estimator.regions_covered,
+        username: SingleEstimatorData?.estimator.username,
       });
     }
   }, [SingleEstimatorData, reset]);
@@ -591,6 +595,31 @@ const EditBusiness = () => {
                 errors={errors}
                 regValue={Model.Name.pattern.value}
                 message={"Alphabetic characters only"}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <p className="font-bold ">7. Login Credentials:</p>
+          <div className="mt-2 grid grid-cols-business gap-x-4 gap-y-3">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700 mb-[0.5rem]"
+              >
+                Username <span className="text-red-500 ">*</span>
+              </label>
+
+              <LoginSignupInput
+                placeholder={"Username"}
+                type={Model.username.type}
+                name={"username"}
+                register={register}
+                errors={errors}
+                regValue={Model.username.pattern.value}
+                message={Model.username.pattern.message}
+                required={"Please enter username"}
               />
             </div>
           </div>

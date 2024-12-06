@@ -25,6 +25,7 @@ import { useMemo, useState } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
+import { useGetUserTotalProjects } from "./hooks/query/useGetUserTotalProjects";
 
 const tableHead = [
   "P. Id",
@@ -41,6 +42,7 @@ const Projects = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [projectId, setProjectId] = useState();
@@ -59,27 +61,32 @@ const Projects = () => {
     [searchParams]
   );
 
-  const {
-    isPending,
-    error,
-    data: ProjectData,
-  } = useQuery({
-    queryKey: ["projects", currentPage, searchItem],
-    queryFn: () => getProjects(currentPage, searchItem),
-    enabled: location.pathname.includes("/projects"),
-    staleTime: 6000,
-  });
+  const projectType = useMemo(
+    () => searchParams.get("project_type") || "",
+    [searchParams]
+  );
 
-  const processedProjectData = () => ProjectData?.data || [];
+  const date = useMemo(() => searchParams.get("date") || "", [searchParams]);
+
+  const { data: TotalProjects, isPending: TotalProjectsPending } =
+    useGetUserTotalProjects(
+      "userTotalProjects",
+      "/projectbooks/projects",
+      id,
+      currentPage,
+      searchItem,
+      projectType,
+      date
+    );
 
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
-      lastPage: ProjectData?.last_page || 1,
+      lastPage: TotalProjects?.last_page || 1,
       nextClick: () => updatePageNumber(currentPage + 1),
       prevClick: () => updatePageNumber(currentPage - 1),
     }),
-    [currentPage, ProjectData]
+    [currentPage, TotalProjects]
   );
 
   const { mutate: DeleteProject, isPending: deletePending } = useMutation({
@@ -115,9 +122,8 @@ const Projects = () => {
             deleteLoading={deletePending}
           />
         )}
-        {isPending && <Loader />}
+        {TotalProjectsPending && <Loader />}
         <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
-          <FilterDrawer.Status />
           <FilterDrawer.ProjectType />
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
@@ -127,7 +133,6 @@ const Projects = () => {
               List of Projects
             </h2>
             <div className="flex gap-[1rem]">
-              <SearchInput placeholder={"Search by id or status"} />
               <Link to="/projectbooks/addProject">
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}
@@ -136,8 +141,8 @@ const Projects = () => {
               </Link>
             </div>
           </div>
-          <div className="flex justify-between items-center">
-            <div className="mb-[1rem] flex gap-[1rem]">
+          <div className="flex justify-between mb-[1rem] items-center">
+            <div className="flex gap-[1rem]">
               <button className="px-4 py-2 text-light bg-secondary font-[600]  rounded-lg shadow-inner ">
                 Active Projects
               </button>
@@ -148,12 +153,18 @@ const Projects = () => {
                 Archived Projects
               </button>
             </div>
-            <button
-              className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
-              onClick={openDrawer}
-            >
-              Filter
-            </button>
+            <div className="flex gap-[1rem] items-end">
+              <SearchInput
+                setSearchParams={setSearchParams}
+                placeholder={"Search by project name"}
+              />
+              <button
+                className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
+                onClick={openDrawer}
+              >
+                Filter
+              </button>
+            </div>
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden capitalize">
             <thead className="bg-primary text-white">
@@ -169,15 +180,15 @@ const Projects = () => {
               </tr>
             </thead>
             <tbody>
-              {processedProjectData.length > 0 ? (
-                processedProjectData.map((item) => (
+              {TotalProjects?.projects?.data?.length > 0 ? (
+                TotalProjects?.projects?.data?.map((item) => (
                   <tr key={item.id} className="last:border-none">
                     <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
                     <td className="py-[1rem] pl-[0.5rem]">
                       {item.name ? (
-                        item.name.length > 25 ? (
+                        item.name.length > 20 ? (
                           <Tooltip content={item.name}>
-                            {`${item.name.slice(0, 25)}...`}
+                            {`${item.name.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
                           item.name
@@ -188,9 +199,9 @@ const Projects = () => {
                     </td>
                     <td className="py-[1rem]">
                       {item.address ? (
-                        item.address.length > 25 ? (
+                        item.address.length > 20 ? (
                           <Tooltip content={item.address}>
-                            {`${item.address.slice(0, 25)}...`}
+                            {`${item.address.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
                           item.address
@@ -202,9 +213,9 @@ const Projects = () => {
                     <td className="py-[1rem]">{item.project_type}</td>
                     <td className="py-[1rem]">
                       {item.additional_requirements ? (
-                        item.additional_requirements.length > 30 ? (
+                        item.additional_requirements.length > 25 ? (
                           <Tooltip content={item.additional_requirements}>
-                            {`${item.additional_requirements.slice(0, 30)}...`}
+                            {`${item.additional_requirements.slice(0, 25)}...`}
                           </Tooltip>
                         ) : (
                           item.additional_requirements
@@ -213,7 +224,9 @@ const Projects = () => {
                         "-"
                       )}
                     </td>
-                    <td className="py-[1rem]">{item.start_date}</td>
+                    <td className="py-[1rem]">
+                      {item.created_at.split("T")[0]}
+                    </td>
                     <td className="py-[1rem]">{item.status}</td>
                     <td>
                       <div className="flex gap-[0.7rem]">
@@ -255,7 +268,7 @@ const Projects = () => {
             </tbody>
           </table>
         </div>
-        {ProjectData?.last_page > 1 && (
+        {TotalProjects?.last_page > 1 && (
           <div className="mb-[1rem] flex items-center justify-end">
             <Pagination {...paginationProps} />
           </div>

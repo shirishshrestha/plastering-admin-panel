@@ -15,8 +15,9 @@ export const useGetProjectBooks = (
   const { data, error, isPending } = useQuery({
     queryKey: [key, date, status, page, search],
     queryFn: () => getProjectBooks(date, status, page, search),
-    refetchOnWindowFocus: false,
     enabled: location.pathname === enabledPath,
+    staleTime: 50 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
   });
 
   return {

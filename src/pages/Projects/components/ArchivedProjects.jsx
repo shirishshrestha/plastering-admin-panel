@@ -122,7 +122,12 @@ export const ArchivedProjects = () => {
         )}
         {isPending && <Loader />}
         <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
-          <FilterDrawer.Status />
+          <FilterDrawer.Status
+            options={[
+              { value: "completed", label: "Completed" },
+              { value: "cancelled", label: "Cancelled" },
+            ]}
+          />
           <FilterDrawer.ProjectType />
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>

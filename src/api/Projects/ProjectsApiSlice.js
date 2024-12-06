@@ -1,4 +1,6 @@
-import { instance } from "../../utils/Axios/Instance";
+import { createAxiosInstance } from "../../utils/Axios/Instance";
+
+const instance = createAxiosInstance();
 
 export const getProjectBooks = async (date, status, page, search) => {
   try {
@@ -15,6 +17,23 @@ export const getProjects = async (pageNumber, search_id) => {
   try {
     const response = await instance.get(
       `/projects?page=${pageNumber}&search=${search_id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserTotalProjects = async (
+  id,
+  page,
+  search,
+  projectType,
+  date
+) => {
+  try {
+    const response = await instance.get(
+      `/project-book-user/${id}/projects?page=${page}&project_type=${projectType}&start_date=${date}&project_name=${search}`
     );
     return response.data;
   } catch (error) {

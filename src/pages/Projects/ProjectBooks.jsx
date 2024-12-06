@@ -66,7 +66,7 @@ export const ProjectBooks = () => {
     [searchParams]
   );
 
-  const registeredDate = useMemo(
+  const createdDate = useMemo(
     () => searchParams.get("date") || "",
     [searchParams]
   );
@@ -87,8 +87,8 @@ export const ProjectBooks = () => {
   const { data: ProjectBooks, isPending: ProjectBooksPending } =
     useGetProjectBooks(
       "projectBooks",
-      "/projectbooks",  
-      registeredDate,
+      "/projectbooks",
+      createdDate,
       status,
       currentPage,
       searchItem
@@ -173,7 +173,12 @@ export const ProjectBooks = () => {
             setSearchParams={setSearchParams}
             dateName={"created date"}
           >
-            <FilterDrawer.Status />
+            <FilterDrawer.Status
+              options={[
+                { value: "pending", label: "Pending" },
+                { value: "completed", label: "Completed" },
+              ]}
+            />
             <FilterDrawer.RegisteredDate />
           </FilterDrawer>
 
@@ -292,7 +297,10 @@ export const ProjectBooks = () => {
                 List of Project Books
               </h2>
               <div className="flex gap-[1rem] items-end">
-                <SearchInput placeholder={"Search by id or status"} />
+                <SearchInput
+                  setSearchParams={setSearchParams}
+                  placeholder={"Search by project book name"}
+                />
                 <button
                   className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
                   onClick={openDrawer}

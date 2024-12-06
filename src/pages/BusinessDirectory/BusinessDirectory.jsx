@@ -1,6 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Tooltip } from "chart.js";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { EditIcon, EyeIcon, TrashIcon } from "../../assets/icons/SvgIcons";
 import {
   EmptyData,
@@ -16,6 +20,7 @@ import { notifySuccess } from "../../components/Toast/Toast";
 import { useState } from "react";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
 import { queryClient } from "../../utils/Query/Query";
+import { Tooltip } from "flowbite-react";
 
 const tableHead = [
   "Id",
@@ -33,6 +38,8 @@ const BusinessDirectory = () => {
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     data: EstimatorData,
@@ -75,7 +82,10 @@ const BusinessDirectory = () => {
             <h2 className="font-bold text-[1.4rem] text-start">
               List of Businesses
             </h2>
-            <SearchInput placeholder={"Search"} />
+            <SearchInput
+              setSearchParams={setSearchParams}
+              placeholder={"Search"}
+            />
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden ">
             <thead className="bg-primary text-white  ">
@@ -91,8 +101,8 @@ const BusinessDirectory = () => {
               </tr>
             </thead>
             <tbody className="">
-              {EstimatorData?.estimators.length > 0 ? (
-                EstimatorData?.estimators.map((estimator) => (
+              {EstimatorData?.data.length > 0 ? (
+                EstimatorData?.data.map((estimator) => (
                   <tr key={estimator.id} className=" last:border-none  ">
                     <td className="py-[1rem] pl-[1rem] pr-[1rem]">
                       {estimator.id}

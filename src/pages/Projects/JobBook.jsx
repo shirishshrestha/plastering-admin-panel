@@ -157,7 +157,14 @@ const JobBook = () => {
           setSearchParams={setSearchParams}
           dateName="required by date"
         >
-          <FilterDrawer.Status />
+          <FilterDrawer.Status
+            options={[
+              { value: "pending", label: "Pending" },
+              { value: "running", label: "Running" },
+              { value: "completed", label: "Completed" },
+              { value: "cancelled", label: "Cancelled" },
+            ]}
+          />
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
         <div>

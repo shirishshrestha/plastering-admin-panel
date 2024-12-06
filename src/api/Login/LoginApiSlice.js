@@ -1,4 +1,7 @@
-import { instance } from "../../utils/Axios/Instance";
+import { createAxiosInstance } from "../../utils/Axios/Instance";
+
+
+const instance = createAxiosInstance();
 
 export const login = async (data) => {
   try {

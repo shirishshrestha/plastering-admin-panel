@@ -98,12 +98,6 @@ export const AddProject = () => {
     AddProject(formData);
   };
 
-  const handleProjectCancel = () => {
-    role === "admin"
-      ? navigate("/projectbooks/projects")
-      : navigate("/projectbooks");
-  };
-
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
@@ -268,7 +262,7 @@ export const AddProject = () => {
                 <button
                   className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
                   type="button"
-                  onClick={handleProjectCancel}
+                  onClick={() => navigate(-1)}
                 >
                   Cancel
                 </button>
