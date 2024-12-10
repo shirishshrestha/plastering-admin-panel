@@ -34,6 +34,7 @@ export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
 
   const FilterSubmit = (data) => {
     const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", "1");
 
     if (data.status) {
       newParams.set("status", data.status);
@@ -59,6 +60,7 @@ export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
 
   const handleFilterClear = () => {
     const newParams = new URLSearchParams(searchParams);
+    newParams.delete("page");
     if (newParams.has("status")) {
       newParams.delete("status");
     }
@@ -70,6 +72,7 @@ export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
     }
     setSearchParams(newParams);
     reset();
+    closeDrawer();
   };
 
   return (
@@ -165,7 +168,7 @@ FilterDrawer.ProjectType = function FilterByProjectType() {
           Select project type
         </option>
         <option value="commercial">Commercial</option>
-        <option value="residential">Residential</option>
+        <option value="domestic">Domestic</option>
       </Select>
     </div>
   );

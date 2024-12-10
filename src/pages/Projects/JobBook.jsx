@@ -3,6 +3,7 @@ import {
   Outlet,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from "react-router-dom";
 import {
@@ -30,6 +31,7 @@ import { useMemo, useState } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
+import { useGetJobs } from "./hooks/query/useGetJobs";
 
 const tableHead = [
   "ID",
@@ -40,85 +42,56 @@ const tableHead = [
   "Actions",
 ];
 
-const tableData = [
-  {
-    id: 1,
-    jobName: "Living Room Plastering",
-    additionalInfo: "Wall cracks repair and ceiling smoothing",
-    requiredDate: "2024-11-20",
-    status: "Running",
-  },
-  {
-    id: 2,
-    jobName: "Commercial Office Renovation",
-    additionalInfo: "Drywall installation and plaster finishing",
-    requiredDate: "2024-11-18",
-    status: "Completed",
-  },
-  {
-    id: 3,
-    jobName: "Kitchen Ceiling Repair",
-    additionalInfo: "Repairing water damage and repainting",
-    requiredDate: "2024-11-25",
-    status: "Pending",
-  },
-  {
-    id: 4,
-    jobName: "Home Exterior Plastering",
-    additionalInfo: "Applying weatherproof plaster for walls",
-    requiredDate: "2024-11-15",
-    status: "Completed",
-  },
-  {
-    id: 5,
-    jobName: "Bathroom Remodeling",
-    additionalInfo: "Plastering and waterproofing shower walls",
-    requiredDate: "2024-11-22",
-    status: "Running",
-  },
-];
-
 const JobBook = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { id } = useParams();
   const { openDrawer } = useAuth();
+
+  const currentPage = useMemo(
+    () => parseInt(searchParams.get("page") || "1", 10),
+    [searchParams]
+  );
+
+  const searchItem = useMemo(
+    () => searchParams.get("search") || "",
+    [searchParams]
+  );
+
+  const start_date = useMemo(
+    () => searchParams.get("date") || "",
+    [searchParams]
+  );
+
+  const status = useMemo(
+    () => searchParams.get("status") || "",
+    [searchParams]
+  );
+
+  const { data: JobData, isPending: JobPending } = useGetJobs(
+    "userJobs",
+    id,
+    currentPage,
+    searchItem,
+    start_date,
+    status
+  );
 
   // const [projectId, setProjectId] = useState();
   // const [projectName, setProjectName] = useState();
   // const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
 
-  // const currentPage = useMemo(
-  //   () => parseInt(searchParams.get("page") || "1", 10),
-  //   [searchParams]
-  // );
-
-  // const {
-  //   isPending,
-  //   error,
-  //   data: ProjectData,
-  // } = useQuery({
-  //   queryKey: ["viewJobBook", currentPage, searchName],
-  //   queryFn: () => getProjects(currentPage, searchName),
-  //   enabled: location.pathname.includes("/projects"),
-  //   staleTime: 6000,
-  // });
-
-  // const processedProjectData = useMemo(() => {
-  //   if (!ProjectData) return [];
-  //   return ProjectData.data;
-  // }, [ProjectData]);
-
-  // const paginationProps = useMemo(
-  //   () => ({
-  //     pageNumber: currentPage,
-  //     lastPage: ProjectData?.last_page || 1,
-  //     nextClick: () => updatePageNumber(currentPage + 1),
-  //     prevClick: () => updatePageNumber(currentPage - 1),
-  //   }),
-  //   [currentPage, ProjectData]
-  // );
-
+  const paginationProps = useMemo(
+    () => ({
+      pageNumber: currentPage,
+      lastPage: JobData?.last_page || 1,
+      nextClick: () => updatePageNumber(currentPage + 1),
+      prevClick: () => updatePageNumber(currentPage - 1),
+    }),
+    [currentPage, JobData]
+  );
+  
   // const { mutate: DeleteProject, isPending: deletePending } = useMutation({
   //   mutationFn: () => deleteProject(projectId),
   //   onSuccess: () => {
@@ -144,6 +117,7 @@ const JobBook = () => {
   return (
     <>
       <section className="mt-[.5rem] pb-[1rem]">
+        {JobPending && <Loader />}
         {/* {deleteConfirationShow && (
             <DeleteConfirmation
               deleteName={projectName}
@@ -152,7 +126,7 @@ const JobBook = () => {
               deleteLoading={deletePending}
             />
           )} */}
-        {/* {isPending && <Loader />} */}
+
         <FilterDrawer
           setSearchParams={setSearchParams}
           dateName="required by date"
@@ -168,16 +142,13 @@ const JobBook = () => {
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
         <div>
-          <div className="flex items-center pb-[0.5rem] justify-between">
+          <div className="flex items-center pb-[1rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">List of Jobs</h2>
             <div className="flex items-end gap-[1rem]">
-              {/* <SearchInput
-                  defaultValue={searchName}
-                  setSearchParams={setSearchParams}
-                  searchParams={searchParams}
-                  placeholder={"Search by id or status"}
-               
-                /> */}
+              <SearchInput
+                setSearchParams={setSearchParams}
+                placeholder={"Search by job name"}
+              />
               <Link to="/projectbooks/addJob">
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Job <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
@@ -206,37 +177,37 @@ const JobBook = () => {
               </tr>
             </thead>
             <tbody>
-              {tableData.length > 0 ? (
-                tableData.map((job) => (
+              {JobData?.data?.length > 0 ? (
+                JobData?.data?.map((job) => (
                   <tr key={job.id} className="last:border-none">
                     <td className="py-[1rem] pl-[0.5rem]">{job.id}</td>
                     <td className="py-[1rem] pl-[0.5rem]">
-                      {job.jobName ? (
-                        job.jobName.length > 30 ? (
-                          <Tooltip content={job.jobName}>
-                            {`${job.jobName.slice(0, 30)}...`}
+                      {job.job_name ? (
+                        job.job_name.length > 30 ? (
+                          <Tooltip content={job.job_name}>
+                            {`${job.job_name.slice(0, 30)}...`}
                           </Tooltip>
                         ) : (
-                          job.jobName
+                          job.job_name
                         )
                       ) : (
                         "-"
                       )}
                     </td>
                     <td className="py-[1rem]">
-                      {job.additionalInfo ? (
-                        job.additionalInfo.length > 30 ? (
-                          <Tooltip content={job.additionalInfo}>
-                            {`${job.additionalInfo.slice(0, 30)}...`}
+                      {job.description ? (
+                        job.description.length > 35 ? (
+                          <Tooltip content={job.description}>
+                            {`${job.description.slice(0, 35)}...`}
                           </Tooltip>
                         ) : (
-                          job.additionalInfo
+                          job.description
                         )
                       ) : (
                         "-"
                       )}
                     </td>
-                    <td className="py-[1rem]">{job.requiredDate}</td>
+                    <td className="py-[1rem]">{job.start_date}</td>
                     <td className="py-[1rem]">{job.status}</td>
                     <td>
                       <div className="flex gap-[0.7rem]">
@@ -276,11 +247,11 @@ const JobBook = () => {
             </tbody>
           </table>
         </div>
-        {/* {ProjectData?.last_page > 1 && (
-            <div className="mb-[1rem] flex items-center justify-end">
-              <Pagination {...paginationProps} />
-            </div>
-          )} */}
+        {JobData?.last_page > 1 && (
+          <div className="my-[1rem] flex items-center justify-end">
+            <Pagination {...paginationProps} />
+          </div>
+        )}
         <CustomToastContainer />
       </section>
     </>

@@ -1,9 +1,4 @@
-import {
-  Link,
-  ScrollRestoration,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Calendar,
   CompletedProjects,
@@ -11,32 +6,23 @@ import {
 } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
-  EmptyData,
-  Loader,
   LogoLoader,
   LogoutConfirmation,
 } from "../../components";
-import { useQuery } from "@tanstack/react-query";
-import {
-  getProjects,
-  getTotalProjectsStatus,
-} from "../../api/Projects/ProjectsApiSlice";
-import {
-  clientDashboard,
-  curve,
-  logo,
-  spiral,
-  square,
-} from "../../assets/images";
+import { curve, logo, spiral, square } from "../../assets/images";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { useCallback, useMemo } from "react";
 import { useGetTotalProjectStatus } from "../Projects/hooks/query/useGetTotalProjectStatus";
+import { useGetProjects } from "../Projects/hooks/query/useGetProjects";
+import { Tooltip } from "flowbite-react";
 
 const tableHead = [
+  "Project Book",
   "Project Name",
   "Project Location",
-  "Required By Date",
+  "Project Type",
+  "Start Date",
   "Status",
 ];
 
@@ -50,6 +36,12 @@ export const Dashboard = () => {
 
   const { data: TotalProjectStatusData, isPending: projectStatusPending } =
     useGetTotalProjectStatus("dashboardProjectStatus", location.pathname);
+  const { data: ProjectData, isPending: projectPending } = useGetProjects(
+    "dashboardProjects",
+    location.pathname,
+    1,
+    ""
+  );
 
   const handleLogout = useCallback(() => {
     setAuth({});
@@ -60,16 +52,6 @@ export const Dashboard = () => {
       navigate("/login");
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
-
-  const {
-    isPending: projectPending,
-    error,
-    data: ProjectData,
-  } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects(1, ""),
-    enabled: location.pathname === "/",
-  });
 
   const doughnutData = useMemo(() => {
     return [
@@ -230,19 +212,49 @@ export const Dashboard = () => {
               {ProjectData?.slice(0, 4).map((item) => (
                 <tr key={item.id} className=" last:border-none  ">
                   <td className="py-[1rem] pl-[0.5rem]">
-                    {item.name
-                      ? item.name.length > 20
-                        ? `${item.name.slice(0, 20)}...`
-                        : item.name
-                      : "-"}
+                    {item.project_book.title ? (
+                      item.project_book.title.length > 25 ? (
+                        <Tooltip
+                          content={item.project_book.title}
+                        >{`${item.project_book.title.slice(
+                          0,
+                          25
+                        )}...`}</Tooltip>
+                      ) : (
+                        item.project_book.title
+                      )
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td className="py-[1rem] pl-[0.5rem]">
+                    {item.name ? (
+                      item.name.length > 25 ? (
+                        <Tooltip content={item.name}>{`${item.name.slice(
+                          0,
+                          25
+                        )}...`}</Tooltip>
+                      ) : (
+                        item.name
+                      )
+                    ) : (
+                      "-"
+                    )}
                   </td>
 
                   <td className="py-[1rem]">
-                    {item.address.length > 20
-                      ? `${item.address.slice(0, 20)}...`
-                      : item.address}
+                    {item.address.length > 30 ? (
+                      <Tooltip content={item.address}>{`${item.address.slice(
+                        0,
+                        30
+                      )}...`}</Tooltip>
+                    ) : (
+                      item.address
+                    )}
                   </td>
-                  <td className="py-[1rem]">{item.start_date}</td>
+                  <td className="py-[1rem]">{item.project_type}</td>
+                  <td className="py-[1rem]">{item.created_at.split("T")[0]}</td>
 
                   <td className="py-[1rem] ">{item.status}</td>
                 </tr>

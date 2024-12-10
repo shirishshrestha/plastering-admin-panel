@@ -9,8 +9,10 @@ export const SearchInput = ({ placeholder, setSearchParams }) => {
     const newParams = new URLSearchParams(searchParams);
     if (value) {
       newParams.set("search", value);
+      newParams.set("page", "1");
     } else {
       newParams.delete("search");
+      newParams.delete("page");
     }
     setSearchParams(newParams);
   }, 500);
@@ -18,7 +20,7 @@ export const SearchInput = ({ placeholder, setSearchParams }) => {
   const handleChange = (event) => debounceSubmit(event.target.value);
 
   return (
-    <form
+    <div
       className={`border px-2 py-2 border-[#FF5733] shadow-sm rounded-md focus-within:ring-indigo-500 transition-all duration-75 ease-in-out focus-within:border-indigo-500 flex gap-3 items-center text-[14px] w-[270px] `}
     >
       <Search />
@@ -31,6 +33,6 @@ export const SearchInput = ({ placeholder, setSearchParams }) => {
         onChange={handleChange}
         className={`focus:border-transparent  w-full focus:outline-none bg-transparent !ring-0 !outline-none border-none p-0 text-[0.8rem]`}
       />
-    </form>
+    </div>
   );
 };

@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import {
   Input,
   Loader,
@@ -7,30 +6,40 @@ import {
   Model,
   CustomToastContainer,
 } from "../../components";
-import { useNavigate, useNavigationType } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useState } from "react";
 import {
   getIdFromLocalStorage,
   getRoleFromLocalStorage,
 } from "../../utils/Storage/StorageUtils";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../api/Register/RegisterApiSlice";
-import { addProject } from "../../api/Projects/ProjectsApiSlice";
-import { queryClient } from "../../utils/Query/Query";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
-import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
+import { useAddProject } from "./hooks/mutation/useAddProject";
 
 export const AddProject = () => {
-  const navigate = useNavigate();
   const role = getRoleFromLocalStorage();
+  const { id: user_id } = useParams();
+  const navigate = useNavigate();
+
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm({
+    // Add defaultValues to help track changes
+    defaultValues: {
+      project_name: "",
+      address: "",
+      project_type: "",
+      additional_info: "",
+      terms: false,
+    },
+    // Configure mode to track changes
+    mode: "onChange", // or 'all'
+  });
 
   const { logout } = useLogout();
 
@@ -47,6 +56,12 @@ export const AddProject = () => {
     });
   };
 
+  const { mutate: AddProject, isPending: addProjectPending } = useAddProject(
+    reset,
+    "userTotalProjects",
+    user_id
+  );
+
   const {
     isPending: userPending,
     error,
@@ -57,43 +72,15 @@ export const AddProject = () => {
     enabled: role === "admin",
   });
 
-  const { mutate: AddProject, isPending: addProjectPending } = useMutation({
-    mutationFn: (data) => addProject(data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries("projects");
-      notifySuccess("Project added successfully");
-      reset();
-      setTimeout(() => {
-        navigate("/projects");
-      }, 2000);
-    },
-    onError: (error) => {
-      notifyError(error.response.data.error);
-    },
-  });
-
-  const [selectedFiles, setSelectedFiles] = useState([]);
-
   const addProjectForm = (data) => {
     const formData = new FormData();
 
-    formData.append(
-      "user_id",
-      data.registered_client ? data.registered_client : getIdFromLocalStorage()
-    );
+    formData.append("user_id", user_id ? user_id : getIdFromLocalStorage());
     formData.append("name", data.project_name);
     formData.append("address", data.address);
-    formData.append("cloud_link", data.cloud_link);
-    formData.append("start_date", data.date);
     formData.append("status", "pending");
     formData.append("project_type", data.project_type);
     formData.append("additional_requirements", data.additional_info || "");
-
-    if (selectedFiles.length > 0) {
-      Array.from(selectedFiles).forEach((file) => {
-        formData.append("files[]", file);
-      });
-    }
 
     AddProject(formData);
   };
@@ -235,14 +222,20 @@ export const AddProject = () => {
                     })}
                     className="cursor-pointer rounded-md !outline-none !ring-0   "
                   />
-                  <label
-                    htmlFor="terms-conditions"
-                    className={`font-semibold text-[14px] text-secondary ${
-                      errors["terms"] ? "text-delete  " : ""
-                    } `}
+                  <a
+                    href="https://www.plasteringestimatesinsights.com.au/terms%26conditions"
+                    target="_blank"
+                    className="cursor-pointer"
                   >
-                    Terms & Conditions
-                  </label>
+                    <label
+                      htmlFor="terms-conditions"
+                      className={`font-semibold cursor-pointer text-[14px] text-secondary ${
+                        errors["terms"] ? "text-delete" : ""
+                      } `}
+                    >
+                      Terms & Conditions
+                    </label>
+                  </a>
                 </div>
                 <ErrorMessage
                   errors={errors}
@@ -266,7 +259,10 @@ export const AddProject = () => {
                 >
                   Cancel
                 </button>
-                <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light ">
+                <button
+                  className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400 "
+                  disabled={!isDirty}
+                >
                   Submit
                 </button>
               </div>

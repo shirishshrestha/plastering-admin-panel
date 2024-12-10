@@ -95,7 +95,7 @@ export const router = createBrowserRouter([
             element: <ArchivedProjects />,
           },
           {
-            path: "addProject",
+            path: "addProject/:id",
             element: <AddProject />,
           },
           {
