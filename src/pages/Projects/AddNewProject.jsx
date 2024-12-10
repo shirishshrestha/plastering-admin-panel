@@ -6,21 +6,16 @@ import {
   Model,
   CustomToastContainer,
 } from "../../components";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import {
-  getIdFromLocalStorage,
-  getRoleFromLocalStorage,
-} from "../../utils/Storage/StorageUtils";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../api/Register/RegisterApiSlice";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
+import { useGetClientsName } from "../Clients/hooks/useGetClientsName";
+import { useState } from "react";
 
-export const AddProject = () => {
-  const role = getRoleFromLocalStorage();
-  const { id: user_id } = useParams();
+export const AddNewProject = () => {
+  const [userId, setUserId] = useState();
   const navigate = useNavigate();
 
   const {
@@ -29,7 +24,6 @@ export const AddProject = () => {
     handleSubmit,
     reset,
   } = useForm({
-    // Add defaultValues to help track changes
     defaultValues: {
       project_name: "",
       address: "",
@@ -38,6 +32,9 @@ export const AddProject = () => {
       terms: false,
     },
   });
+
+  const { data: ClientNameData, isPending: ClientNamePending } =
+    useGetClientsName("projectClientsName");
 
   const { logout } = useLogout();
 
@@ -57,23 +54,14 @@ export const AddProject = () => {
   const { mutate: AddProject, isPending: addProjectPending } = useAddProject(
     reset,
     "userTotalProjects",
-    user_id
+    userId
   );
 
-  const {
-    isPending: userPending,
-    error,
-    data: RegisteredClients,
-  } = useQuery({
-    queryKey: ["Registered Clients"],
-    queryFn: getUsers,
-    enabled: role === "admin",
-  });
-
   const addProjectForm = (data) => {
+    setUserId(data.registered_client);
     const formData = new FormData();
 
-    formData.append("user_id", user_id);
+    formData.append("user_id", data.registered_client);
     formData.append("name", data.project_name);
     formData.append("address", data.address);
     formData.append("status", "pending");
@@ -95,7 +83,7 @@ export const AddProject = () => {
           />
         )}
         <div>
-          <h2 className="font-bold text-[1.2rem]">Add Project</h2>
+          <h2 className="font-bold text-[1.2rem]">Add New Project</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">
             <p>Project</p>
             <div className="rounded-[100%] w-[10px] h-[10px] bg-green-600 "></div>
@@ -107,6 +95,49 @@ export const AddProject = () => {
             onSubmit={handleSubmit(addProjectForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
+            <div className="flex flex-col gap-[0.4rem]">
+              <label className="font-bold">Registered Client</label>
+              <select
+                name="registered_client"
+                defaultValue={"select"}
+                className={`cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-[0.4px] focus:ring-blue-600 focus:border-transparent text-[14px] ${
+                  errors["registered_client"]
+                    ? "focus:ring-red-500 !border-red-500"
+                    : ""
+                } `}
+                {...register("registered_client", {
+                  required: "Please select a registered client",
+                })}
+              >
+                <option value="select" hidden>
+                  Select a registered client
+                </option>
+                {ClientNamePending && <option disabled>Loading...</option>}
+                {ClientNameData?.length < 1 ? (
+                  <option value="" disabled>
+                    No data available
+                  </option>
+                ) : (
+                  ClientNameData?.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.name}
+                    </option>
+                  ))
+                )}
+              </select>
+              <ErrorMessage
+                errors={errors}
+                name="registered_client"
+                render={() => (
+                  <p
+                    className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                    key="registered-client"
+                  >
+                    Please select a client
+                  </p>
+                )}
+              />
+            </div>
             <div className="flex flex-col gap-[0.4rem]">
               <label className="font-bold">Project Name (Optional)</label>
               <Input
@@ -122,77 +153,80 @@ export const AddProject = () => {
                 required={false}
               />
             </div>
-            <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Project Location</label>
-              <Input
-                placeholder={Model.address.placeholder}
-                type={Model.address.type}
-                name={Model.address.name}
-                register={register}
-                errors={errors}
-                minLength={Model.address.minLength.value}
-                minMessage={Model.address.minLength.message}
-                regValue={Model.address.pattern.value}
-                message={Model.address.pattern.message}
-                required={Model.address.required}
-              />
-            </div>
 
-            <div className="flex flex-col gap-[1rem]">
-              <div className=" bg-white flex flex-col gap-3  w-full">
-                <legend className=" font-bold   select-none">
-                  Project Type
-                </legend>
-                <div className="">
-                  <label
-                    htmlFor="commercial"
-                    name="project_type"
-                    className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
-                      errors["project_type"] && "ring-red-500"
-                    } `}
-                  >
-                    Commercial Project
-                    <input
-                      type="radio"
+            <div>
+              <div className="flex flex-col gap-[0.4rem] mb-[1rem]">
+                <label className="font-bold">Project Location</label>
+                <Input
+                  placeholder={Model.address.placeholder}
+                  type={Model.address.type}
+                  name={Model.address.name}
+                  register={register}
+                  errors={errors}
+                  minLength={Model.address.minLength.value}
+                  minMessage={Model.address.minLength.message}
+                  regValue={Model.address.pattern.value}
+                  message={Model.address.pattern.message}
+                  required={Model.address.required}
+                />
+              </div>
+
+              <div className="flex flex-col gap-[1rem]">
+                <div className=" bg-white flex flex-col gap-3  w-full">
+                  <legend className=" font-bold   select-none">
+                    Project Type
+                  </legend>
+                  <div className="">
+                    <label
+                      htmlFor="commercial"
                       name="project_type"
-                      className="peer/html w-4 h-4 absolute accent-current right-3"
-                      id="commercial"
-                      value="Commercial"
-                      {...register("project_type", {
-                        required: "Select a project type",
-                      })}
-                    />
-                  </label>
-                  <label
-                    htmlFor="domestic"
-                    className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
-                      errors["project_type"] && "ring-red-500"
-                    } `}
-                  >
-                    Domestic Project
-                    <input
-                      type="radio"
+                      className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
+                        errors["project_type"] && "ring-red-500"
+                      } `}
+                    >
+                      Commercial Project
+                      <input
+                        type="radio"
+                        name="project_type"
+                        className="peer/html w-4 h-4 absolute accent-current right-3"
+                        id="commercial"
+                        value="Commercial"
+                        {...register("project_type", {
+                          required: "Select a project type",
+                        })}
+                      />
+                    </label>
+                    <label
+                      htmlFor="domestic"
+                      className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
+                        errors["project_type"] && "ring-red-500"
+                      } `}
+                    >
+                      Domestic Project
+                      <input
+                        type="radio"
+                        name="project_type"
+                        className="w-4 h-4 absolute accent-current right-3"
+                        id="domestic"
+                        value="Domestic"
+                        {...register("project_type", {
+                          required: "Select a project type",
+                        })}
+                      />
+                    </label>
+                    <ErrorMessage
+                      errors={errors}
                       name="project_type"
-                      className="w-4 h-4 absolute accent-current right-3"
-                      id="domestic"
-                      value="Domestic"
-                      {...register("project_type", {
-                        required: "Select a project type",
-                      })}
+                      render={() => (
+                        <p
+                          className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                          key="registered-client"
+                        >
+                          Please select a project type
+                        </p>
+                      )}
                     />
-                  </label>
-                  <ErrorMessage
-                    errors={errors}
-                    name="project_type"
-                    render={() => (
-                      <p
-                        className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                        key="registered-client"
-                      >
-                        Please select a project type
-                      </p>
-                    )}
-                  />
+                  </div>
                 </div>
               </div>
             </div>

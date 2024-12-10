@@ -61,22 +61,7 @@ export const getProjectById = async (id) => {
   }
 };
 
-export const getUserJobs = async (
-  project_id,
-  currentPage,
-  searchItem,
-  start_date,
-  status
-) => {
-  try {
-    const response = await instance.get(
-      `/project-book-user/${project_id}/jobs?page=${currentPage}&job_name=${searchItem}&start_date=${start_date}&status=${status}`
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+
 
 export const deleteProject = async (id) => {
   try {
@@ -102,10 +87,11 @@ export const addProject = async (project) => {
 
 export const editProject = async (data, id) => {
   try {
-    const response = await instance.post(`projects/${id}`, data, {
-      headers: {
-        Accept: "application/json",
-      },
+    const response = await instance.put(`projects/${id}`, {
+      name: data.project_name,
+      address: data.address,
+      additional_requirements: data.additional_info,
+      project_type: data.project_type,
     });
     return response.data;
   } catch (error) {

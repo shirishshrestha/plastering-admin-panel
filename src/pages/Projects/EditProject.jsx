@@ -19,26 +19,16 @@ import { queryClient } from "../../utils/Query/Query";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
+import { useGetSingleProject } from "./hooks/query/useGetSingleProject";
+import { useEditProject } from "./hooks/mutation/useEditProject";
 
 export const EditProject = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
 
-  const {
-    isPending: viewProjectPending,
-    error,
-    data: SingleProjectData,
-  } = useQuery({
-    queryKey: ["singleProject", id],
-    queryFn: () => getProjectById(id),
-    enabled: !!id,
-    staleTime: 6000,
-  });
-
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [newFiles, setNewFiles] = useState([]);
-  const [deletedFiles, setDeletedFiles] = useState([]);
+  const { data: SingleProjectData, isPending: viewProjectPending } =
+    useGetSingleProject("singleProject", id);
 
   const {
     register,
@@ -49,17 +39,12 @@ export const EditProject = () => {
 
   useEffect(() => {
     if (SingleProjectData) {
-      console.log(SingleProjectData)
       reset({
         project_type: SingleProjectData?.project_type,
-        date: SingleProjectData?.start_date,
         additional_info: SingleProjectData?.additional_requirements,
         project_name: SingleProjectData?.name,
         address: SingleProjectData?.address,
-        cloud_link: SingleProjectData?.cloud_link,
-        project_file: SingleProjectData?.files,
       });
-      setSelectedFiles(SingleProjectData?.files);
     }
   }, [SingleProjectData, reset]);
 
@@ -78,45 +63,13 @@ export const EditProject = () => {
     });
   };
 
-  const { mutate: EditProject, isPending: editProjectPending } = useMutation({
-    mutationFn: (data) => editProject(data, id),
-    onSuccess: () => {
-      queryClient.invalidateQueries("projects");
-      notifySuccess("Project edited successfully");
-      setTimeout(() => {
-        navigate("/projects");
-      }, 2000);
-    },
-    onError: () => {
-      notifyError("Something went wrong! Please try again");
-    },
-  });
+  const { mutate: EditProject, isPending: editProjectPending } = useEditProject(
+    "userTotalProjects",
+    id
+  );
 
   const editProjectForm = (data) => {
-    const formData = new FormData();
-
-    formData.append("name", data.project_name);
-    formData.append("address", data.address);
-    formData.append("cloud_link", data.cloud_link);
-    formData.append("start_date", data.date);
-    formData.append("status", data.status);
-    formData.append("project_type", data.project_type);
-    formData.append("additional_requirements", data.additional_info || "");
-
-    formData.append("_method", "PUT");
-    Array.from(newFiles).forEach((file) => {
-      formData.append("files[]", file);
-    });
-
-    Array.from(selectedFiles).forEach((file) => {
-      formData.append("old_files[]", file);
-    });
-
-    Array.from(deletedFiles).forEach((file) => {
-      formData.append("deleted_files[]", file);
-    });
-
-    EditProject(formData);
+    EditProject(data);
   };
 
   const handleProjectCancel = () => {
@@ -136,7 +89,7 @@ export const EditProject = () => {
         )}
         <div>
           <h2 className="font-bold text-[1.2rem]">
-            Edit Project -{SingleProjectData?.name}
+            Edit Project - {SingleProjectData?.name}
           </h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">
             <p>Project</p>
@@ -260,7 +213,10 @@ export const EditProject = () => {
                 >
                   Cancel
                 </button>
-                <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light ">
+                <button
+                  className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:cursor-not-allowed "
+                  disabled={!isDirty}
+                >
                   Submit
                 </button>
               </div>

@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import { getUserJobs } from "../../../../api/Projects/ProjectsApiSlice";
 import { useQuery } from "@tanstack/react-query";
+import { getUserJobs } from "../../../../api/Jobs/JobApiSlice";
 
 export const useGetJobs = (
   key = "userJobs",
@@ -15,8 +15,8 @@ export const useGetJobs = (
     queryKey: [key, project_id, currentPage, searchItem, start_date, status],
     queryFn: () =>
       getUserJobs(project_id, currentPage, searchItem, start_date, status),
-    staleTime: 50 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   return { data, error, isPending };

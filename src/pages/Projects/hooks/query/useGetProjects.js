@@ -8,8 +8,8 @@ export const useGetProjects = (key, enabledPath, page, search) => {
     queryKey: [key],
     queryFn: () => getProjects(page, search),
     enabled: location.pathname === enabledPath,
-    staleTime: 50 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   return { data, error, isPending };

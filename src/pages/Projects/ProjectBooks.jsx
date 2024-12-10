@@ -3,7 +3,7 @@ import { SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-cards";
 import { EffectCards } from "swiper/modules";
-import { ProjectsSvg } from "../../assets/icons/SvgIcons";
+import { PlusIcon, ProjectsSvg } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
   EmptyData,
@@ -15,6 +15,7 @@ import {
   SearchInput,
 } from "../../components";
 import {
+  Link,
   Outlet,
   useLocation,
   useNavigate,
@@ -297,6 +298,14 @@ export const ProjectBooks = () => {
                 List of Project Books
               </h2>
               <div className="flex gap-[1rem] items-end">
+                <div className="flex gap-[1rem]">
+                  <Link to={`/projectbooks/addNewProject`}>
+                    <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
+                      Add New Project{" "}
+                      <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
+                    </button>
+                  </Link>
+                </div>
                 <SearchInput
                   setSearchParams={setSearchParams}
                   placeholder={"Search by project book name"}
