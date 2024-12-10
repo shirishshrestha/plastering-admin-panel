@@ -82,7 +82,7 @@ const Projects = () => {
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
-      lastPage: TotalProjects?.last_page || 1,
+      lastPage: TotalProjects?.projects?.last_page || 1,
       nextClick: () => updatePageNumber(currentPage + 1),
       prevClick: () => updatePageNumber(currentPage - 1),
     }),
@@ -133,7 +133,7 @@ const Projects = () => {
               List of Projects
             </h2>
             <div className="flex gap-[1rem]">
-              <Link to="/projectbooks/addProject">
+              <Link to={`/projectbooks/addProject/${TotalProjects?.user_id}`}>
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}
                   <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
@@ -233,9 +233,7 @@ const Projects = () => {
                         <button
                           className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
                           onClick={() =>
-                            navigate(`/projectbooks/jobBook/${item.id}`, {
-                              replace: false,
-                            })
+                            navigate(`/projectbooks/jobBook/${item.id}`)
                           }
                         >
                           View Jobs
@@ -268,8 +266,8 @@ const Projects = () => {
             </tbody>
           </table>
         </div>
-        {TotalProjects?.last_page > 1 && (
-          <div className="mb-[1rem] flex items-center justify-end">
+        {TotalProjects?.projects?.last_page > 1 && (
+          <div className="my-[1rem] flex items-center justify-end">
             <Pagination {...paginationProps} />
           </div>
         )}

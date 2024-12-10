@@ -292,7 +292,7 @@ export const ProjectBooks = () => {
             </div>
           </div>
           <div className="pt-[2rem] pb-[1rem]">
-            <div className="flex items-center pb-[0.5rem] justify-between">
+            <div className="flex items-center pb-[1rem] justify-between">
               <h2 className="font-bold text-[1.4rem] text-start">
                 List of Project Books
               </h2>

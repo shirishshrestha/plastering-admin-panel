@@ -13,7 +13,7 @@ export const DeleteConfirmation = ({
   return (
     <div className="fixed h-full w-full z-50 flex top-0 left-0 items-center justify-center bg-black/40 ">
       <div className="p-[24px] bg-white w-fit flex flex-col items-center justify-center rounded-[5px]">
-        <figure className="pb-[12px]">
+        <figure className="p-[18px] bg-deleteBackground mb-2 rounded-full">
           <TrashIcon />
         </figure>
 
