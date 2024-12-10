@@ -21,6 +21,7 @@ import { EditJob } from "./Projects/components/EditJob";
 import ViewJob from "./Projects/components/ViewJob";
 import { BusinessProjects } from "./Projects/BusinessProjects";
 import ProfilePage from "./Profile/ProfilePage";
+import { AddNewProject } from "./Projects/AddNewProject";
 
 export {
   Dashboard,
@@ -46,4 +47,5 @@ export {
   ViewJob,
   BusinessProjects,
   ProfilePage,
+  AddNewProject,
 };

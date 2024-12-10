@@ -231,14 +231,6 @@ const Projects = () => {
                     <td>
                       <div className="flex gap-[0.7rem]">
                         <button
-                          className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
-                          onClick={() =>
-                            navigate(`/projectbooks/jobBook/${item.id}`)
-                          }
-                        >
-                          View Jobs
-                        </button>
-                        <button
                           className="p-[5px] rounded-md bg-editBackground"
                           onClick={() =>
                             navigate(`/projectbooks/editProject/${item.id}`)
@@ -247,14 +239,23 @@ const Projects = () => {
                           <EditIcon color="#8c62ff" />
                         </button>
                         <button
-                          className="p-[5px] rounded-md bg-deleteBackground"
+                          className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                          onClick={() =>
+                            navigate(`/projectbooks/jobBook/${item.id}`)
+                          }
+                        >
+                          View Jobs
+                        </button>
+
+                        <button
+                          className="py-[5px] px-[1rem] rounded-md bg-delete/90 text-light text-[0.9rem] font-semibold"
                           onClick={() => {
                             setDeleteConfirationShow(true);
                             setProjectName(item.name);
                             setProjectId(item.id);
                           }}
                         >
-                          <TrashIcon />
+                          Cancel
                         </button>
                       </div>
                     </td>

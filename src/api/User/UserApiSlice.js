@@ -13,6 +13,15 @@ export const getClients = async (page, search) => {
   }
 };
 
+export const getClientName = async () => {
+  try {
+    const response = await instance.get(`/clients/name`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getUserById = async (id) => {
   try {
     const response = await instance.get(`/users/${id}`);

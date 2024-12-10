@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -19,6 +19,8 @@ import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 
 export const AddJob = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+
   const {
     register,
     formState: { errors },
@@ -61,13 +63,11 @@ export const AddJob = () => {
   const addProjectForm = (data) => {
     const formData = new FormData();
 
-    formData.append("name", data.project_name);
-    formData.append("address", data.address);
-    formData.append("cloud_link", data.cloud_link);
+    formData.append("job_name", data.job_name);
+    formData.append("cloud_link", data.cloud_link || "");
     formData.append("start_date", data.date);
     formData.append("status", "pending");
-    formData.append("project_type", data.project_type);
-    formData.append("additional_requirements", data.additional_info || "");
+    formData.append("description", data.additional_info || "");
 
     if (selectedFiles.length > 0) {
       Array.from(selectedFiles).forEach((file) => {
@@ -108,47 +108,29 @@ export const AddJob = () => {
                 <Input
                   placeholder="Eg. Kitchen Renovation, Living Room Extension, etc"
                   type={Model.projectName.type}
-                  name={Model.projectName.name}
+                  name={"job_name"}
                   register={register}
                   errors={errors}
                   minLength={Model.projectName.minLength.value}
-                  minMessage={Model.projectName.minLength.message}
+                  minMessage={
+                    "Project Name must be at least 2 characters long."
+                  }
                   regValue={Model.projectName.pattern.value}
-                  message={Model.projectName.pattern.message}
-                  required={Model.projectName.required}
+                  message={
+                    "Invalid project name. Only letters and numbers are allowed."
+                  }
+                  required={"Please enter the Job name"}
                 />
               </div>
-
-              <div className="flex flex-col ">
-                <div className="flex flex-col gap-[0.4rem]">
-                  <label className="font-bold">Required by date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
-                      errors["date"] ? "focus:ring-red-500 border-red-500" : ""
-                    }`}
-                    {...register("date", {
-                      required: "Please select the date",
-                    })}
-                    min={
-                      new Date(new Date().setDate(new Date().getDate() + 6))
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                  />
-                </div>
-                <ErrorMessage
+              <div className="flex flex-col gap-[0.4rem]">
+                <label className="font-bold">Cloud Link (Optional)</label>
+                <Input
+                  placeholder={Model.cloudLink.placeholder}
+                  type={Model.cloudLink.type}
+                  name={Model.cloudLink.name}
+                  register={register}
                   errors={errors}
-                  name="date"
-                  render={() => (
-                    <p
-                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                      key="date"
-                    >
-                      Please select the date
-                    </p>
-                  )}
+                  required={false}
                 />
               </div>
 
@@ -156,8 +138,8 @@ export const AddJob = () => {
                 <label className="font-bold">Upload Files (Optional)</label>
                 <input
                   type="file"
-                  name="project_file"
-                  {...register("project_file", {
+                  name="job_file"
+                  {...register("job_file", {
                     onChange: (e) => {
                       const newFiles = Array.from(e.target.files);
                       const filteredFiles = newFiles.filter(
@@ -196,11 +178,8 @@ export const AddJob = () => {
                   <div className="flex gap-x-7 gap-y-2 flex-wrap">
                     {selectedFiles.length > 0 &&
                       Array.from(selectedFiles).map((file, index) => (
-                        <div>
-                          <div
-                            key={`${file.name}-${file.lastModified}`}
-                            className="flex gap-[0.5rem] items-center text-[14px]"
-                          >
+                        <div key={`${file.name}-${file.lastModified}`}>
+                          <div className="flex gap-[0.5rem] items-center text-[14px]">
                             <Document />
                             <p className="font-[500]">{file.name}</p>
 
@@ -226,17 +205,39 @@ export const AddJob = () => {
               </div>
             </div>
             <div className="flex flex-col gap-[1rem]">
-              <div className="flex flex-col gap-[0.4rem]">
-                <label className="font-bold">Cloud Link (Optional)</label>
-                <Input
-                  placeholder={Model.cloudLink.placeholder}
-                  type={Model.cloudLink.type}
-                  name={Model.cloudLink.name}
-                  register={register}
+              <div className="flex flex-col ">
+                <div className="flex flex-col gap-[0.4rem]">
+                  <label className="font-bold">Required by date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
+                      errors["date"] ? "focus:ring-red-500 border-red-500" : ""
+                    }`}
+                    {...register("date", {
+                      required: "Please select the date",
+                    })}
+                    min={
+                      new Date(new Date().setDate(new Date().getDate() + 6))
+                        .toISOString()
+                        .split("T")[0]
+                    }
+                  />
+                </div>
+                <ErrorMessage
                   errors={errors}
-                  required={false}
+                  name="date"
+                  render={() => (
+                    <p
+                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                      key="date"
+                    >
+                      Please select the date
+                    </p>
+                  )}
                 />
               </div>
+
               <div className="flex flex-col  gap-[0.4rem]">
                 <label htmlFor="additional-req" className="font-bold">
                   Additional Requirements (Optional)
@@ -251,40 +252,7 @@ export const AddJob = () => {
             </div>
 
             <div className="w-full  col-span-2  ">
-              <div className="mb-[0.5rem]">
-                <div className="flex items-center gap-[0.5rem] justify-end  ">
-                  <input
-                    type="checkbox"
-                    name="terms"
-                    {...register("terms", {
-                      required: true,
-                    })}
-                    className="cursor-pointer rounded-md !outline-none !ring-0   "
-                  />
-                  <label
-                    htmlFor="terms-conditions"
-                    className={`font-semibold text-[14px] text-secondary ${
-                      errors["terms"] ? "text-delete  " : ""
-                    } `}
-                  >
-                    Terms & Conditions
-                  </label>
-                </div>
-                <ErrorMessage
-                  errors={errors}
-                  name="terms"
-                  render={() => (
-                    <p
-                      className="text-[12px] text-red-500  pt-[0.1rem]  pl-[0.5rem] text-end"
-                      key="terms"
-                    >
-                      You must agree to the terms and conditions before
-                      proceeding.
-                    </p>
-                  )}
-                />
-              </div>
-              <div className="flex gap-3 justify-end items-center mt-4">
+              <div className="flex gap-3 justify-end items-center mt-2">
                 <button
                   className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
                   type="button"

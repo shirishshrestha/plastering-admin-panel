@@ -26,6 +26,10 @@ export const EditJob = () => {
     reset,
   } = useForm();
 
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [newFiles, setNewFiles] = useState([]);
+  const [deletedFiles, setDeletedFiles] = useState([]);
+
   const { logout } = useLogout();
 
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
@@ -56,26 +60,29 @@ export const EditJob = () => {
     },
   });
 
-  const [selectedFiles, setSelectedFiles] = useState([]);
-
-  const addProjectForm = (data) => {
+  const editProjectForm = (data) => {
     const formData = new FormData();
 
     formData.append("name", data.project_name);
     formData.append("address", data.address);
-    formData.append("cloud_link", data.cloud_link);
     formData.append("start_date", data.date);
-    formData.append("status", "pending");
     formData.append("project_type", data.project_type);
     formData.append("additional_requirements", data.additional_info || "");
 
-    if (selectedFiles.length > 0) {
-      Array.from(selectedFiles).forEach((file) => {
-        formData.append("files[]", file);
-      });
-    }
+    formData.append("_method", "PUT");
+    Array.from(newFiles).forEach((file) => {
+      formData.append("files[]", file);
+    });
 
-    AddProject(formData);
+    Array.from(selectedFiles).forEach((file) => {
+      formData.append("old_files[]", file);
+    });
+
+    Array.from(deletedFiles).forEach((file) => {
+      formData.append("deleted_files[]", file);
+    });
+
+    EditProject(formData);
   };
 
   return (
@@ -99,7 +106,7 @@ export const EditJob = () => {
         </div>
         <div className="mt-[1rem]">
           <form
-            onSubmit={handleSubmit(addProjectForm)}
+            onSubmit={handleSubmit(editProjectForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
             <div className="flex flex-col gap-[1rem]">
@@ -225,6 +232,40 @@ export const EditJob = () => {
                   register={register}
                   errors={errors}
                   required={false}
+                />
+              </div>
+
+              <div className="flex flex-col gap-[0.4rem]">
+                <label className="font-bold">Registered Client</label>
+                <select
+                  name="status"
+                  defaultValue={"select"}
+                  className={`cursor-pointer p-[9px] focus:outline-none border border-gray-300 rounded-lg focus:ring-[0.4px] focus:ring-blue-600 focus:border-transparent text-[14px] ${
+                    errors["status"] ? "focus:ring-red-500 !border-red-500" : ""
+                  } `}
+                  {...register("status", {
+                    required: "Please select a registered client",
+                  })}
+                >
+                  <option value="select" hidden>
+                    Select a status
+                  </option>
+                  <option value="pending">Pending</option>
+                  <option value="running">Running</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                <ErrorMessage
+                  errors={errors}
+                  name="status"
+                  render={() => (
+                    <p
+                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                      key="registered-client"
+                    >
+                      Please select a client
+                    </p>
+                  )}
                 />
               </div>
 

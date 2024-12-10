@@ -5,7 +5,6 @@ import { queryClient } from "../../../../utils/Query/Query";
 import { useNavigate } from "react-router-dom";
 
 export const useAddProject = (reset, key, user_id) => {
-  console.log(user_id);
   const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
     mutationFn: (data) => addProject(data),

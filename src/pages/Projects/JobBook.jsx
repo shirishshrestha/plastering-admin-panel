@@ -91,7 +91,7 @@ const JobBook = () => {
     }),
     [currentPage, JobData]
   );
-  
+
   // const { mutate: DeleteProject, isPending: deletePending } = useMutation({
   //   mutationFn: () => deleteProject(projectId),
   //   onSuccess: () => {
@@ -104,11 +104,11 @@ const JobBook = () => {
   //   },
   // });
 
-  // const updatePageNumber = (newPageNumber) => {
-  //   const updatedParams = new URLSearchParams(searchParams);
-  //   updatedParams.set("page", newPageNumber.toString());
-  //   setSearchParams(updatedParams);
-  // };
+  const updatePageNumber = (newPageNumber) => {
+    const updatedParams = new URLSearchParams(searchParams);
+    updatedParams.set("page", newPageNumber.toString());
+    setSearchParams(updatedParams);
+  };
 
   // const handleProceedClick = () => {
   //   DeleteProject();
@@ -149,7 +149,7 @@ const JobBook = () => {
                 setSearchParams={setSearchParams}
                 placeholder={"Search by job name"}
               />
-              <Link to="/projectbooks/addJob">
+              <Link to={`/projectbooks/addJob/${id}`}>
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Job <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>

@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import {
   AddJob,
+  AddNewProject,
   AddProject,
   ArchivedProjects,
   BusinessProjects,
@@ -99,6 +100,10 @@ export const router = createBrowserRouter([
             element: <AddProject />,
           },
           {
+            path: "addNewProject",
+            element: <AddNewProject />,
+          },
+          {
             path: "editProject/:id",
             element: <EditProject />,
           },
@@ -107,7 +112,7 @@ export const router = createBrowserRouter([
             element: <JobBook />,
           },
           {
-            path: "addJob",
+            path: "addJob/:id",
             element: <AddJob />,
           },
           {
