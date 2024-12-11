@@ -1,7 +1,5 @@
 import {
   Link,
-  Outlet,
-  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
@@ -22,16 +20,11 @@ import {
   SearchInput,
 } from "../../components";
 import { Tooltip } from "flowbite-react";
-import {
-  deleteProject,
-  getProjects,
-} from "../../api/Projects/ProjectsApiSlice";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { notifySuccess } from "../../components/Toast/Toast";
-import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
 import { useGetJobs } from "./hooks/query/useGetJobs";
+import { useToggle } from "../../hooks/useToggle";
+import { useDeleteJob } from "./hooks/mutation/useDeleteJob";
 
 const tableHead = [
   "ID",
@@ -43,11 +36,14 @@ const tableHead = [
 ];
 
 const JobBook = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const { openDrawer } = useAuth();
+
+  const [jobId, setJobId] = useState();
+  const [jobName, setJobName] = useState();
+  const [deleteConfirationShow, handleDeleteToggle] = useToggle();
 
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
@@ -78,9 +74,12 @@ const JobBook = () => {
     status
   );
 
-  // const [projectId, setProjectId] = useState();
-  // const [projectName, setProjectName] = useState();
-  // const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+  const { mutate: DeleteJob, isPending: DeleteJobPending } = useDeleteJob(
+    "userJobs",
+    handleDeleteToggle,
+    JobData?.data,
+    currentPage
+  );
 
   const paginationProps = useMemo(
     () => ({
@@ -92,40 +91,28 @@ const JobBook = () => {
     [currentPage, JobData]
   );
 
-  // const { mutate: DeleteProject, isPending: deletePending } = useMutation({
-  //   mutationFn: () => deleteProject(projectId),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries("projects");
-  //     notifySuccess("Project deleted successfully");
-  //     setDeleteConfirationShow(false);
-  //   },
-  //   onError: () => {
-  //     notifyError("Failed to delete project, please try again");
-  //   },
-  // });
-
   const updatePageNumber = (newPageNumber) => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());
     setSearchParams(updatedParams);
   };
 
-  // const handleProceedClick = () => {
-  //   DeleteProject();
-  // };
+  const handleProceedClick = () => {
+    DeleteJob(jobId);
+  };
 
   return (
     <>
       <section className="mt-[.5rem] pb-[1rem]">
         {JobPending && <Loader />}
-        {/* {deleteConfirationShow && (
-            <DeleteConfirmation
-              deleteName={projectName}
-              setDeleteConfirationShow={setDeleteConfirationShow}
-              handleProceedClick={handleProceedClick}
-              deleteLoading={deletePending}
-            />
-          )} */}
+        {deleteConfirationShow && (
+          <DeleteConfirmation
+            deleteName={jobName}
+            handleDeleteToggle={handleDeleteToggle}
+            handleProceedClick={handleProceedClick}
+            deleteLoading={DeleteJobPending}
+          />
+        )}
 
         <FilterDrawer
           setSearchParams={setSearchParams}
@@ -229,11 +216,11 @@ const JobBook = () => {
                         </button>
                         <button
                           className="p-[5px] rounded-md bg-deleteBackground"
-                          // onClick={() => {
-                          //   setDeleteConfirationShow(true);
-                          //   setProjectName(job.name);
-                          //   setProjectId(job.id);
-                          // }}
+                          onClick={() => {
+                            handleDeleteToggle();
+                            setJobName(job.job_name);
+                            setJobId(job.id);
+                          }}
                         >
                           <TrashIcon />
                         </button>

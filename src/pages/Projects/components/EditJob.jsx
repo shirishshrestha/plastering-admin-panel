@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import useLogout from "../../../hooks/useLogout";
 import useAuth from "../../../hooks/useAuth";
 import { addProject } from "../../../api/Projects/ProjectsApiSlice";
@@ -16,9 +16,11 @@ import {
   Model,
 } from "../../../components";
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
+import { useGetJobById } from "../hooks/query/useGetJobById";
 
 export const EditJob = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const {
     register,
     formState: { errors },
@@ -30,12 +32,29 @@ export const EditJob = () => {
   const [newFiles, setNewFiles] = useState([]);
   const [deletedFiles, setDeletedFiles] = useState([]);
 
-  const { logout } = useLogout();
+  const { data: JobData, isPending: JobDataPending } = useGetJobById(
+    "jobByIdEditJob",
+    id
+  );
 
+  useEffect(() => {
+    if (JobData) {
+      reset({
+        date: JobData?.required_date,
+        additional_info: JobData?.description,
+        job_name: JobData?.job_name,
+        cloud_link: JobData?.cloud_link,
+        status: JobData?.status,
+      });
+      setSelectedFiles(JobData?.files);
+    }
+  }, [JobData, reset]);
+
+  const { logout } = useLogout();
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -43,7 +62,7 @@ export const EditJob = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const { mutate: AddProject, isPending: addJobPending } = useMutation({
     mutationFn: (data) => addProject(data),
@@ -88,7 +107,7 @@ export const EditJob = () => {
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-        {addJobPending && <Loader />}
+        {(addJobPending || JobDataPending) && <Loader />}
 
         {logoutConfirationShow && (
           <LogoutConfirmation
@@ -115,14 +134,18 @@ export const EditJob = () => {
                 <Input
                   placeholder="Eg. Kitchen Renovation, Living Room Extension, etc"
                   type={Model.projectName.type}
-                  name={Model.projectName.name}
+                  name={"job_name"}
                   register={register}
                   errors={errors}
                   minLength={Model.projectName.minLength.value}
-                  minMessage={Model.projectName.minLength.message}
+                  minMessage={
+                    "Project Name must be at least 2 characters long."
+                  }
                   regValue={Model.projectName.pattern.value}
-                  message={Model.projectName.pattern.message}
-                  required={Model.projectName.required}
+                  message={
+                    "Invalid project name. Only letters and numbers are allowed."
+                  }
+                  required={"Please enter the Job name"}
                 />
               </div>
 
@@ -158,8 +181,8 @@ export const EditJob = () => {
                 <label className="font-bold">Upload Files (Optional)</label>
                 <input
                   type="file"
-                  name="project_file"
-                  {...register("project_file", {
+                  name="job_files"
+                  {...register("job_files", {
                     onChange: (e) => {
                       const newFiles = Array.from(e.target.files);
                       const filteredFiles = newFiles.filter(

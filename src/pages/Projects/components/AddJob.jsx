@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import useLogout from "../../../hooks/useLogout";
 import useAuth from "../../../hooks/useAuth";
@@ -16,6 +16,7 @@ import {
   Model,
 } from "../../../components";
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
+import { useAddJob } from "../hooks/mutation/useAddJob";
 
 export const AddJob = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export const AddJob = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -41,28 +42,20 @@ export const AddJob = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
-  const { mutate: AddProject, isPending: addJobPending } = useMutation({
-    mutationFn: (data) => addProject(data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries("projects");
-      notifySuccess("Project added successfully");
-      reset();
-      setTimeout(() => {
-        navigate("/projectbooks/jobbook");
-      }, 2000);
-    },
-    onError: (error) => {
-      notifyError(error.response.data.error);
-    },
-  });
+  const { mutate: AddJob, isPending: AddJobPending } = useAddJob(
+    "userJobs",
+    id,
+    reset
+  );
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  const addProjectForm = (data) => {
+  const addJobForm = (data) => {
     const formData = new FormData();
 
+    formData.append("project_id", id);
     formData.append("job_name", data.job_name);
     formData.append("cloud_link", data.cloud_link || "");
     formData.append("start_date", data.date);
@@ -71,17 +64,17 @@ export const AddJob = () => {
 
     if (selectedFiles.length > 0) {
       Array.from(selectedFiles).forEach((file) => {
-        formData.append("files[]", file);
+        formData.append("file[]", file);
       });
     }
 
-    AddProject(formData);
+    AddJob(formData);
   };
 
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-        {addJobPending && <Loader />}
+        {AddJobPending && <Loader />}
 
         {logoutConfirationShow && (
           <LogoutConfirmation
@@ -99,7 +92,7 @@ export const AddJob = () => {
         </div>
         <div className="mt-[1rem]">
           <form
-            onSubmit={handleSubmit(addProjectForm)}
+            onSubmit={handleSubmit(addJobForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
             <div className="flex flex-col gap-[1rem]">

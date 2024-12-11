@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useLogout from "../../hooks/useLogout";
 import { LogoutConfirmation } from "../LogoutConfirmation/LogoutConfirmation";
 import { useAvatarGenerator } from "../../hooks/useAvatarGenerator";
+import { useCallback } from "react";
 
 const ProfileTab = ({ sidebarToggle, setSidebarToggle }) => {
   const userName = getNameFromLocalStorage();
@@ -26,14 +27,16 @@ const ProfileTab = ({ sidebarToggle, setSidebarToggle }) => {
     setLogoutConfirationShow(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
+
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
+
   return (
     <section className="w-full py-[1rem] ">
       {logoutConfirationShow && (

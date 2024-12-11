@@ -10,7 +10,13 @@ import {
   LogoLoader,
   LogoutConfirmation,
 } from "../../components";
-import { clientDashboard, curve, logo, spiral, square } from "../../assets/images";
+import {
+  clientDashboard,
+  curve,
+  logo,
+  spiral,
+  square,
+} from "../../assets/images";
 import {
   getIdFromLocalStorage,
   getNameFromLocalStorage,
@@ -22,6 +28,7 @@ import {
 } from "../../api/Projects/ProjectsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
+import { useCallback } from "react";
 
 export const ClientDashboard = () => {
   const userName = getNameFromLocalStorage();
@@ -32,7 +39,7 @@ export const ClientDashboard = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -40,7 +47,7 @@ export const ClientDashboard = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const {
     isPending: projectPending,

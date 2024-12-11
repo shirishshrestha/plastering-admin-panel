@@ -9,7 +9,7 @@ import {
 } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   editProject,
@@ -53,7 +53,7 @@ export const EditProject = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -61,11 +61,12 @@ export const EditProject = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const { mutate: EditProject, isPending: editProjectPending } = useEditProject(
     "userTotalProjects",
-    id
+    id,
+    SingleProjectData?.project_book.user.id
   );
 
   const editProjectForm = (data) => {

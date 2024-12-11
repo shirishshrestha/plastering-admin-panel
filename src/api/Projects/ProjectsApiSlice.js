@@ -61,8 +61,6 @@ export const getProjectById = async (id) => {
   }
 };
 
-
-
 export const deleteProject = async (id) => {
   try {
     const response = await instance.delete(`/projects/${id}`);
@@ -112,9 +110,9 @@ export const acceptProject = async (data, project_id) => {
   }
 };
 
-export const downloadFile = async (name, setDownload) => {
+export const downloadFile = async (name, setDownload, job_id) => {
   try {
-    const response = await instance.get(`/projects/download/${name}`, {
+    const response = await instance.get(`/jobs/${job_id}/download/${name}`, {
       responseType: "blob",
     });
     const url = window.URL.createObjectURL(response.data);

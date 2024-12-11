@@ -31,7 +31,7 @@ import {
 
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const tableHead = [
   "Project Name",
@@ -56,7 +56,7 @@ export const ClientProjects = () => {
   const [pageNumber, setPageNumber] = useState(
     parseInt(searchParams.get("page")) || 1
   );
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -64,7 +64,7 @@ export const ClientProjects = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const {
     isPending,
