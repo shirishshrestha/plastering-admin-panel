@@ -34,6 +34,7 @@ import useAuth from "../../hooks/useAuth";
 import { useToggle } from "../../hooks/useToggle";
 import UploadEstimate from "./components/UploadEstimate";
 import EditEstimate from "./components/EditEstimate";
+import { useCallback } from "react";
 
 const tableHead = [
   "Project Name",
@@ -78,7 +79,7 @@ export const BusinessProjects = () => {
 
   const currentPage = parseInt(searchParams.get("page") || 1, 10);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -86,7 +87,7 @@ export const BusinessProjects = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const {
     isPending,

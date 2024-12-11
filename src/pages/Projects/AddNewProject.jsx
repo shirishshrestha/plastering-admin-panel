@@ -12,7 +12,7 @@ import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
 import { useGetClientsName } from "../Clients/hooks/useGetClientsName";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export const AddNewProject = () => {
   const [userId, setUserId] = useState();
@@ -41,7 +41,7 @@ export const AddNewProject = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -49,7 +49,7 @@ export const AddNewProject = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const { mutate: AddProject, isPending: addProjectPending } = useAddProject(
     reset,

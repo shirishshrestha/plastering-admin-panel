@@ -24,6 +24,7 @@ import {
 } from "../../api/Projects/ProjectsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
+import { useCallback } from "react";
 
 const tableHead = [
   "Project Name",
@@ -41,7 +42,7 @@ export const BusinessDashboard = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -49,7 +50,7 @@ export const BusinessDashboard = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const {
     isPending: projectPending,

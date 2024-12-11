@@ -3,11 +3,11 @@ import { TrashIcon } from "../../assets/icons/SvgIcons";
 export const DeleteConfirmation = ({
   deleteName,
   handleProceedClick,
-  setDeleteConfirationShow,
+  handleDeleteToggle,
   deleteLoading,
 }) => {
   const handleCancelClick = () => {
-    setDeleteConfirationShow(false);
+    handleDeleteToggle();
   };
 
   return (
@@ -33,14 +33,14 @@ export const DeleteConfirmation = ({
         </div>
         <div className="flex gap-[14px]">
           <button
-            className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
+            className="bg-primary rounded-lg px-[30px] py-[10px] text-light"
             onClick={handleCancelClick}
             type="button"
           >
             Cancel
           </button>
           <button
-            className="bg-primary rounded-lg px-[30px] py-[10px] text-light"
+            className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
             onClick={handleProceedClick}
           >
             {deleteLoading ? "Processing" : "Proceed"}

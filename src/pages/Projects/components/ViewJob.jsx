@@ -22,17 +22,7 @@ import {
 import { RevisionPopup } from "./RevisionPopup";
 import { Document, Download, GoBack } from "../../../assets/icons/SvgIcons";
 import useAuth from "../../../hooks/useAuth";
-
-const jobData = [
-  {
-    id: 1,
-    jobName: "Living Room Plastering",
-    additionalInfo: "Wall cracks repair and ceiling smoothing",
-    requiredDate: "2024-11-20",
-    cloudLink: "https://www.google.com",
-    status: "Running",
-  },
-];
+import { useGetJobById } from "../hooks/query/useGetJobById";
 
 const ViewJob = () => {
   const navigate = useNavigate();
@@ -41,8 +31,6 @@ const ViewJob = () => {
   const role = getRoleFromLocalStorage();
   const user_id = getIdFromLocalStorage();
 
-  const [adminFlag, setAdminFlag] = useState(false);
-  const [clientFlag, setClientFlag] = useState(false);
   const [cancellationFlag, setCancellationFlag] = useState(false);
   const [revisionFlag, setRevisionFlag] = useState(false);
   const [sendEmailFlag, setSendEmailFlag] = useState(false);
@@ -54,22 +42,16 @@ const ViewJob = () => {
     revisionFlag: false,
   });
 
-  const {
-    isPending: viewProjectPending,
-    error,
-    data: SingleProjectData,
-  } = useQuery({
-    queryKey: ["singleProject", id],
-    queryFn: () => getProjectById(id),
-    enabled: !!id,
-    staleTime: 6000,
-  });
+  const { data: JobData, isPending: JobDataPending } = useGetJobById(
+    "jobById",
+    id
+  );
 
   const [download, setDownload] = useState();
   const [downloadId, setDownloadId] = useState();
   const { data, isFetching: fetchingFile } = useQuery({
     queryKey: ["downloadFile", download],
-    queryFn: () => downloadFile(download, setDownload),
+    queryFn: () => downloadFile(download, setDownload, JobData?.id),
     enabled: !!download,
     refetchOnWindowFocus: false,
     refetchIntervalInBackground: false,
@@ -131,7 +113,7 @@ const ViewJob = () => {
 
   return (
     <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-      {(viewProjectPending ||
+      {(JobDataPending ||
         AcceptProjectPending ||
         RequestCancellationPending ||
         SendEmailPending) && <Loader />}
@@ -191,13 +173,11 @@ const ViewJob = () => {
           {SingleProjectData?.user.name}
         </h2> */}
         <h2 className="font-bold text-[1.2rem]">
-          {SingleProjectData?.name} -{" "}
-          <span className="font-semibold text-[14px]">
-            {SingleProjectData?.address}
-          </span>
+          {JobData?.job_name}
+          {/* <span className="font-semibold text-[14px]">{JobData?.address}</span> */}
         </h2>
         <p className="text-[14px] font-[500]">
-          Project Type: {SingleProjectData?.project_type}
+          Project Name: {JobData?.project?.name}
         </p>
       </div>
       <div className="mt-[1rem] flex flex-col gap-[1rem] text-[14px]">
@@ -209,7 +189,7 @@ const ViewJob = () => {
             className="list-disc font-[500] focus:ring-2 focus:ring-blue-500 rounded-lg focus:outline-none"
             spellCheck="false"
           >
-            {SingleProjectData?.additional_requirements}
+            {JobData?.description || "-"}
           </div>
         </div>
         <div className="border-[2px] border-gray-300 rounded-lg p-[1rem]">
@@ -217,18 +197,18 @@ const ViewJob = () => {
             Uploaded Files:
           </p>
           <div className="flex justify-evenly items-center flex-wrap">
-            {/* {SingleProjectData?.files.length < 1 ? (
+            {JobData?.files.length < 1 ? (
               <p className="font-[500]">No files uploaded</p>
             ) : (
-              SingleProjectData?.files.map((file, index) => (
+              JobData?.files.map((file, index) => (
                 <div key={index} className="flex gap-[0.5rem] items-center">
                   <Document />
-                  <p className="font-[500]">{file.split("/").pop()}</p>
+                  <p className="font-[500]">{file.name}</p>
 
                   <button
                     type="button"
                     className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
-                    onClick={() => handleDownload(file.split("/").pop(), index)}
+                    onClick={() => handleDownload(file.name, index)}
                   >
                     <Download />
                     {fetchingFile && index === downloadId
@@ -237,7 +217,7 @@ const ViewJob = () => {
                   </button>
                 </div>
               ))
-            )} */}
+            )}
           </div>
         </div>
 
@@ -265,13 +245,13 @@ const ViewJob = () => {
                   className="button w-full justify-center disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
                   onClick={() => setConfirmationShow(true)}
                   disabled={
-                    SingleProjectData?.status === "running" ||
-                    SingleProjectData?.status === "completed"
+                    JobData?.status === "running" ||
+                    JobData?.status === "completed"
                   }
                 >
-                  {SingleProjectData?.status === "pending"
+                  {JobData?.status === "pending"
                     ? "Accept Submission"
-                    : SingleProjectData?.status === "running"
+                    : JobData?.status === "running"
                     ? "Running"
                     : "Completed"}
                 </button>
@@ -300,9 +280,7 @@ const ViewJob = () => {
               {role === "admin" && (
                 <button
                   className="button w-full justify-center disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={
-                    SingleProjectData?.status === "pending" || sendEmailFlag
-                  }
+                  disabled={JobData?.status === "pending" || sendEmailFlag}
                   onClick={() => SendEmailToClient()}
                 >
                   Send Acceptance Email to Client
@@ -323,22 +301,20 @@ const ViewJob = () => {
                   <tr>
                     <th className="text-start py-[5px] ">Submitted Date: </th>
                     <td className="font-[500]">
-                      {SingleProjectData?.created_at
-                        ? SingleProjectData?.created_at.split("T")[0]
+                      {JobData?.created_at
+                        ? JobData?.created_at.split("T")[0]
                         : "-"}
                     </td>
                   </tr>
                   <tr>
                     <th className="text-start py-[5px] ">Started Date: </th>
-                    <td className="font-[500]">
-                      {SingleProjectData?.start_date}
-                    </td>
+                    <td className="font-[500]">{JobData?.start_date}</td>
                   </tr>
                   <tr>
                     <th className="text-start py-[5px] ">Last Modified: </th>
                     <td className="font-[500]">
-                      {SingleProjectData?.updated_at
-                        ? SingleProjectData?.updated_at.split("T")[0]
+                      {JobData?.updated_at
+                        ? JobData?.updated_at.split("T")[0]
                         : "-"}
                     </td>
                   </tr>

@@ -20,6 +20,7 @@ import Pagination from "./Pagination/Pagination";
 import { FilterDrawer } from "./Drawer/Drawer";
 import { notifyError, notifySuccess } from "./Toast/Toast";
 import PopupModal from "./PopupModal/PopupModal";
+import { CancelProjectConfirmation } from "./CancelProjectPopup/CancelProjectPopup";
 
 export {
   Sidebar,
@@ -46,4 +47,5 @@ export {
   notifySuccess,
   notifyError,
   PopupModal,
+  CancelProjectConfirmation,
 };

@@ -17,6 +17,7 @@ import { getUsers } from "../../api/Register/RegisterApiSlice";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
+import { useCallback } from "react";
 
 export const AddProject = () => {
   const role = getRoleFromLocalStorage();
@@ -44,7 +45,7 @@ export const AddProject = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
     setLogoutConfirationShow(false);
@@ -52,7 +53,7 @@ export const AddProject = () => {
     logout(() => {
       navigate("/login");
     });
-  };
+  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const { mutate: AddProject, isPending: addProjectPending } = useAddProject(
     reset,

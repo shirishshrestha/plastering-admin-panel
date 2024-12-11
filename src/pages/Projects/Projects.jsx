@@ -1,12 +1,12 @@
 import {
   Link,
-  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { EditIcon, PlusIcon, TrashIcon } from "../../assets/icons/SvgIcons";
+import { EditIcon, PlusIcon } from "../../assets/icons/SvgIcons";
 import {
+  CancelProjectConfirmation,
   CustomToastContainer,
   DeleteConfirmation,
   EmptyData,
@@ -16,16 +16,14 @@ import {
   SearchInput,
 } from "../../components";
 import { Tooltip } from "flowbite-react";
-import {
-  deleteProject,
-  getProjects,
-} from "../../api/Projects/ProjectsApiSlice";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteProject } from "../../api/Projects/ProjectsApiSlice";
+import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { notifySuccess } from "../../components/Toast/Toast";
 import { queryClient } from "../../utils/Query/Query";
 import useAuth from "../../hooks/useAuth";
 import { useGetUserTotalProjects } from "./hooks/query/useGetUserTotalProjects";
+import { useToggle } from "../../hooks/useToggle";
 
 const tableHead = [
   "P. Id",
@@ -39,7 +37,6 @@ const tableHead = [
 ];
 
 const Projects = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -48,6 +45,7 @@ const Projects = () => {
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+  const [cancelConfirmation, handleCancelToggle] = useToggle();
 
   const { openDrawer } = useAuth();
 
@@ -94,7 +92,7 @@ const Projects = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("projects");
       notifySuccess("Project deleted successfully");
-      setDeleteConfirationShow(false);
+      handleCancelToggle();
     },
     onError: () => {
       notifyError("Failed to delete project, please try again");
@@ -114,12 +112,12 @@ const Projects = () => {
   return (
     <>
       <section className="mt-[.5rem] pb-[1rem]">
-        {deleteConfirationShow && (
-          <DeleteConfirmation
-            deleteName={projectName}
-            setDeleteConfirationShow={setDeleteConfirationShow}
+        {cancelConfirmation && (
+          <CancelProjectConfirmation
+            projectName={projectName}
+            handleCancelToggle={handleCancelToggle}
             handleProceedClick={handleProceedClick}
-            deleteLoading={deletePending}
+            cancelLoading={deletePending}
           />
         )}
         {TotalProjectsPending && <Loader />}
@@ -250,7 +248,7 @@ const Projects = () => {
                         <button
                           className="py-[5px] px-[1rem] rounded-md bg-delete/90 text-light text-[0.9rem] font-semibold"
                           onClick={() => {
-                            setDeleteConfirationShow(true);
+                            handleCancelToggle();
                             setProjectName(item.name);
                             setProjectId(item.id);
                           }}

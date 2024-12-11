@@ -21,6 +21,7 @@ import { useState } from "react";
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
 import { queryClient } from "../../utils/Query/Query";
 import { Tooltip } from "flowbite-react";
+import { useToggle } from "../../hooks/useToggle";
 
 const tableHead = [
   "Id",
@@ -35,9 +36,9 @@ const BusinessDirectory = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [projectName, setProjectName] = useState("");
-  const [projectId, setProjectId] = useState();
-  const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
+  const [estimatorName, setEstimatorName] = useState("");
+  const [estimatorId, setEstimatorId] = useState();
+  const [deleteConfirationShow, handleDeleteToggle] = useToggle();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -55,14 +56,15 @@ const BusinessDirectory = () => {
   const DeleteEstimator = useMutation({
     mutationFn: (id) => deleteEstimator(id),
     onSuccess: () => {
-      setDeleteConfirationShow(false);
+      handleDeleteToggle();
       queryClient.invalidateQueries("estimators");
       notifySuccess("Business deleted successfully");
     },
   });
 
   const handleProceedClick = () => {
-    DeleteEstimator.mutate(projectId);
+    // DeleteEstimator.mutate(projectId);
+    console.log("clicked");
   };
 
   return (
@@ -72,8 +74,8 @@ const BusinessDirectory = () => {
           {EstimatorPending && <Loader />}
           {deleteConfirationShow && (
             <DeleteConfirmation
-              deleteName={projectName}
-              setDeleteConfirationShow={setDeleteConfirationShow}
+              deleteName={estimatorName}
+              handleDeleteToggle={handleDeleteToggle}
               handleProceedClick={handleProceedClick}
               deleteLoading={DeleteEstimator.isPending}
             />
@@ -154,9 +156,9 @@ const BusinessDirectory = () => {
                         <button
                           className="p-[5px] rounded-md bg-deleteBackground"
                           onClick={() => {
-                            setDeleteConfirationShow(true);
-                            setProjectName(estimator.business_name);
-                            setProjectId(estimator.id);
+                            handleDeleteToggle();
+                            setEstimatorName(estimator.business_name);
+                            setEstimatorId(estimator.id);
                           }}
                         >
                           <TrashIcon />

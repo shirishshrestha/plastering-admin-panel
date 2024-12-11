@@ -97,7 +97,7 @@ export const ProjectBooks = () => {
   const { data: RecentProjectBooks, isPending: recentProjectsBookPending } =
     useGetProjectBooks("recentProjectBooks", "/projectbooks", "", "", 1, "");
   const { data: TotalProjectStatusData, isPending: projectStatusPending } =
-    useGetTotalProjectStatus("totalProjectStatus");
+    useGetTotalProjectStatus("totalProjectStatus", "/projectbooks");
 
   const handleLogout = useCallback(() => {
     setAuth({});
