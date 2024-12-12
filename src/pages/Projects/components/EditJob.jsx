@@ -2,12 +2,9 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useCallback, useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import useLogout from "../../../hooks/useLogout";
 import useAuth from "../../../hooks/useAuth";
-import { addProject } from "../../../api/Projects/ProjectsApiSlice";
-import { queryClient } from "../../../utils/Query/Query";
-import { notifyError, notifySuccess } from "../../../components/Toast/Toast";
+
 import {
   CustomToastContainer,
   Input,
@@ -17,13 +14,14 @@ import {
 } from "../../../components";
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 import { useGetJobById } from "../hooks/query/useGetJobById";
+import { useEditJob } from "../hooks/mutation/useEditJob";
 
 export const EditJob = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     reset,
   } = useForm();
@@ -34,17 +32,24 @@ export const EditJob = () => {
 
   const { data: JobData, isPending: JobDataPending } = useGetJobById(
     "jobByIdEditJob",
-    id
+    id,
+    "/projectbooks/editJob"
   );
+  const {
+    mutate: EditJob,
+    isPending: EditJobPending,
+    isSuccess: EditJobSuccess,
+  } = useEditJob("userJobs", JobData?.project?.id, setNewFiles);
 
   useEffect(() => {
     if (JobData) {
       reset({
-        date: JobData?.required_date,
+        date: JobData?.start_date,
         additional_info: JobData?.description,
         job_name: JobData?.job_name,
         cloud_link: JobData?.cloud_link,
         status: JobData?.status,
+        job_file: [],
       });
       setSelectedFiles(JobData?.files);
     }
@@ -64,29 +69,14 @@ export const EditJob = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
-  const { mutate: AddProject, isPending: addJobPending } = useMutation({
-    mutationFn: (data) => addProject(data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries("projects");
-      notifySuccess("Project added successfully");
-      reset();
-      setTimeout(() => {
-        navigate("/projectbooks/jobbook");
-      }, 2000);
-    },
-    onError: (error) => {
-      notifyError(error.response.data.error);
-    },
-  });
-
-  const editProjectForm = (data) => {
+  const editJobForm = (data) => {
     const formData = new FormData();
 
-    formData.append("name", data.project_name);
-    formData.append("address", data.address);
+    formData.append("job_name", data.job_name);
     formData.append("start_date", data.date);
-    formData.append("project_type", data.project_type);
-    formData.append("additional_requirements", data.additional_info || "");
+    formData.append("cloud_link", data.cloud_link || "");
+    formData.append("description", data.additional_info || "");
+    formData.append("status", data.status);
 
     formData.append("_method", "PUT");
     Array.from(newFiles).forEach((file) => {
@@ -94,20 +84,20 @@ export const EditJob = () => {
     });
 
     Array.from(selectedFiles).forEach((file) => {
-      formData.append("old_files[]", file);
+      formData.append("old_files[]", file.name);
     });
 
     Array.from(deletedFiles).forEach((file) => {
-      formData.append("deleted_files[]", file);
+      formData.append("deleted_files[]", file.name);
     });
 
-    EditProject(formData);
+    EditJob(formData);
   };
 
   return (
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
-        {(addJobPending || JobDataPending) && <Loader />}
+        {(EditJobPending || JobDataPending) && <Loader />}
 
         {logoutConfirationShow && (
           <LogoutConfirmation
@@ -125,7 +115,7 @@ export const EditJob = () => {
         </div>
         <div className="mt-[1rem]">
           <form
-            onSubmit={handleSubmit(editProjectForm)}
+            onSubmit={handleSubmit(editJobForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
             <div className="flex flex-col gap-[1rem]">
@@ -181,20 +171,20 @@ export const EditJob = () => {
                 <label className="font-bold">Upload Files (Optional)</label>
                 <input
                   type="file"
-                  name="job_files"
-                  {...register("job_files", {
+                  name="job_file"
+                  {...register("job_file", {
                     onChange: (e) => {
-                      const newFiles = Array.from(e.target.files);
-                      const filteredFiles = newFiles.filter(
+                      const innerNewFiles = Array.from(e.target.files);
+                      const filteredFiles = innerNewFiles.filter(
                         (newFile) =>
-                          !selectedFiles.some(
+                          !newFiles.some(
                             (file) =>
                               file.name === newFile.name &&
                               file.lastModified === newFile.lastModified
                           )
                       );
 
-                      setSelectedFiles([...selectedFiles, ...filteredFiles]);
+                      setNewFiles([...newFiles, ...filteredFiles]);
 
                       e.target.value = null;
                     },
@@ -219,7 +209,11 @@ export const EditJob = () => {
                 <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
                   <span>Uploaded Files:</span>
                   <div className="flex gap-x-7 gap-y-2 flex-wrap">
-                    {selectedFiles.length > 0 &&
+                    {selectedFiles?.length < 1 ? (
+                      <p className="font-[500] text-[14px] pl-[2rem]">
+                        No previous files
+                      </p>
+                    ) : (
                       Array.from(selectedFiles).map((file, index) => (
                         <div
                           key={`${file.name}-${file.lastModified}`}
@@ -232,6 +226,7 @@ export const EditJob = () => {
                             type="button"
                             className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
                             onClick={() => {
+                              setDeletedFiles([...deletedFiles, file]);
                               setSelectedFiles(
                                 selectedFiles.filter((_, i) => i !== index)
                               );
@@ -239,6 +234,36 @@ export const EditJob = () => {
                           >
                             <TrashIcon />
                           </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                  <span>New Files:</span>
+                  <div className="flex gap-x-7 gap-y-2">
+                    {newFiles?.length > 0 &&
+                      Array.from(newFiles).map((file, index) => (
+                        <div>
+                          <div className="flex gap-[0.5rem] items-center text-[14px]">
+                            <Document />
+                            <p className="font-[500]">{file.name}</p>
+
+                            <button
+                              type="button"
+                              className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                              onClick={() => {
+                                setNewFiles(
+                                  newFiles.filter((_, i) => i !== index)
+                                );
+                              }}
+                            >
+                              <TrashIcon />
+                            </button>
+                          </div>
+                          <div className="text-[12px]">
+                            Size: {(file.size / 1024).toFixed(2)} KB
+                          </div>
                         </div>
                       ))}
                   </div>
@@ -259,7 +284,7 @@ export const EditJob = () => {
               </div>
 
               <div className="flex flex-col gap-[0.4rem]">
-                <label className="font-bold">Registered Client</label>
+                <label className="font-bold">Status</label>
                 <select
                   name="status"
                   defaultValue={"select"}
@@ -267,7 +292,7 @@ export const EditJob = () => {
                     errors["status"] ? "focus:ring-red-500 !border-red-500" : ""
                   } `}
                   {...register("status", {
-                    required: "Please select a registered client",
+                    required: "Please select status",
                   })}
                 >
                   <option value="select" hidden>
@@ -314,7 +339,14 @@ export const EditJob = () => {
                 >
                   Cancel
                 </button>
-                <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light ">
+                <button
+                  className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  disabled={
+                    (!isDirty &&
+                      selectedFiles.length === JobData?.files?.length) ||
+                    EditJobSuccess
+                  }
+                >
                   Submit
                 </button>
               </div>

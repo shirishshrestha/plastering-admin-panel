@@ -44,7 +44,8 @@ const ViewJob = () => {
 
   const { data: JobData, isPending: JobDataPending } = useGetJobById(
     "jobById",
-    id
+    id,
+    "/projectbooks/viewJob"
   );
 
   const [download, setDownload] = useState();

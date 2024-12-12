@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Calendar,
   CompletedProjects,
@@ -33,6 +33,7 @@ import { useCallback } from "react";
 export const ClientDashboard = () => {
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
+  const navigate = useNavigate();
 
   const { logout } = useLogout();
 

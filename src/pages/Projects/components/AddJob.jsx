@@ -24,10 +24,18 @@ export const AddJob = () => {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      job_name: "",
+      cloud_link: "",
+      date: "",
+      additional_info: "",
+      job_file: [],
+    },
+  });
 
   const { logout } = useLogout();
 
@@ -253,7 +261,10 @@ export const AddJob = () => {
                 >
                   Cancel
                 </button>
-                <button className="bg-primary rounded-lg px-[30px] py-[10px] text-light ">
+                <button
+                  className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400"
+                  disabled={!isDirty}
+                >
                   Submit
                 </button>
               </div>
