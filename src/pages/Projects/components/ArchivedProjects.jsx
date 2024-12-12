@@ -179,7 +179,7 @@ export const ArchivedProjects = () => {
               </tr>
             </thead>
             <tbody>
-              {processedProjectData.length > 0 ? (
+              {/* {processedProjectData.length > 0 ? (
                 processedProjectData.map((item) => (
                   <tr key={item.id} className="last:border-none">
                     <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
@@ -237,7 +237,7 @@ export const ArchivedProjects = () => {
                         >
                           View Jobs
                         </button>
-                        {/* <button
+                         <button
                           className="p-[5px] rounded-md bg-editBackground"
                           onClick={() =>
                             navigate(`/projectbooks/editProject/${item.id}`)
@@ -254,14 +254,14 @@ export const ArchivedProjects = () => {
                           }}
                         >
                           <TrashIcon />
-                        </button> */}
+                        </button> 
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <EmptyData />
-              )}
+                )) */}
+              {/* ) : (
+               )} */}
+              <EmptyData />
             </tbody>
           </table>
         </div>

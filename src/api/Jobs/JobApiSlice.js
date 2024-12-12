@@ -43,7 +43,7 @@ export const addJob = async (project_id, data) => {
 
 export const editJob = async (job_id, data) => {
   try {
-    const response = await instance.put(`/jobs/${job_id}`, data);
+    const response = await instance.post(`/jobs/${job_id}`, data);
     return response.data;
   } catch (error) {
     throw error;

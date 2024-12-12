@@ -2,10 +2,10 @@ import { createAxiosInstance } from "../../utils/Axios/Instance";
 
 const instance = createAxiosInstance();
 
-export const getClients = async (page, search) => {
+export const getClients = async (page, search, date) => {
   try {
     const response = await instance.get(
-      `/clients?page=${page}&search=${search}`
+      `/clients?page=${page}&name=${search}&start_date=${date}`
     );
     return response.data;
   } catch (error) {
@@ -24,7 +24,7 @@ export const getClientName = async () => {
 
 export const getUserById = async (id) => {
   try {
-    const response = await instance.get(`/users/${id}`);
+    const response = await instance.get(`/client/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -33,7 +33,7 @@ export const getUserById = async (id) => {
 
 export const editClient = async (id, data) => {
   try {
-    const response = await instance.put(`/users/${id}`, {
+    const response = await instance.put(`/client/${id}`, {
       name: data.fullname,
       email: data.email,
       username: data.username,

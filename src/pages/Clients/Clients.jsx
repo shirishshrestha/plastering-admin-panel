@@ -14,6 +14,7 @@ import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
 import useAuth from "../../hooks/useAuth";
 import { getTokenFromLocalStorage } from "../../utils/Storage/StorageUtils";
+import { useGetAllClients } from "./hooks/useGetAllClients";
 
 const tableHead = [
   "Id",
@@ -44,18 +45,14 @@ const Clients = () => {
     [searchParams]
   );
 
-  const { openDrawer } = useAuth();
+  const { data: UserData, isPending: UserPending } = useGetAllClients(
+    "clients",
+    currentPage,
+    searchItem,
+    registeredDate
+  );
 
-  const {
-    isPending: UserPending,
-    error,
-    data: UserData,
-  } = useQuery({
-    queryKey: ["clients", currentPage, searchItem],
-    queryFn: () => getClients(currentPage, searchItem),
-    enabled: location.pathname === "/clients",
-    staleTime: 6000,
-  });
+  const { openDrawer } = useAuth();
 
   const paginationProps = useMemo(
     () => ({
@@ -158,7 +155,9 @@ const Clients = () => {
                     </button>
                     <button
                       className="bg-[#649df9] flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
-                      onClick={() => navigate(`/projectbooks/projects/${user.id}`)}
+                      onClick={() =>
+                        navigate(`/projectbooks/projects/${user.id}`)
+                      }
                     >
                       Project Details
                     </button>
