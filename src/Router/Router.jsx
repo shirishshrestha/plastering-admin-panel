@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import {
+  ActiveProjects,
   AddJob,
   AddNewProject,
   AddProject,
@@ -92,7 +93,11 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "archivedProjects",
+            path: "activeProjects/:id",
+            element: <ActiveProjects />,
+          },
+          {
+            path: "archivedProjects/:id",
             element: <ArchivedProjects />,
           },
           {

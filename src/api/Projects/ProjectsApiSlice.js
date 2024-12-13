@@ -61,6 +61,28 @@ export const getProjectById = async (id) => {
   }
 };
 
+export const getArchivedProjects = async (page, search) => {
+  try {
+    const response = await instance.get(
+      `admin/projects/archived?page=${page}&search=${search}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getActiveProjects = async (page, search) => {
+  try {
+    const response = await instance.get(
+      `admin/projects/active?page=${page}&search=${search}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const deleteProject = async (id) => {
   try {
     const response = await instance.delete(`/projects/${id}`);

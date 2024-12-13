@@ -12,7 +12,7 @@ const App = () => {
         sidebarToggle={sidebarToggle}
         setSidebarToggle={setSidebarToggle}
       />
-      <div className="px-[2.5rem] w-full pb-[1rem]">
+      <div className="px-[2rem] w-full pb-[1rem]">
         <ProfileTab
           sidebarToggle={sidebarToggle}
           setSidebarToggle={setSidebarToggle}

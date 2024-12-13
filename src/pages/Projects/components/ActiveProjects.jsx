@@ -21,7 +21,7 @@ import {
   SearchInput,
 } from "../../../components";
 import useAuth from "../../../hooks/useAuth";
-import { useGetArchivedProjects } from "../hooks/query/useGetArchivedProjects";
+import { useGetActiveProjects } from "../hooks/query/useGetActiveProjects";
 
 const tableHead = [
   "P. Id",
@@ -35,7 +35,7 @@ const tableHead = [
   "Actions",
 ];
 
-export const ArchivedProjects = () => {
+export const ActiveProjects = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -56,10 +56,10 @@ export const ArchivedProjects = () => {
     [searchParams]
   );
 
-  const { data: ArchivedProjectsData, isPending: ArchivedProjectsPending } =
-    useGetArchivedProjects(
-      "archivedProjects",
-      "/projectbooks/archivedProjects",
+  const { data: ActiveProjectsData, isPending: ActiveProjectsPending } =
+    useGetActiveProjects(
+      "activeProjects",
+      "/projectbooks/activeProjects",
       currentPage,
       search
     );
@@ -67,11 +67,11 @@ export const ArchivedProjects = () => {
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
-      lastPage: ArchivedProjectsData?.last_page || 1,
+      lastPage: ActiveProjectsData?.last_page || 1,
       nextClick: () => updatePageNumber(currentPage + 1),
       prevClick: () => updatePageNumber(currentPage - 1),
     }),
-    [currentPage, ArchivedProjectsData]
+    [currentPage, ActiveProjectsData]
   );
 
   const { mutate: DeleteProject, isPending: deletePending } = useMutation({
@@ -107,7 +107,7 @@ export const ArchivedProjects = () => {
             deleteLoading={deletePending}
           />
         )}
-        {ArchivedProjectsPending && <Loader />}
+        {ActiveProjectsPending && <Loader />}
         <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
           <FilterDrawer.Status
             options={[
@@ -132,7 +132,7 @@ export const ArchivedProjects = () => {
               </Link>
             </div>
           </div>
-          <div className="flex justify-between items-center mb-[1rem]">
+          <div className="flex mb-[1rem] justify-between items-center">
             <div className="flex gap-[1rem]">
               <button
                 className="px-4 py-2 bg-white/80 font-[600] rounded-lg shadow-inner "
@@ -140,13 +140,13 @@ export const ArchivedProjects = () => {
               >
                 All Projects
               </button>
-              <button
-                className="px-4 py-2 font-[600] bg-white/80 rounded-lg shadow-inner"
-                onClick={() => navigate(`/projectbooks/activeProjects/${id}`)}
-              >
+              <button className="px-4 py-2 text-light bg-secondary font-[600] rounded-lg shadow-inner">
                 Active Projects
               </button>
-              <button className="px-4 py-2 font-[600] rounded-lg shadow-inner text-light bg-secondary">
+              <button
+                className="px-4 py-2 font-[600] rounded-lg shadow-inner"
+                onClick={() => navigate(`/projectbooks/archivedProjects/${id}`)}
+              >
                 Archived Projects
               </button>
             </div>
@@ -177,8 +177,8 @@ export const ArchivedProjects = () => {
               </tr>
             </thead>
             <tbody>
-              {ArchivedProjectsData?.projects?.data?.length > 0 ? (
-                ArchivedProjectsData?.projects?.data?.map((item) => (
+              {ActiveProjectsData?.projects?.data?.length > 0 ? (
+                ActiveProjectsData?.projects?.data?.map((item) => (
                   <tr key={item.id} className="last:border-none">
                     <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
                     <td className="py-[1rem] pl-[0.5rem]">
@@ -226,19 +226,8 @@ export const ArchivedProjects = () => {
                     </td>
                     <td className="py-[1rem]">{item.status}</td>
                     <td className="pl-4">{item.jobs.length}</td>
-
                     <td>
                       <div className="flex gap-[0.7rem]">
-                        <button
-                          className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
-                          onClick={() =>
-                            navigate(`/projectbooks/jobBook/${item.id}`, {
-                              replace: false,
-                            })
-                          }
-                        >
-                          View Jobs
-                        </button>
                         <button
                           className="p-[5px] rounded-md bg-editBackground"
                           onClick={() =>
@@ -248,14 +237,23 @@ export const ArchivedProjects = () => {
                           <EditIcon color="#8c62ff" />
                         </button>
                         <button
-                          className="p-[5px] rounded-md bg-deleteBackground"
+                          className="bg-accent flex gap-[0.5rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
+                          onClick={() =>
+                            navigate(`/projectbooks/jobBook/${item.id}`)
+                          }
+                        >
+                          View Jobs
+                        </button>
+
+                        <button
+                          className="py-[5px] px-[10px] rounded-md bg-delete/90 text-light text-[0.8rem] font-semibold"
                           onClick={() => {
-                            setDeleteConfirationShow(true);
+                            handleCancelToggle();
                             setProjectName(item.name);
                             setProjectId(item.id);
                           }}
                         >
-                          <TrashIcon />
+                          Cancel
                         </button>
                       </div>
                     </td>
@@ -267,7 +265,7 @@ export const ArchivedProjects = () => {
             </tbody>
           </table>
         </div>
-        {ArchivedProjectsData?.projects?.last_page > 1 && (
+        {ActiveProjectsData?.projects?.last_page > 1 && (
           <div className="my-[1rem] flex items-center justify-end">
             <Pagination {...paginationProps} />
           </div>

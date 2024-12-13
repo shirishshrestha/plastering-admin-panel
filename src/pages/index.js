@@ -22,6 +22,7 @@ import ViewJob from "./Projects/components/ViewJob";
 import { BusinessProjects } from "./Projects/BusinessProjects";
 import ProfilePage from "./Profile/ProfilePage";
 import { AddNewProject } from "./Projects/AddNewProject";
+import { ActiveProjects } from "./Projects/components/ActiveProjects";
 
 export {
   Dashboard,
@@ -48,4 +49,5 @@ export {
   BusinessProjects,
   ProfilePage,
   AddNewProject,
+  ActiveProjects,
 };

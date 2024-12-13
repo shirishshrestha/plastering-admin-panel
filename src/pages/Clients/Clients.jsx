@@ -70,8 +70,6 @@ const Clients = () => {
     setSearchParams(updatedParams);
   };
 
-  const processedUserData = UserData?.clients?.data || [];
-
   if (location.pathname !== "/clients") {
     return <Outlet />;
   }
@@ -114,8 +112,8 @@ const Clients = () => {
           </tr>
         </thead>
         <tbody className="">
-          {processedUserData.length > 0 ? (
-            processedUserData.map((user) => (
+          {UserData?.clients?.data?.length > 0 ? (
+            UserData?.clients?.data?.map((user) => (
               <tr key={user.id} className=" last:border-none  ">
                 <td className="py-[1rem] pl-[1rem] pr-[1rem]">{user.id}</td>
                 <td className="py-[1rem] pl-[0.5rem]">

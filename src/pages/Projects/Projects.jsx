@@ -141,11 +141,17 @@ const Projects = () => {
           <div className="flex justify-between mb-[1rem] items-center">
             <div className="flex gap-[1rem]">
               <button className="px-4 py-2 text-light bg-secondary font-[600]  rounded-lg shadow-inner ">
+                All Projects
+              </button>
+              <button
+                className="px-4 py-2  bg-white/80 font-[600]  rounded-lg shadow-inner"
+                onClick={() => navigate(`/projectbooks/activeProjects/${id}`)}
+              >
                 Active Projects
               </button>
               <button
                 className="px-4 py-2 bg-white/80 font-[600]  rounded-lg shadow-inner"
-                onClick={() => navigate(`/projectbooks/archivedProjects`)}
+                onClick={() => navigate(`/projectbooks/archivedProjects/${id}`)}
               >
                 Archived Projects
               </button>
@@ -226,7 +232,7 @@ const Projects = () => {
                     </td>
 
                     <td className="py-[1rem]">{item.status}</td>
-                    <td className="pl-4">0</td>
+                    <td className="pl-4">{item.jobs.length}</td>
 
                     <td>
                       <div className="flex gap-[0.7rem]">
@@ -245,17 +251,6 @@ const Projects = () => {
                           }
                         >
                           View Jobs
-                        </button>
-
-                        <button
-                          className="py-[5px] px-[10px] rounded-md bg-delete/90 text-light text-[0.8rem] font-semibold"
-                          onClick={() => {
-                            handleCancelToggle();
-                            setProjectName(item.name);
-                            setProjectId(item.id);
-                          }}
-                        >
-                          Cancel
                         </button>
                       </div>
                     </td>
