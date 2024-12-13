@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export const useAddJob = (key, project_id, reset) => {
   const navigate = useNavigate();
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data) => addJob(project_id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(key);
@@ -21,5 +21,5 @@ export const useAddJob = (key, project_id, reset) => {
         error.response.data.error || "Error adding job! Please try again"
       ),
   });
-  return { mutate, isPending };
+  return { mutate, isPending, isSuccess };
 };

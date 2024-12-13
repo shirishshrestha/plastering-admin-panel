@@ -8,7 +8,6 @@ import { EditIcon, PlusIcon } from "../../assets/icons/SvgIcons";
 import {
   CancelProjectConfirmation,
   CustomToastContainer,
-  DeleteConfirmation,
   EmptyData,
   FilterDrawer,
   Loader,
@@ -33,6 +32,7 @@ const tableHead = [
   "Additional Info",
   "Start Date",
   "Status",
+  "Total Jobs",
   "Actions",
 ];
 
@@ -44,7 +44,6 @@ const Projects = () => {
 
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
-  const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
   const [cancelConfirmation, handleCancelToggle] = useToggle();
 
   const { openDrawer } = useAuth();
@@ -106,7 +105,7 @@ const Projects = () => {
   };
 
   const handleProceedClick = () => {
-    DeleteProject();
+    // DeleteProject();
   };
 
   return (
@@ -211,9 +210,9 @@ const Projects = () => {
                     <td className="py-[1rem]">{item.project_type}</td>
                     <td className="py-[1rem]">
                       {item.additional_requirements ? (
-                        item.additional_requirements.length > 25 ? (
+                        item.additional_requirements.length > 15 ? (
                           <Tooltip content={item.additional_requirements}>
-                            {`${item.additional_requirements.slice(0, 25)}...`}
+                            {`${item.additional_requirements.slice(0, 15)}...`}
                           </Tooltip>
                         ) : (
                           item.additional_requirements
@@ -225,7 +224,10 @@ const Projects = () => {
                     <td className="py-[1rem]">
                       {item.created_at.split("T")[0]}
                     </td>
+
                     <td className="py-[1rem]">{item.status}</td>
+                    <td className="pl-4">0</td>
+
                     <td>
                       <div className="flex gap-[0.7rem]">
                         <button
@@ -237,7 +239,7 @@ const Projects = () => {
                           <EditIcon color="#8c62ff" />
                         </button>
                         <button
-                          className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                          className="bg-accent flex gap-[0.5rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
                           onClick={() =>
                             navigate(`/projectbooks/jobBook/${item.id}`)
                           }
@@ -246,7 +248,7 @@ const Projects = () => {
                         </button>
 
                         <button
-                          className="py-[5px] px-[1rem] rounded-md bg-delete/90 text-light text-[0.9rem] font-semibold"
+                          className="py-[5px] px-[10px] rounded-md bg-delete/90 text-light text-[0.8rem] font-semibold"
                           onClick={() => {
                             handleCancelToggle();
                             setProjectName(item.name);

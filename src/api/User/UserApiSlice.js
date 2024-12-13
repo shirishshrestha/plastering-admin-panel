@@ -13,9 +13,9 @@ export const getClients = async (page, search, date) => {
   }
 };
 
-export const getClientName = async () => {
+export const getUsers = async () => {
   try {
-    const response = await instance.get(`/clients/name`);
+    const response = await instance.get("/register");
     return response.data;
   } catch (error) {
     throw error;

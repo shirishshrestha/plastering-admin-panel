@@ -6,6 +6,7 @@ import {
 } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
+  EmptyData,
   LogoLoader,
   LogoutConfirmation,
 } from "../../components";
@@ -136,7 +137,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {TotalProjectStatusData?.total}
+                  {TotalProjectStatusData?.total || 0}
                 </p>
                 <p className="text-[12px]">
                   All running and completed projects
@@ -152,7 +153,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {TotalProjectStatusData?.completed}
+                  {TotalProjectStatusData?.completed || 0}
                 </p>
                 <p className="text-[12px]">Projects successfully completed</p>
               </div>
@@ -166,7 +167,7 @@ export const Dashboard = () => {
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
-                  {TotalProjectStatusData?.pending}
+                  {TotalProjectStatusData?.pending || 0}
                 </p>
                 <p className="text-[12px]">Ongoing projects</p>
               </div>
@@ -178,15 +179,15 @@ export const Dashboard = () => {
             <h4 className="font-bold text-start pb-[1.2rem]">Project Status</h4>
 
             <div className="max-w-[340px] ">
-              {TotalProjectStatusData?.total_projects < 1 ? (
-                <h4>No data available</h4>
-              ) : (
+              {TotalProjectStatusData?.total > 0 ? (
                 <DoughnutChart
                   dealData={doughnutData}
                   datasets={doughnutDatasets}
                   legendPosition={"bottom"}
                   legendTextColor={"#fff"}
                 />
+              ) : (
+                <h4>No data available</h4>
               )}
             </div>
           </div>
@@ -209,56 +210,62 @@ export const Dashboard = () => {
               </tr>
             </thead>
             <tbody className="">
-              {ProjectData?.slice(0, 4).map((item) => (
-                <tr key={item.id} className=" last:border-none  ">
-                  <td className="py-[1rem] pl-[0.5rem]">
-                    {item.project_book.title ? (
-                      item.project_book.title.length > 25 ? (
-                        <Tooltip
-                          content={item.project_book.title}
-                        >{`${item.project_book.title.slice(
+              {ProjectData?.length < 1 ? (
+                <EmptyData />
+              ) : (
+                ProjectData?.slice(0, 4).map((item) => (
+                  <tr key={item.id} className=" last:border-none  ">
+                    <td className="py-[1rem] pl-[0.5rem]">
+                      {item.project_book.title ? (
+                        item.project_book.title.length > 25 ? (
+                          <Tooltip
+                            content={item.project_book.title}
+                          >{`${item.project_book.title.slice(
+                            0,
+                            25
+                          )}...`}</Tooltip>
+                        ) : (
+                          item.project_book.title
+                        )
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td className="py-[1rem] pl-[0.5rem]">
+                      {item.name ? (
+                        item.name.length > 25 ? (
+                          <Tooltip content={item.name}>{`${item.name.slice(
+                            0,
+                            25
+                          )}...`}</Tooltip>
+                        ) : (
+                          item.name
+                        )
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td className="py-[1rem]">
+                      {item.address.length > 30 ? (
+                        <Tooltip content={item.address}>{`${item.address.slice(
                           0,
-                          25
+                          30
                         )}...`}</Tooltip>
                       ) : (
-                        item.project_book.title
-                      )
-                    ) : (
-                      "-"
-                    )}
-                  </td>
+                        item.address
+                      )}
+                    </td>
+                    <td className="py-[1rem]">{item.project_type}</td>
+                    <td className="py-[1rem]">
+                      {item.created_at.split("T")[0]}
+                    </td>
 
-                  <td className="py-[1rem] pl-[0.5rem]">
-                    {item.name ? (
-                      item.name.length > 25 ? (
-                        <Tooltip content={item.name}>{`${item.name.slice(
-                          0,
-                          25
-                        )}...`}</Tooltip>
-                      ) : (
-                        item.name
-                      )
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-
-                  <td className="py-[1rem]">
-                    {item.address.length > 30 ? (
-                      <Tooltip content={item.address}>{`${item.address.slice(
-                        0,
-                        30
-                      )}...`}</Tooltip>
-                    ) : (
-                      item.address
-                    )}
-                  </td>
-                  <td className="py-[1rem]">{item.project_type}</td>
-                  <td className="py-[1rem]">{item.created_at.split("T")[0]}</td>
-
-                  <td className="py-[1rem] ">{item.status}</td>
-                </tr>
-              ))}
+                    <td className="py-[1rem] ">{item.status}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
           <div className="mt-[1rem] ">

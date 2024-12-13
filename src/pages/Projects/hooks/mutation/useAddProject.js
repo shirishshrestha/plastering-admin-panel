@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export const useAddProject = (reset, key, user_id) => {
   const navigate = useNavigate();
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data) => addProject(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries(key);
@@ -26,5 +26,5 @@ export const useAddProject = (reset, key, user_id) => {
     },
   });
 
-  return { mutate, isPending };
+  return { mutate, isPending, isSuccess };
 };

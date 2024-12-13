@@ -25,6 +25,7 @@ export const AddNewProject = () => {
     reset,
   } = useForm({
     defaultValues: {
+      registered_client: "select",
       project_name: "",
       address: "",
       project_type: "",
@@ -51,11 +52,11 @@ export const AddNewProject = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
-  const { mutate: AddProject, isPending: addProjectPending } = useAddProject(
-    reset,
-    "userTotalProjects",
-    userId
-  );
+  const {
+    mutate: AddProject,
+    isPending: addProjectPending,
+    isSuccess: AddProjectSuccess,
+  } = useAddProject(reset, "userTotalProjects", userId);
 
   const addProjectForm = (data) => {
     setUserId(data.registered_client);
@@ -285,15 +286,16 @@ export const AddNewProject = () => {
               </div>
               <div className="flex gap-3 justify-end items-center mt-4">
                 <button
-                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
+                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400 "
                   type="button"
                   onClick={() => navigate(-1)}
+                  disabled={AddProjectSuccess}
                 >
                   Cancel
                 </button>
                 <button
                   className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400 "
-                  disabled={!isDirty}
+                  disabled={!isDirty || AddProjectSuccess}
                 >
                   Submit
                 </button>

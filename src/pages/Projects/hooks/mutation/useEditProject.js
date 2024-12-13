@@ -6,7 +6,7 @@ import { queryClient } from "../../../../utils/Query/Query";
 
 export const useEditProject = (key = "userTotalProjects", id, user_id) => {
   const navigate = useNavigate();
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending, error, isSuccess } = useMutation({
     mutationFn: (data) => editProject(data, id),
     onSuccess: () => {
       queryClient.invalidateQueries(key);
@@ -24,5 +24,6 @@ export const useEditProject = (key = "userTotalProjects", id, user_id) => {
     mutate,
     isPending,
     error,
+    isSuccess,
   };
 };

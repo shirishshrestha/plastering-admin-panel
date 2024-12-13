@@ -235,7 +235,7 @@ export const ProjectBooks = () => {
                 modules={[EffectCards]}
                 className="mySwiper"
               >
-                {RecentProjectBooks?.length < 1 ? (
+                {RecentProjectBooks?.data?.length < 1 ? (
                   <SwiperSlide>
                     <div className="flex flex-col p-4">
                       <p className="text-[1.2rem]">No recent project books</p>

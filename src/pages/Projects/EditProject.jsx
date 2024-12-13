@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { notifyError, notifySuccess } from "../../components/Toast/Toast";
 import {
   EditInput,
   Loader,
@@ -9,16 +8,9 @@ import {
 } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useCallback, useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  editProject,
-  getProjectById,
-} from "../../api/Projects/ProjectsApiSlice";
-import { queryClient } from "../../utils/Query/Query";
+import { useCallback, useEffect } from "react";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
-import { Document, TrashIcon } from "../../assets/icons/SvgIcons";
 import { useGetSingleProject } from "./hooks/query/useGetSingleProject";
 import { useEditProject } from "./hooks/mutation/useEditProject";
 
@@ -63,7 +55,11 @@ export const EditProject = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
-  const { mutate: EditProject, isPending: editProjectPending } = useEditProject(
+  const {
+    mutate: EditProject,
+    isPending: editProjectPending,
+    isSuccess: EditProjectSuccess,
+  } = useEditProject(
     "userTotalProjects",
     id,
     SingleProjectData?.project_book.user.id
@@ -208,15 +204,16 @@ export const EditProject = () => {
             <div className="w-full  col-span-2  ">
               <div className="flex gap-3 justify-end items-center mt-1">
                 <button
-                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
+                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:cursor-not-allowed "
                   type="button"
+                  disabled={EditProjectSuccess}
                   onClick={handleProjectCancel}
                 >
                   Cancel
                 </button>
                 <button
                   className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:cursor-not-allowed "
-                  disabled={!isDirty}
+                  disabled={!isDirty || EditProjectSuccess}
                 >
                   Submit
                 </button>
