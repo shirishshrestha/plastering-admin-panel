@@ -124,7 +124,9 @@ export const ActiveProjects = () => {
               List of Projects
             </h2>
             <div className="flex gap-[1rem]">
-              <Link to="/projectbooks/addProject">
+              <Link
+                to={`/projectbooks/addProject/${ActiveProjectsData?.user_id}`}
+              >
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}
                   <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
@@ -144,7 +146,7 @@ export const ActiveProjects = () => {
                 Active Projects
               </button>
               <button
-                className="px-4 py-2 font-[600] rounded-lg shadow-inner"
+                className="px-4 py-2 bg-white/80 font-[600] rounded-lg shadow-inner"
                 onClick={() => navigate(`/projectbooks/archivedProjects/${id}`)}
               >
                 Archived Projects
@@ -177,8 +179,8 @@ export const ActiveProjects = () => {
               </tr>
             </thead>
             <tbody>
-              {ActiveProjectsData?.projects?.data?.length > 0 ? (
-                ActiveProjectsData?.projects?.data?.map((item) => (
+              {ActiveProjectsData?.active_projects?.data?.length > 0 ? (
+                ActiveProjectsData?.active_projects?.data?.map((item) => (
                   <tr key={item.id} className="last:border-none">
                     <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
                     <td className="py-[1rem] pl-[0.5rem]">

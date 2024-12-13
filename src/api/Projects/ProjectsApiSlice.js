@@ -61,10 +61,10 @@ export const getProjectById = async (id) => {
   }
 };
 
-export const getArchivedProjects = async (page, search) => {
+export const getArchivedProjects = async (user_id, page, search) => {
   try {
     const response = await instance.get(
-      `admin/projects/archived?page=${page}&search=${search}`
+      `user/${user_id}/projects/archived?page=${page}&search=${search}`
     );
     return response.data;
   } catch (error) {
@@ -72,10 +72,10 @@ export const getArchivedProjects = async (page, search) => {
   }
 };
 
-export const getActiveProjects = async (page, search) => {
+export const getActiveProjects = async (user_id, page, search) => {
   try {
     const response = await instance.get(
-      `admin/projects/active?page=${page}&search=${search}`
+      `user/${user_id}/projects/active?page=${page}&search=${search}`
     );
     return response.data;
   } catch (error) {

@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { getClients } from "../../api/User/UserApiSlice";
+import { useMemo } from "react";
 import { FilterDrawer, EmptyData, Loader, Pagination } from "../../components";
 import {
   Link,
@@ -13,7 +11,6 @@ import { SearchInput } from "../../components/Input/SearchInput";
 import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
 import useAuth from "../../hooks/useAuth";
-import { getTokenFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import { useGetAllClients } from "./hooks/useGetAllClients";
 
 const tableHead = [

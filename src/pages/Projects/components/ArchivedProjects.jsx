@@ -124,7 +124,9 @@ export const ArchivedProjects = () => {
               List of Projects
             </h2>
             <div className="flex gap-[1rem]">
-              <Link to="/projectbooks/addProject">
+              <Link
+                to={`/projectbooks/addProject/${ArchivedProjects?.user_id}`}
+              >
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Project{" "}
                   <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
@@ -177,8 +179,8 @@ export const ArchivedProjects = () => {
               </tr>
             </thead>
             <tbody>
-              {ArchivedProjectsData?.projects?.data?.length > 0 ? (
-                ArchivedProjectsData?.projects?.data?.map((item) => (
+              {ArchivedProjectsData?.archived_projects?.data?.length > 0 ? (
+                ArchivedProjectsData?.archived_projects?.data?.map((item) => (
                   <tr key={item.id} className="last:border-none">
                     <td className="py-[1rem] pl-[0.5rem]">{item.id}</td>
                     <td className="py-[1rem] pl-[0.5rem]">
