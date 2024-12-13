@@ -52,11 +52,11 @@ export const AddJob = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
-  const { mutate: AddJob, isPending: AddJobPending } = useAddJob(
-    "userJobs",
-    id,
-    reset
-  );
+  const {
+    mutate: AddJob,
+    isPending: AddJobPending,
+    isSuccess: AddJobSuccess,
+  } = useAddJob("userJobs", id, reset);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -255,7 +255,8 @@ export const AddJob = () => {
             <div className="w-full  col-span-2  ">
               <div className="flex gap-3 justify-end items-center mt-2">
                 <button
-                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
+                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400"
+                  disabled={AddJobSuccess}
                   type="button"
                   onClick={() => navigate(-1)}
                 >
@@ -263,7 +264,7 @@ export const AddJob = () => {
                 </button>
                 <button
                   className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400"
-                  disabled={!isDirty}
+                  disabled={!isDirty || AddJobSuccess}
                 >
                   Submit
                 </button>

@@ -333,8 +333,9 @@ export const EditJob = () => {
             <div className="w-full  col-span-2  ">
               <div className="flex gap-3 justify-end items-center mt-4">
                 <button
-                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
+                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400 disabled:cursor-not-allowed"
                   type="button"
+                  disabled={EditJobSuccess}
                   onClick={() => navigate(-1)}
                 >
                   Cancel

@@ -1,6 +1,5 @@
 import { createAxiosInstance } from "../../utils/Axios/Instance";
 
-
 const instance = createAxiosInstance();
 
 export const signupClient = async (data) => {
@@ -12,15 +11,6 @@ export const signupClient = async (data) => {
       username: data.username,
       password_confirmation: data.retype_password,
     });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getUsers = async () => {
-  try {
-    const response = await instance.get("/register");
     return response.data;
   } catch (error) {
     throw error;

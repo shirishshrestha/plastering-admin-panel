@@ -6,14 +6,9 @@ import {
   Model,
   CustomToastContainer,
 } from "../../components";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import {
-  getIdFromLocalStorage,
-  getRoleFromLocalStorage,
-} from "../../utils/Storage/StorageUtils";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../api/Register/RegisterApiSlice";
+import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
@@ -55,21 +50,11 @@ export const AddProject = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
-  const { mutate: AddProject, isPending: addProjectPending } = useAddProject(
-    reset,
-    "userTotalProjects",
-    user_id
-  );
-
   const {
-    isPending: userPending,
-    error,
-    data: RegisteredClients,
-  } = useQuery({
-    queryKey: ["Registered Clients"],
-    queryFn: getUsers,
-    enabled: role === "admin",
-  });
+    mutate: AddProject,
+    isPending: addProjectPending,
+    isSuccess: AddProjectSuccess,
+  } = useAddProject(reset, "userTotalProjects", user_id);
 
   const addProjectForm = (data) => {
     const formData = new FormData();
@@ -252,15 +237,16 @@ export const AddProject = () => {
               </div>
               <div className="flex gap-3 justify-end items-center mt-4">
                 <button
-                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
+                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400 "
                   type="button"
+                  disabled={AddProjectSuccess}
                   onClick={() => navigate(-1)}
                 >
                   Cancel
                 </button>
                 <button
                   className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:cursor-not-allowed disabled:bg-gray-400 "
-                  disabled={!isDirty}
+                  disabled={!isDirty || AddProjectSuccess}
                 >
                   Submit
                 </button>
