@@ -11,6 +11,7 @@ import {
   Loader,
   CustomToastContainer,
   SearchInput,
+  FilterDrawer,
 } from "../../components";
 import {
   deleteEstimator,
@@ -22,6 +23,7 @@ import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/Delet
 import { queryClient } from "../../utils/Query/Query";
 import { Tooltip } from "flowbite-react";
 import { useToggle } from "../../hooks/useToggle";
+import useAuth from "../../hooks/useAuth";
 
 const tableHead = [
   "Id",
@@ -35,6 +37,8 @@ const tableHead = [
 const BusinessDirectory = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { openDrawer } = useAuth();
 
   const [estimatorName, setEstimatorName] = useState("");
   const [estimatorId, setEstimatorId] = useState();
@@ -80,14 +84,28 @@ const BusinessDirectory = () => {
               deleteLoading={DeleteEstimator.isPending}
             />
           )}
-          <div className="mb-2 flex justify-between">
+          <FilterDrawer
+            setSearchParams={setSearchParams}
+            dateName={"registered date"}
+          >
+            <FilterDrawer.RegisteredDate />
+          </FilterDrawer>
+          <div className="mb-[1rem] flex items-center justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">
               List of Businesses
             </h2>
-            <SearchInput
-              setSearchParams={setSearchParams}
-              placeholder={"Search"}
-            />
+            <div className="flex gap-[1rem] items-end">
+              <SearchInput
+                setSearchParams={setSearchParams}
+                placeholder={"Search"}
+              />
+              <button
+                className="bg-highlight/10 rounded-lg text-highlight text-[14px] py-[0.3rem] px-[0.8rem] border border-highlight focus:outline-none h-fit"
+                onClick={openDrawer}
+              >
+                Filter
+              </button>
+            </div>
           </div>
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden ">
             <thead className="bg-primary text-white  ">
