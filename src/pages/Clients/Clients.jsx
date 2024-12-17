@@ -11,7 +11,7 @@ import { SearchInput } from "../../components/Input/SearchInput";
 import { EditIcon } from "../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
 import useAuth from "../../hooks/useAuth";
-import { useGetAllClients } from "./hooks/useGetAllClients";
+import { useGetAllClients } from "./hooks/query/useGetAllClients";
 
 const tableHead = [
   "Id",

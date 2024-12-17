@@ -9,13 +9,15 @@ export const useGetUserTotalProjects = (
   page = 1,
   search = "",
   projectType = "",
-  date = ""
+  date = "",
+  status = ""
 ) => {
   const location = useLocation();
   const { data, error, isPending } = useQuery({
-    queryKey: [key, id, page, search, projectType, date],
-    queryFn: () => getUserTotalProjects(id, page, search, projectType, date),
-    enabled: location.pathname.includes(enabledPath),
+    queryKey: [key, id, page, search, projectType, date, status],
+    queryFn: () =>
+      getUserTotalProjects(id, page, search, projectType, date, status),
+    enabled: location.pathname.startsWith(enabledPath),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getClients } from "../../../api/User/UserApiSlice";
+import { getClients } from "../../../../api/User/UserApiSlice";
 
 export const useGetAllClients = (
   key = "clients",

@@ -4,7 +4,12 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { EditIcon, PlusIcon, TrashIcon } from "../../../assets/icons/SvgIcons";
+import {
+  EditIcon,
+  GoBack,
+  PlusIcon,
+  TrashIcon,
+} from "../../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -56,12 +61,30 @@ export const ArchivedProjects = () => {
     [searchParams]
   );
 
+  const status = useMemo(
+    () => searchParams.get("status") || "",
+    [searchParams]
+  );
+
+  const projectType = useMemo(
+    () => searchParams.get("project_type") || "",
+    [searchParams]
+  );
+
+  const date = useMemo(
+    () => searchParams.get("created_date") || "",
+    [searchParams]
+  );
+
   const { data: ArchivedProjectsData, isPending: ArchivedProjectsPending } =
     useGetArchivedProjects(
       "archivedProjects",
       "/projectbooks/archivedProjects",
       currentPage,
-      search
+      search,
+      status,
+      projectType,
+      date
     );
 
   const paginationProps = useMemo(
@@ -119,7 +142,16 @@ export const ArchivedProjects = () => {
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
         <div>
-          <div className="flex items-center pb-[0.5rem] justify-between">
+          <div
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+            onClick={() => {
+              navigate("/projectbooks");
+            }}
+          >
+            <GoBack />
+            Go Back
+          </div>
+          <div className="flex items-center py-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">
               List of Projects
             </h2>
@@ -212,9 +244,9 @@ export const ArchivedProjects = () => {
                     <td className="py-[1rem]">{item.project_type}</td>
                     <td className="py-[1rem]">
                       {item.additional_requirements ? (
-                        item.additional_requirements.length > 15 ? (
+                        item.additional_requirements.length > 20 ? (
                           <Tooltip content={item.additional_requirements}>
-                            {`${item.additional_requirements.slice(0, 15)}...`}
+                            {`${item.additional_requirements.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
                           item.additional_requirements

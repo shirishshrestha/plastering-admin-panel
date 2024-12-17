@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../../api/User/UserApiSlice";
+import { getUsers } from "../../../../api/User/UserApiSlice";
 
 export const useGetClientsName = (key = "clientsName") => {
   const { data, error, isPending } = useQuery({

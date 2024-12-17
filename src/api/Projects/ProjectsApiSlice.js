@@ -29,11 +29,12 @@ export const getUserTotalProjects = async (
   page,
   search,
   projectType,
-  date
+  date,
+  status
 ) => {
   try {
     const response = await instance.get(
-      `/project-book-user/${id}/projects?page=${page}&project_type=${projectType}&start_date=${date}&project_name=${search}`
+      `/project-book-user/${id}/projects?page=${page}&project_type=${projectType}&start_date=${date}&project_name=${search}&status=${status}`
     );
     return response.data;
   } catch (error) {
@@ -61,10 +62,17 @@ export const getProjectById = async (id) => {
   }
 };
 
-export const getArchivedProjects = async (user_id, page, search) => {
+export const getArchivedProjects = async (
+  user_id,
+  page,
+  search,
+  status,
+  projectType,
+  date
+) => {
   try {
     const response = await instance.get(
-      `user/${user_id}/projects/archived?page=${page}&search=${search}`
+      `user/${user_id}/projects/archived?page=${page}&name=${search}&status=${status}&project_type=${projectType}&start_date=${date}`
     );
     return response.data;
   } catch (error) {
@@ -72,11 +80,35 @@ export const getArchivedProjects = async (user_id, page, search) => {
   }
 };
 
-export const getActiveProjects = async (user_id, page, search) => {
+export const getActiveProjects = async (
+  user_id,
+  page,
+  search,
+  projectType,
+  date
+) => {
   try {
     const response = await instance.get(
-      `user/${user_id}/projects/active?page=${page}&search=${search}`
+      `user/${user_id}/projects/active?page=${page}&project_name=${search}&project_type=${projectType}&start_date=${date}`
     );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getClientActiveProjects = async () => {
+  try {
+    const response = await instance.get(`/projects/client/active`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getClientArchivedProjects = async () => {
+  try {
+    const response = await instance.get(`/projects/client/archived`);
     return response.data;
   } catch (error) {
     throw error;
@@ -94,11 +126,7 @@ export const deleteProject = async (id) => {
 
 export const addProject = async (project) => {
   try {
-    const response = await instance.post("/projects", project, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await instance.post("/projects", project);
     return response.data;
   } catch (error) {
     throw error;
