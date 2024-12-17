@@ -16,7 +16,6 @@ import { useEditProject } from "./hooks/mutation/useEditProject";
 
 export const EditProject = () => {
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   const { data: SingleProjectData, isPending: viewProjectPending } =

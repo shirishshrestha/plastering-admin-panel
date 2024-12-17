@@ -23,6 +23,8 @@ import { BusinessProjects } from "./Projects/BusinessProjects";
 import ProfilePage from "./Profile/ProfilePage";
 import { AddNewProject } from "./Projects/AddNewProject";
 import { ActiveProjects } from "./Projects/components/ActiveProjects";
+import { ActiveClientProjects } from "./Clients/ActiveClientProjects";
+import { ArchivedClientProjects } from "./Clients/ArchivedClientProjects";
 
 export {
   Dashboard,
@@ -50,4 +52,6 @@ export {
   ProfilePage,
   AddNewProject,
   ActiveProjects,
+  ActiveClientProjects,
+  ArchivedClientProjects,
 };

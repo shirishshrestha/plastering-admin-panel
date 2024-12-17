@@ -4,7 +4,12 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { EditIcon, PlusIcon, TrashIcon } from "../../../assets/icons/SvgIcons";
+import {
+  EditIcon,
+  GoBack,
+  PlusIcon,
+  TrashIcon,
+} from "../../../assets/icons/SvgIcons";
 import { Tooltip } from "flowbite-react";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -12,6 +17,7 @@ import { deleteProject } from "../../../api/Projects/ProjectsApiSlice";
 import { notifyError, notifySuccess } from "../../../components/Toast/Toast";
 import { queryClient } from "../../../utils/Query/Query";
 import {
+  CancelProjectConfirmation,
   CustomToastContainer,
   DeleteConfirmation,
   EmptyData,
@@ -22,6 +28,7 @@ import {
 } from "../../../components";
 import useAuth from "../../../hooks/useAuth";
 import { useGetActiveProjects } from "../hooks/query/useGetActiveProjects";
+import { useToggle } from "../../../hooks/useToggle";
 
 const tableHead = [
   "P. Id",
@@ -40,6 +47,8 @@ export const ActiveProjects = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [cancelConfirmation, handleCancelToggle] = useToggle();
+
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
@@ -56,12 +65,21 @@ export const ActiveProjects = () => {
     [searchParams]
   );
 
+  const projectType = useMemo(
+    () => searchParams.get("project_type") || "",
+    [searchParams]
+  );
+
+  const date = useMemo(() => searchParams.get("date") || "", [searchParams]);
+
   const { data: ActiveProjectsData, isPending: ActiveProjectsPending } =
     useGetActiveProjects(
       "activeProjects",
       "/projectbooks/activeProjects",
       currentPage,
-      search
+      search,
+      projectType,
+      date
     );
 
   const paginationProps = useMemo(
@@ -77,6 +95,7 @@ export const ActiveProjects = () => {
   const { mutate: DeleteProject, isPending: deletePending } = useMutation({
     mutationFn: () => deleteProject(projectId),
     onSuccess: () => {
+      handleCancelToggle();
       queryClient.invalidateQueries("projects");
       notifySuccess("Project deleted successfully");
       setDeleteConfirationShow(false);
@@ -93,33 +112,37 @@ export const ActiveProjects = () => {
   };
 
   const handleProceedClick = () => {
-    DeleteProject();
+    // DeleteProject();
+    console.log("Cancel Project");
   };
 
   return (
     <>
       <section className="mt-[.5rem] pb-[1rem]">
-        {deleteConfirationShow && (
-          <DeleteConfirmation
-            deleteName={projectName}
-            setDeleteConfirationShow={setDeleteConfirationShow}
+        {cancelConfirmation && (
+          <CancelProjectConfirmation
+            projectName={projectName}
+            handleCancelToggle={handleCancelToggle}
             handleProceedClick={handleProceedClick}
-            deleteLoading={deletePending}
+            cancelLoading={deletePending}
           />
         )}
         {ActiveProjectsPending && <Loader />}
         <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
-          <FilterDrawer.Status
-            options={[
-              { value: "completed", label: "Completed" },
-              { value: "cancelled", label: "Cancelled" },
-            ]}
-          />
           <FilterDrawer.ProjectType />
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
         <div>
-          <div className="flex items-center pb-[0.5rem] justify-between">
+          <div
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+            onClick={() => {
+              navigate("/projectbooks");
+            }}
+          >
+            <GoBack />
+            Go Back
+          </div>
+          <div className="flex items-center py-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">
               List of Projects
             </h2>
@@ -212,9 +235,9 @@ export const ActiveProjects = () => {
                     <td className="py-[1rem]">{item.project_type}</td>
                     <td className="py-[1rem]">
                       {item.additional_requirements ? (
-                        item.additional_requirements.length > 15 ? (
+                        item.additional_requirements.length > 20 ? (
                           <Tooltip content={item.additional_requirements}>
-                            {`${item.additional_requirements.slice(0, 15)}...`}
+                            {`${item.additional_requirements.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
                           item.additional_requirements

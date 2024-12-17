@@ -7,17 +7,16 @@ import {
   Users,
 } from "../../assets/icons/SvgIcons";
 import { NavLink } from "react-router-dom";
-import { LogoutComp } from "../../utils/Logout/Logout";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
-export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
+export default function Sidebar({ sidebarToggle }) {
   const [showText, setShowText] = useState(false);
 
   const role = getRoleFromLocalStorage();
 
   useEffect(() => {
     if (sidebarToggle) {
-      const timer = setTimeout(() => setShowText(true), 300);
+      const timer = setTimeout(() => setShowText(true), 200);
       return () => clearTimeout(timer);
     } else {
       setShowText(false);
@@ -62,6 +61,29 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
             </span>
           </NavLink>
 
+          {role === "admin" && (
+            <NavLink
+              to="/clients"
+              className={({ isActive }) =>
+                `${
+                  isActive ? "bg-light text-primary sidebar-menu" : ""
+                } flex items-center gap-[0.5rem] rounded-lg p-[0.7rem] ${
+                  sidebarToggle ? "w-full" : "w-fit"
+                } `
+              }
+              title="Clients"
+            >
+              <Users />
+              <span
+                className={`transition-all duration-300 w-fit ${
+                  showText ? "block" : "hidden"
+                }`}
+              >
+                Clients
+              </span>
+            </NavLink>
+          )}
+
           {role === "estimator" ? (
             <NavLink
               to="/assignedProjects"
@@ -85,7 +107,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
             </NavLink>
           ) : (
             <NavLink
-              to="/projectbooks"
+              to={role === "admin" ? "/projectbooks" : "/clientProjects"}
               className={({ isActive }) =>
                 `${
                   isActive ? "bg-light text-primary sidebar-menu " : ""
@@ -105,28 +127,7 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
               </span>
             </NavLink>
           )}
-          {role === "admin" && (
-            <NavLink
-              to="/clients"
-              className={({ isActive }) =>
-                `${
-                  isActive ? "bg-light text-primary sidebar-menu" : ""
-                } flex items-center gap-[0.5rem] rounded-lg p-[0.7rem] ${
-                  sidebarToggle ? "w-full" : "w-fit"
-                } `
-              }
-              title="Clients"
-            >
-              <Users />
-              <span
-                className={`transition-all duration-300 w-fit ${
-                  showText ? "block" : "hidden"
-                }`}
-              >
-                Clients
-              </span>
-            </NavLink>
-          )}
+
           {role === "admin" && (
             <NavLink
               to="/business"
@@ -149,7 +150,6 @@ export default function Sidebar({ sidebarToggle, setSidebarToggle }) {
               </span>
             </NavLink>
           )}
-          <LogoutComp sidebarToggle={sidebarToggle} showText={showText} />
         </nav>
       </div>
     </section>

@@ -6,13 +6,17 @@ export const useGetArchivedProjects = (
   key = "archivedProjects",
   enabledPath = "/projectbooks/archivedProjects",
   page = 1,
-  search = ""
+  search = "",
+  status = "",
+  projectType = "",
+  date = ""
 ) => {
   const { id } = useParams();
   const location = useLocation();
   const { data, error, isPending } = useQuery({
-    queryKey: [key, id, page, search],
-    queryFn: () => getArchivedProjects(id, page, search),
+    queryKey: [key, id, page, search, status, projectType, date],
+    queryFn: () =>
+      getArchivedProjects(id, page, search, status, projectType, date),
     enabled: location.pathname.startsWith(enabledPath),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,

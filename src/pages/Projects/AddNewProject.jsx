@@ -11,7 +11,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
-import { useGetClientsName } from "../Clients/hooks/useGetClientsName";
+import { useGetClientsName } from "../Clients/hooks/query/useGetClientsName";
 import { useCallback, useState } from "react";
 
 export const AddNewProject = () => {

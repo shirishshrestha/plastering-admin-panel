@@ -10,25 +10,23 @@ import {
   LogoLoader,
   LogoutConfirmation,
 } from "../../components";
-import {
-  clientDashboard,
-  curve,
-  logo,
-  spiral,
-  square,
-} from "../../assets/images";
+import { logo } from "../../assets/images";
 import {
   getIdFromLocalStorage,
   getNameFromLocalStorage,
 } from "../../utils/Storage/StorageUtils";
-import { useQuery } from "@tanstack/react-query";
-import {
-  getProjectsStatus,
-  getUserProjects,
-} from "../../api/Projects/ProjectsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import { useCallback } from "react";
+import { useGetUserProjectStatus } from "./hooks/query/useGetUserProjectStatus";
+import { useGetUserTotalProjects } from "../Projects/hooks/query/useGetUserTotalProjects";
+
+const tableHead = [
+  "Project Name",
+  "Project Location",
+  "Required By Date",
+  "Status",
+];
 
 export const ClientDashboard = () => {
   const userName = getNameFromLocalStorage();
@@ -36,7 +34,6 @@ export const ClientDashboard = () => {
   const navigate = useNavigate();
 
   const { logout } = useLogout();
-
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
@@ -50,25 +47,11 @@ export const ClientDashboard = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
-  const {
-    isPending: projectPending,
-    error: projectError,
-    data: ProjectData,
-  } = useQuery({
-    queryKey: ["userProjects"],
-    queryFn: () => getUserProjects(user_id, 1),
-    staleTime: 6000,
-  });
+  const { data: ProjectData, isPending: ProjectPending } =
+    useGetUserTotalProjects("userDashboardProjects", "/", user_id, 1);
 
-  const {
-    isPending: projectStatusPending,
-    error: projectStatusError,
-    data: ProjectStatusData,
-  } = useQuery({
-    queryKey: ["projectStatus"],
-    queryFn: () => getProjectsStatus(user_id),
-    staleTime: 6000,
-  });
+  const { data: ProjectStatusData, isPending: projectStatusPending } =
+    useGetUserProjectStatus("userProjectStatus");
 
   const doughnutData = [
     {
@@ -76,12 +59,12 @@ export const ClientDashboard = () => {
       value: ProjectStatusData?.pending_projects || 0,
     },
     {
-      type: "Running",
-      value: ProjectStatusData?.running_projects || 0,
-    },
-    {
       type: "Completed",
       value: ProjectStatusData?.completed_projects || 0,
+    },
+    {
+      type: "Cancelled",
+      value: ProjectStatusData?.cancelled_projects || 0,
     },
   ];
 
@@ -101,16 +84,9 @@ export const ClientDashboard = () => {
     },
   ];
 
-  const tableHead = [
-    "Project Name",
-    "Project Location",
-    "Required By Date",
-    "Status",
-  ];
-
   return (
     <section className="pt-[1rem]">
-      {(projectPending || projectStatusPending) && <LogoLoader />}
+      {(ProjectPending || projectStatusPending) && <LogoLoader />}
 
       {logoutConfirationShow && (
         <LogoutConfirmation
@@ -126,37 +102,13 @@ export const ClientDashboard = () => {
                 <h3 className="font-bold text-[2rem] leading-[150%]">
                   Welcome Back!
                 </h3>
-                <h4 className="capitalize">{userName}</h4>
+                <h4 className="capitalize font-semibold text-[1.2rem]">
+                  {userName}
+                </h4>
               </div>
               <figure className="w-[140px] relative z-10">
                 <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
-              <img
-                src={square}
-                alt="square"
-                className="absolute left-[-5%] bottom-[80%]"
-              />
-              <img
-                src={square}
-                alt="square"
-                className="absolute left-[-12%] top-[80%]"
-              />
-              <img
-                src={curve}
-                alt="curve"
-                className="absolute rotate-90 right-[-10%] top-[40%]"
-              />
-              <img
-                src={curve}
-                alt="curve"
-                className="absolute rotate-90 right-[40%] top-[55%]"
-              />
-
-              <img
-                src={spiral}
-                alt="spiral"
-                className="absolute  right-[-1%] top-[-8%] h-[40px]"
-              />
             </div>
           </div>
           <div className="grid grid-cols-[0.82fr,1fr,0.9fr] gap-[0.5rem] justify-center mt-[1.5rem] text-[14px]">
@@ -166,10 +118,7 @@ export const ClientDashboard = () => {
                   <TotalProjects />
                 </div>
                 <p className="font-semibold capitalize text-[1rem] ">
-                  Total Projects -{" "}
-                  {ProjectStatusData?.pending_projects +
-                    ProjectStatusData?.completed_projects +
-                    ProjectStatusData?.running_projects || "0"}
+                  Total Projects - {ProjectStatusData?.total_projects || "0"}
                 </p>
               </div>
             </div>
@@ -190,8 +139,8 @@ export const ClientDashboard = () => {
                   <Calendar />
                 </div>
                 <p className="font-semibold capitalize text-[1rem]">
-                  Running Projects -{" "}
-                  {ProjectStatusData?.running_projects || "0"}
+                  Pending Projects -{" "}
+                  {ProjectStatusData?.pending_projects || "0"}
                 </p>
               </div>
             </div>
@@ -233,24 +182,21 @@ export const ClientDashboard = () => {
               </tr>
             </thead>
             <tbody className="capitalize">
-              {ProjectData?.data.filter((item) => user_id === item.user_id)
-                .length > 0 ? (
-                ProjectData?.data
-                  .filter((item) => user_id === item.user_id)
-                  .slice(0, 4)
-                  .map((item) => (
-                    <tr key={item.id} className=" last:border-none  ">
-                      <td className="py-[1rem] pl-[0.5rem]">
-                        {item.name ? item.name : "-"}
-                      </td>
-                      <td className="py-[1rem]">
-                        {item.address ? item.address : "-"}
-                      </td>
-                      <td className="py-[1rem]">{item.start_date}</td>
-
-                      <td className="py-[1rem] ">{item.status}</td>
-                    </tr>
-                  ))
+              {ProjectData?.projects?.data?.length > 0 ? (
+                ProjectData?.projects?.data?.slice(0, 4).map((item) => (
+                  <tr key={item.id} className=" last:border-none  ">
+                    <td className="py-[1rem] pl-[0.5rem]">
+                      {item.name ? item.name : "-"}
+                    </td>
+                    <td className="py-[1rem]">
+                      {item.address ? item.address : "-"}
+                    </td>
+                    <td className="py-[1rem]">
+                      {item.created_at.split("T")[0]}
+                    </td>
+                    <td className="py-[1rem] ">{item.status}</td>
+                  </tr>
+                ))
               ) : (
                 <EmptyData />
               )}

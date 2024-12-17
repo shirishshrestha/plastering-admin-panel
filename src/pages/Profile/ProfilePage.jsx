@@ -1,10 +1,6 @@
-import { Loader } from "../../components";
-import {
-  getNameFromLocalStorage,
-  getRoleFromLocalStorage,
-} from "../../utils/Storage/StorageUtils";
+import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import { EstimatorProfileDetails } from "./components/EstimatorProfileDetails";
-import ProfilePicture from "./components/ProfilePicture";
+
 import { UserProfileDetails } from "./components/UserProfileDetails";
 const ProfilePage = () => {
   const role = getRoleFromLocalStorage();

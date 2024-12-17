@@ -4,7 +4,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { EditIcon, PlusIcon } from "../../assets/icons/SvgIcons";
+import { EditIcon, GoBack, PlusIcon } from "../../assets/icons/SvgIcons";
 import {
   CancelProjectConfirmation,
   CustomToastContainer,
@@ -63,6 +63,11 @@ const Projects = () => {
     [searchParams]
   );
 
+  const status = useMemo(
+    () => searchParams.get("status") || "",
+    [searchParams]
+  );
+
   const date = useMemo(() => searchParams.get("date") || "", [searchParams]);
 
   const { data: TotalProjects, isPending: TotalProjectsPending } =
@@ -73,7 +78,8 @@ const Projects = () => {
       currentPage,
       searchItem,
       projectType,
-      date
+      date,
+      status
     );
 
   const paginationProps = useMemo(
@@ -121,11 +127,27 @@ const Projects = () => {
         )}
         {TotalProjectsPending && <Loader />}
         <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
+          <FilterDrawer.Status
+            options={[
+              { value: "pending", label: "Pending" },
+              { value: "completed", label: "Completed" },
+              { value: "cancelled", label: "Cancelled" },
+            ]}
+          />
           <FilterDrawer.ProjectType />
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
         <div>
-          <div className="flex items-center pb-[0.5rem] justify-between">
+          <div
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+            onClick={() => {
+              navigate("/projectbooks");
+            }}
+          >
+            <GoBack />
+            Go to Project Books
+          </div>
+          <div className="flex items-center py-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">
               List of Projects
             </h2>
@@ -216,9 +238,9 @@ const Projects = () => {
                     <td className="py-[1rem]">{item.project_type}</td>
                     <td className="py-[1rem]">
                       {item.additional_requirements ? (
-                        item.additional_requirements.length > 15 ? (
+                        item.additional_requirements.length > 20 ? (
                           <Tooltip content={item.additional_requirements}>
-                            {`${item.additional_requirements.slice(0, 15)}...`}
+                            {`${item.additional_requirements.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
                           item.additional_requirements

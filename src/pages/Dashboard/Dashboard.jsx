@@ -90,41 +90,14 @@ export const Dashboard = () => {
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1.2rem] w-full h-full">
         <div className="w-full h-full flex flex-col gap-[1rem] justify-center">
           <div className="w-full bg-white rounded-lg shadow-lg py-[1rem] px-[2rem] relative overflow-hidden">
-            <div className="flex items-center gap-[2rem] justify-between ">
-              <div className="relative z-10">
-                <h3 className="font-bold text-[1.8rem] text-center leading-[150%]">
-                  Welcome to the Admin Dashboard
-                </h3>
-              </div>
+            <div className="flex items-center gap-[2rem] justify-evenly ">
+              <h3 className="font-bold text-[1.8rem] text-center leading-[150%]">
+                Welcome to the Admin Dashboard
+              </h3>
+
               <figure className="w-[140px] relative z-10">
                 <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
-              <img
-                src={square}
-                alt="square"
-                className="absolute left-[-5%] bottom-[80%]"
-              />
-              <img
-                src={square}
-                alt="square"
-                className="absolute left-[-12%] top-[80%]"
-              />
-              <img
-                src={curve}
-                alt="curve"
-                className="absolute rotate-90 right-[-10%] top-[40%]"
-              />
-              <img
-                src={curve}
-                alt="curve"
-                className="absolute rotate-90 right-[40%] top-[55%]"
-              />
-
-              <img
-                src={spiral}
-                alt="spiral"
-                className="absolute  right-[-1%] top-[-8%] h-[40px]"
-              />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-[0.8rem] justify-center">
@@ -140,7 +113,7 @@ export const Dashboard = () => {
                   {TotalProjectStatusData?.total || 0}
                 </p>
                 <p className="text-[12px]">
-                  All running and completed projects
+                  All pending, completed and cancelled projects
                 </p>
               </div>
             </div>
@@ -163,13 +136,13 @@ export const Dashboard = () => {
                 <div className="p-[0.5rem]  text-light bg-primary rounded-lg backdrop-blur-lg ">
                   <Calendar />
                 </div>
-                <p className="font-semibold capitalize">Running Projects</p>
+                <p className="font-semibold capitalize">Pending Projects</p>
               </div>
               <div className="pt-[1.2rem] flex items-end flex-col ">
                 <p className="text-[2rem] font-bold">
                   {TotalProjectStatusData?.pending || 0}
                 </p>
-                <p className="text-[12px]">Ongoing projects</p>
+                <p className="text-[12px]">Pending and ongoing projects</p>
               </div>
             </div>
           </div>
@@ -194,7 +167,7 @@ export const Dashboard = () => {
         </div>
       </div>
       <div className="mt-[1rem]">
-        <h2 className="font-bold text-[1.4rem]">Recent Projects</h2>
+        <h2 className="font-bold text-[1.4rem]">Pending Projects</h2>
         <div className="overflow-x-scroll table__container  mt-[1rem]">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-primary text-white  ">
@@ -213,7 +186,7 @@ export const Dashboard = () => {
               {ProjectData?.length < 1 ? (
                 <EmptyData />
               ) : (
-                ProjectData?.slice(0, 4).map((item) => (
+                ProjectData?.map((item) => (
                   <tr key={item.id} className=" last:border-none  ">
                     <td className="py-[1rem] pl-[0.5rem]">
                       {item.project_book.title ? (

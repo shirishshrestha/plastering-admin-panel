@@ -1,10 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import {
+  ActiveClientProjects,
   ActiveProjects,
   AddJob,
   AddNewProject,
   AddProject,
+  ArchivedClientProjects,
   ArchivedProjects,
   BusinessProjects,
   BusinessSignup,
@@ -29,6 +31,7 @@ import {
 import ProtectedRoute, {
   ProtectedAdminRoute,
   ProtectedBusinessRoute,
+  ProtectedClientRoute,
   ProtectedLoginSignupRoute,
 } from "./ProtectedRoute";
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
@@ -36,8 +39,9 @@ import useAuth from "../hooks/useAuth";
 import { BusinessDashboard } from "../pages/Dashboard/BusinessDashboard";
 import BusinessDirectory from "../pages/BusinessDirectory/BusinessDirectory";
 
+const role = getRoleFromLocalStorage();
+
 const DashboardPriority = () => {
-  const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
   if (auth?.role === "admin" || (role && role === "admin"))
     return <Dashboard />;
@@ -47,7 +51,6 @@ const DashboardPriority = () => {
 };
 
 const ProjectsPriority = () => {
-  const role = getRoleFromLocalStorage();
   const { auth } = useAuth();
   if (auth?.role === "admin" || (role && role === "admin"))
     return <ProjectBooks />;
@@ -77,7 +80,7 @@ export const router = createBrowserRouter([
         element: <BusinessProjects />,
       },
       {
-        path: "/projectbooks",
+        path: role === "client" ? "/clientProjects" : "/projectbooks",
         element: (
           <ProtectedBusinessRoute>
             <ProjectsPriority />
@@ -93,12 +96,36 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: "activeClientProjects",
+            element: (
+              <ProtectedClientRoute>
+                <ActiveClientProjects />
+              </ProtectedClientRoute>
+            ),
+          },
+          {
+            path: "archivedClientProjects",
+            element: (
+              <ProtectedClientRoute>
+                <ArchivedClientProjects />
+              </ProtectedClientRoute>
+            ),
+          },
+          {
             path: "activeProjects/:id",
-            element: <ActiveProjects />,
+            element: (
+              <ProtectedAdminRoute>
+                <ActiveProjects />
+              </ProtectedAdminRoute>
+            ),
           },
           {
             path: "archivedProjects/:id",
-            element: <ArchivedProjects />,
+            element: (
+              <ProtectedAdminRoute>
+                <ArchivedProjects />
+              </ProtectedAdminRoute>
+            ),
           },
           {
             path: "addProject/:id",
@@ -106,7 +133,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "addNewProject",
-            element: <AddNewProject />,
+            element: (
+              <ProtectedAdminRoute>
+                <AddNewProject />
+              </ProtectedAdminRoute>
+            ),
           },
           {
             path: "editProject/:id",

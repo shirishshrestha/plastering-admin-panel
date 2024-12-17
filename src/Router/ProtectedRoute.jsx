@@ -58,3 +58,15 @@ export const ProtectedBusinessRoute = ({ children }) => {
     children
   );
 };
+
+export const ProtectedClientRoute = ({ children }) => {
+  const { auth } = useAuth();
+
+  const role = getRoleFromLocalStorage();
+
+  return auth?.role === "client" || (role && role === "client") ? (
+    children
+  ) : (
+    <Navigate to="/" />
+  );
+};

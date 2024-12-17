@@ -6,13 +6,15 @@ export const useGetActiveProjects = (
   key = "activeProjects",
   enabledPath = "/projectbooks/activeProjects",
   page = 1,
-  search = ""
+  search = "",
+  projectType = "",
+  date = ""
 ) => {
   const { id } = useParams();
   const location = useLocation();
   const { data, error, isPending } = useQuery({
-    queryKey: [key, id, page, search],
-    queryFn: () => getActiveProjects(id, page, search),
+    queryKey: [key, id, page, search, projectType, date],
+    queryFn: () => getActiveProjects(id, page, search, projectType, date),
     enabled: location.pathname.startsWith(enabledPath),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
