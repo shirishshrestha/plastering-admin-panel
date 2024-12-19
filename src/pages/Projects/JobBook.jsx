@@ -26,6 +26,7 @@ import useAuth from "../../hooks/useAuth";
 import { useGetJobs } from "./hooks/query/useGetJobs";
 import { useToggle } from "../../hooks/useToggle";
 import { useDeleteJob } from "./hooks/mutation/useDeleteJob";
+import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 
 const tableHead = [
   "ID",
@@ -38,6 +39,7 @@ const tableHead = [
 
 const JobBook = () => {
   const navigate = useNavigate();
+  const role = getRoleFromLocalStorage();
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const { openDrawer } = useAuth();
@@ -130,6 +132,19 @@ const JobBook = () => {
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
         <div>
+          <div
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer font-[500]"
+            onClick={() => {
+              navigate(
+                role === "admin"
+                  ? `/projectbooks/projects/${JobData?.user_id}`
+                  : "/clientProjects"
+              );
+            }}
+          >
+            <GoBack />
+            Go to Projects
+          </div>
           <div className="flex items-center pt-[0.5rem] pb-[1rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">List of Jobs</h2>
             <div className="flex items-end gap-[1rem]">
@@ -202,7 +217,11 @@ const JobBook = () => {
                         <button
                           className="p-[5px] rounded-md bg-viewBackground"
                           onClick={() =>
-                            navigate(`/projectbooks/viewJob/${job.id}`)
+                            navigate(
+                              role === "admin"
+                                ? `/projectbooks/viewJob/${job.id}`
+                                : `/clientProjects/viewJob/${job.id}`
+                            )
                           }
                         >
                           <EyeIcon strokeColor="#3e84f4" />
@@ -210,21 +229,27 @@ const JobBook = () => {
                         <button
                           className="p-[5px] rounded-md bg-editBackground"
                           onClick={() =>
-                            navigate(`/projectbooks/editJob/${job.id}`)
+                            navigate(
+                              role === "admin"
+                                ? `/projectbooks/editJob/${job.id}`
+                                : `/clientProjects/editJob/${job.id}`
+                            )
                           }
                         >
                           <EditIcon color="#8c62ff" />
                         </button>
-                        <button
-                          className="p-[5px] rounded-md bg-deleteBackground"
-                          onClick={() => {
-                            handleDeleteToggle();
-                            setJobName(job.job_name);
-                            setJobId(job.id);
-                          }}
-                        >
-                          <TrashIcon />
-                        </button>
+                        {role === "admin" && (
+                          <button
+                            className="p-[5px] rounded-md bg-deleteBackground"
+                            onClick={() => {
+                              handleDeleteToggle();
+                              setJobName(job.job_name);
+                              setJobId(job.id);
+                            }}
+                          >
+                            <TrashIcon />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

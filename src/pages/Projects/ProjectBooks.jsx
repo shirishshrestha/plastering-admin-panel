@@ -26,16 +26,9 @@ import { useCallback, useMemo, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import { useGetProjectBooks } from "./hooks/query/useGetProjectBooks";
-import { useGetTotalProjectStatus } from "./hooks/query/useGetTotalProjectStatus";
+import { useGetProjectBookStatus } from "./hooks/query/useGetProjectBookStatus";
 
-const tableHead = [
-  "PB. Id",
-  "Project Book",
-  "Total Projects",
-  "Created At",
-  "Status",
-  "Actions",
-];
+const tableHead = ["Client", "Total Projects", "Status", "Actions"];
 
 const doughnutBackgroundColor = [
   "rgb(255, 206, 86)",
@@ -97,7 +90,7 @@ export const ProjectBooks = () => {
   const { data: RecentProjectBooks, isPending: recentProjectsBookPending } =
     useGetProjectBooks("recentProjectBooks", "/projectbooks", "", "", 1, "");
   const { data: TotalProjectStatusData, isPending: projectStatusPending } =
-    useGetTotalProjectStatus("totalProjectStatus", "/projectbooks");
+    useGetProjectBookStatus("totalProjectBookStatus", "/projectbooks");
 
   const handleLogout = useCallback(() => {
     setAuth({});
@@ -178,16 +171,16 @@ export const ProjectBooks = () => {
               options={[
                 { value: "pending", label: "Pending" },
                 { value: "completed", label: "Completed" },
+                { value: "cancelled", label: "Cancelled" },
               ]}
             />
-            <FilterDrawer.RegisteredDate />
           </FilterDrawer>
 
           <div className="grid grid-cols-2">
             <div>
               <div className=" mx-auto  bg-white shadow-lg rounded-lg">
                 <h2 className="font-bold text-[1.4rem] text-center mb-[1rem] text-primary">
-                  Project Status
+                  Project Books Status
                 </h2>
                 <div className="w-full flex justify-evenly">
                   <div className="max-w-[240px] pb-[1rem]">
@@ -260,7 +253,7 @@ export const ProjectBooks = () => {
                             <div
                               className={`flex justify-center capitalize py-[0.1rem] px-[0.5rem] rounded-lg items-center gap-2 w-fit mt-[0.3rem]  ${
                                 project.status === "pending"
-                                  ? "bg-yellow-600  "
+                                  ? "bg-yellow-400  "
                                   : ""
                               } ${
                                 project.status === "completed"
@@ -269,7 +262,7 @@ export const ProjectBooks = () => {
                               }
                                 ${
                                   project.status === "cancelled"
-                                    ? "bg-red-500"
+                                    ? "bg-red-600"
                                     : ""
                                 }`}
                             >
@@ -339,10 +332,6 @@ export const ProjectBooks = () => {
                     {ProjectBooks?.data.map((projectBook) => (
                       <tr key={projectBook.id}>
                         <td className="py-[1rem] pl-[0.5rem]">
-                          {projectBook.id}
-                        </td>
-
-                        <td className="py-[1rem] pl-[0.5rem]">
                           {projectBook.title}
                         </td>
 
@@ -351,15 +340,11 @@ export const ProjectBooks = () => {
                         </td>
 
                         <td className="py-[1rem] pl-[0.5rem]">
-                          {projectBook.created_at.split("T")[0]}
-                        </td>
-
-                        <td className="py-[1rem] pl-[0.5rem]">
                           {projectBook.status}
                         </td>
                         <td>
                           <button
-                            className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                            className="bg-accent flex gap-[0.5rem] text-[14px] font-semibold px-[10px] py-[5px] text-light rounded-lg "
                             onClick={() =>
                               handleViewProjects(projectBook.user_id)
                             }

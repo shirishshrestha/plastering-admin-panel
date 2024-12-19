@@ -45,7 +45,7 @@ const ViewJob = () => {
   const { data: JobData, isPending: JobDataPending } = useGetJobById(
     "jobById",
     id,
-    "/projectbooks/viewJob"
+    role === "admin" ? "/projectbooks/viewJob" : "/clientProjects/viewJob"
   );
 
   const [download, setDownload] = useState();

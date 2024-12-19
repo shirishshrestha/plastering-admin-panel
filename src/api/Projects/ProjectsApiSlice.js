@@ -271,6 +271,15 @@ export const getTotalProjectsStatus = async () => {
   }
 };
 
+export const getProjectBookStatus = async () => {
+  try {
+    const response = await instance.get(`/count-project-books`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const requestCancellation = async (user_id, project_id) => {
   try {
     const response = await instance.post("/request-cancellation", {

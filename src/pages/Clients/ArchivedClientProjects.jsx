@@ -397,7 +397,12 @@ export const ArchivedClientProjects = () => {
                         >
                           View Jobs
                         </button>
-                        <button className="p-[5px] rounded-md bg-editBackground">
+                        <button
+                          className="p-[5px] rounded-md bg-editBackground"
+                          onClick={() =>
+                            navigate(`/clientProjects/editProject/${item.id}`)
+                          }
+                        >
                           <EditIcon color="#8c62ff" />
                         </button>
                       </div>

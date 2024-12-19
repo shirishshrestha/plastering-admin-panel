@@ -32,7 +32,7 @@ export default function EditEstimate({ showModal, handleToggleModal }) {
       handleModalToggle={handleModalClose}
     >
       <form onSubmit={handleSubmit(handleEstimateSubmit)}>
-        <div className="flex flex-col gap-[0.8rem]  ">
+        <div className="flex flex-col gap-[0.8rem]">
           <label htmlFor="estimate_file">Select Files</label>
           <input
             type="file"
@@ -74,7 +74,7 @@ export default function EditEstimate({ showModal, handleToggleModal }) {
             Select Files
           </label>
 
-          <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+          <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap">
             <span>Uploaded Files:</span>
             <div className="flex gap-x-7 gap-y-2 flex-wrap">
               {selectedEstimationFiles.length > 0 &&
