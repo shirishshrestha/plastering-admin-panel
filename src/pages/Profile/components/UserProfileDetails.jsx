@@ -1,3 +1,4 @@
+import { EditIcon } from "../../../assets/icons/SvgIcons";
 import { Loader } from "../../../components";
 import { getRoleFromLocalStorage } from "../../../utils/Storage/StorageUtils";
 import { useGetUserDetails } from "../hooks/query/useGetUserDetails";
@@ -41,13 +42,8 @@ export const UserProfileDetails = () => {
             <p className="font-[600] text-primary/80">Username</p>
             <p className="font-bold">{GetUserDetails?.data?.username}</p>
           </div>
-          {/* <div></div> */}
           <div className="flex flex-col gap-[0.4rem]">
-            <p className="font-[600] text-primary/80">User Role</p>
-            <p className="font-bold">{GetUserDetails?.data?.role}</p>
-          </div>
-          <div className="flex flex-col gap-[0.4rem]">
-            <p className="font-[600] text-primary/80">Created At</p>
+            <p className="font-[600] text-primary/80">Registered Date</p>
             <p className="font-bold">
               {GetUserDetails?.data?.created_at.split("T")[0]}
             </p>
@@ -55,9 +51,15 @@ export const UserProfileDetails = () => {
         </div>
       </div>
       <div className="flex flex-col gap-4 bg-white shadow-md rounded-lg py-[1.5rem] px-[3rem] mt-[1.5rem]">
-        <h4 className="font-bold text-[1.2rem] leading-[1.6rem] pb-[1rem] border-b-[2px] border-gray-200">
-          Address Details
-        </h4>
+        <div className="pb-[1rem] border-b-[2px] border-gray-200 flex items-center justify-between">
+          <h4 className="font-bold text-[1.2rem] leading-[1.6rem]  ">
+            Address Details
+          </h4>
+          <div className="flex items-center gap-2 bg-primary text-light cursor-pointer py-1 px-4 rounded-lg text-[14px] font-[500] ">
+            <EditIcon color="#fff" />
+            Edit Details
+          </div>
+        </div>
         <div className="grid grid-cols-3 gap-6">
           <div className="flex flex-col gap-[0.4rem]">
             <p className="font-[600] text-primary/80">City</p>

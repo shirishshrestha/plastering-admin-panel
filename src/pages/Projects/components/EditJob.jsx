@@ -15,8 +15,10 @@ import {
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 import { useGetJobById } from "../hooks/query/useGetJobById";
 import { useEditJob } from "../hooks/mutation/useEditJob";
+import { getRoleFromLocalStorage } from "../../../utils/Storage/StorageUtils";
 
 export const EditJob = () => {
+  const role = getRoleFromLocalStorage();
   const navigate = useNavigate();
   const { id } = useParams();
   const {
@@ -33,7 +35,7 @@ export const EditJob = () => {
   const { data: JobData, isPending: JobDataPending } = useGetJobById(
     "jobByIdEditJob",
     id,
-    "/projectbooks/editJob"
+    role === "admin" ? "/projectbooks/editJob" : "/clientProjects/editJob"
   );
   const {
     mutate: EditJob,

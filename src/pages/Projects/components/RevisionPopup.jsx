@@ -2,18 +2,16 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  getProjectById,
-  requestRevision,
-} from "../../../api/Projects/ProjectsApiSlice";
+import { useMutation } from "@tanstack/react-query";
+import { requestRevision } from "../../../api/Projects/ProjectsApiSlice";
 import {
   CustomToastContainer,
-  EditInput,
+  Input,
   Loader,
   Model,
 } from "../../../components";
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
+import { useGetJobById } from "../hooks/query/useGetJobById";
 
 export const RevisionPopup = ({
   setRevisionFlag,
@@ -22,40 +20,36 @@ export const RevisionPopup = ({
 }) => {
   const { id } = useParams();
 
-  const {
-    isPending: RevProjectPending,
-    error,
-    data: SingleProjectData,
-  } = useQuery({
-    queryKey: ["singleProject", id],
-    queryFn: () => getProjectById(id),
-    enabled: !!id,
-    staleTime: 6000,
-  });
+  const { data: SingleJobData, isPending: RevJobPending } = useGetJobById(
+    "jobById",
+    id,
+    "/clientProjects/viewJob"
+  );
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [newFiles, setNewFiles] = useState([]);
   const [deletedFiles, setDeletedFiles] = useState([]);
-  const [disabledSubmit, setDisabledSubmit] = useState(false);
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
-    setValue,
     reset,
   } = useForm();
 
   useEffect(() => {
-    setValue("project_type", SingleProjectData?.project_type);
-    setValue("date", SingleProjectData?.start_date);
-    setValue("additional_info", SingleProjectData?.additional_requirements);
-    setValue("project_name", SingleProjectData?.name);
-    setValue("address", SingleProjectData?.address);
-    setValue("cloud_link", SingleProjectData?.cloud_link);
-    setValue("project_file", SingleProjectData?.files);
-    setSelectedFiles(SingleProjectData?.files);
-  }, [SingleProjectData, setValue]);
+    if (SingleJobData) {
+      reset({
+        date: SingleJobData?.start_date,
+        additional_info: SingleJobData?.description,
+        job_name: SingleJobData?.job_name,
+        cloud_link: SingleJobData?.cloud_link,
+        status: SingleJobData?.status,
+        job_file: [],
+      });
+      setSelectedFiles(SingleJobData?.files);
+    }
+  }, [SingleJobData, reset]);
 
   const { mutate: RevisionProject, isPending: RevisionProjectPending } =
     useMutation({
@@ -65,17 +59,14 @@ export const RevisionPopup = ({
         setTimeout(() => {
           setRevisionFlag(false);
           setDisabledFlag({ ...disabledFlag, revisionFlag: true });
-          setDisabledSubmit(false);
         }, 2000);
       },
       onError: (error) => {
         notifyError("Something went wrong ");
-        setDisabledSubmit(false);
       },
     });
 
-  const revisionProjectForm = (data) => {
-    setDisabledSubmit(true);
+  const revisionJobForm = (data) => {
     const formData = new FormData();
 
     formData.append("name", data.project_name);
@@ -102,159 +93,77 @@ export const RevisionPopup = ({
 
   return (
     <div className="w-full h-screen fixed z-10 inset-0 bg-primary/80 flex items-center justify-center  ">
-      <div className="bg-white shadow-lg rounded-lg p-[1.5rem] w-[70%] overflow-y-scroll h-[90%] admin__estimator">
-        {(RevisionProjectPending || RevProjectPending) && <Loader />}
+      <div className="bg-white shadow-lg rounded-lg p-[1.5rem] w-[70%] max-h-[90%] overflow-y-scroll  admin__estimator">
+        {(RevisionProjectPending || RevJobPending) && <Loader />}
 
         <div>
           <h2 className="font-bold text-[1.2rem]">Request Edit</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">
-            <p>Project</p>
-            <div className="rounded-[100%] w-[10px] h-[10px] bg-[#8c62ff]"></div>
-            <p>Edit project</p>
+            <p>Job</p>
+            <div className="rounded-[100%] w-[10px] h-[10px] bg-[#8c62ff] "></div>
+            <p>Edit existing Job</p>
           </div>
         </div>
         <div className="mt-[1rem]">
           <form
-            onSubmit={handleSubmit(revisionProjectForm)}
+            onSubmit={handleSubmit(revisionJobForm)}
             className="grid grid-cols-2 gap-[1.5rem] gap-y-[1rem]"
           >
-            <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Project Name (Optional)</label>
-              <EditInput
-                defaultValue={SingleProjectData?.name}
-                placeholder={Model.projectName.placeholder}
-                type={Model.projectName.type}
-                name={Model.projectName.name}
-                register={register}
-                errors={errors}
-                minLength={Model.projectName.minLength.value}
-                minMessage={Model.projectName.minLength.message}
-                regValue={Model.projectName.pattern.value}
-                message={Model.projectName.pattern.message}
-                required={false}
-              />
-            </div>
-            <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Project Location</label>
-              <EditInput
-                defaultValue={SingleProjectData?.address}
-                placeholder={Model.address.placeholder}
-                type={Model.address.type}
-                name={Model.address.name}
-                register={register}
-                errors={errors}
-                minLength={Model.address.minLength.value}
-                minMessage={Model.address.minLength.message}
-                regValue={Model.address.pattern.value}
-                message={Model.address.pattern.message}
-                required={Model.address.required}
-              />
-            </div>
-            <div className="flex flex-col gap-[0.4rem]">
-              <label className="font-bold">Cloud Link (Optional)</label>
-              <EditInput
-                defaultValue={SingleProjectData?.cloud_link}
-                placeholder={Model.cloudLink.placeholder}
-                type={Model.cloudLink.type}
-                name={Model.cloudLink.name}
-                register={register}
-                errors={errors}
-                required={false}
-              />
-            </div>
-            <div className="flex flex-col ">
+            <div className="flex flex-col gap-[1rem]">
               <div className="flex flex-col gap-[0.4rem]">
-                <label className="font-bold">Required by date</label>
-                <input
-                  type="date"
-                  name="date"
-                  defaultValue={SingleProjectData?.start_date}
-                  className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
-                    errors["date"] ? "focus:ring-red-500 border-red-500" : ""
-                  }`}
-                  {...register("date", {
-                    required: "Please select the date",
-                    onChange: (e) => {
-                      setValue("date", e.target.value);
-                    },
-                  })}
+                <label className="font-bold">Job Name</label>
+                <Input
+                  placeholder="Eg. Kitchen Renovation, Living Room Extension, etc"
+                  type={Model.projectName.type}
+                  name={"job_name"}
+                  register={register}
+                  errors={errors}
+                  minLength={Model.projectName.minLength.value}
+                  minMessage={
+                    "Project Name must be at least 2 characters long."
+                  }
+                  regValue={Model.projectName.pattern.value}
+                  message={
+                    "Invalid project name. Only letters and numbers are allowed."
+                  }
+                  required={"Please enter the Job name"}
                 />
               </div>
-              <ErrorMessage
-                errors={errors}
-                name="date"
-                render={() => (
-                  <p
-                    className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                    key="date"
-                  >
-                    Please select the date
-                  </p>
-                )}
-              />
-            </div>
 
-            <div className="flex gap-[1rem] flex-col">
-              <div class=" bg-white flex flex-col gap-[0.4rem] w-full">
-                <legend class=" font-bold select-none">Project Type</legend>
-                <div className="">
-                  <label
-                    htmlFor="commercial"
-                    name="project_type"
-                    className={`font-medium ring-1 ring-gray-300 py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none ${
-                      errors["project_type"] && "ring-red-500"
-                    } `}
-                  >
-                    Commercial Project
-                    <input
-                      type="radio"
-                      name="project_type"
-                      className=" w-4 h-4 absolute accent-current right-3"
-                      id="commercial"
-                      value="Commercial"
-                      {...register("project_type", {
-                        required: "Select a project type",
-                      })}
-                    />
-                  </label>
-                  <label
-                    htmlFor="domestic"
-                    className={`font-medium ring-1 ring-gray-300 mt-[0.5rem] py-2 relative hover:bg-zinc-100 flex items-center px-3 gap-3 rounded-lg has-[:checked]:text-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:ring-blue-300 has-[:checked]:ring-1 select-none  ${
-                      errors["project_type"] && "ring-red-500"
-                    } `}
-                  >
-                    Domestic Project
-                    <input
-                      type="radio"
-                      name="project_type"
-                      className="w-4 h-4 absolute accent-current right-3"
-                      id="domestic"
-                      value="Domestic"
-                      {...register("project_type", {
-                        required: "Select a project type",
-                      })}
-                    />
-                  </label>
-                  <ErrorMessage
-                    errors={errors}
-                    name="project_type"
-                    render={() => (
-                      <p
-                        className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
-                        key="registered-client"
-                      >
-                        Please select a project type
-                      </p>
-                    )}
+              <div className="flex flex-col ">
+                <div className="flex flex-col gap-[0.4rem]">
+                  <label className="font-bold">Required by date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    className={`w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent ${
+                      errors["date"] ? "focus:ring-red-500 border-red-500" : ""
+                    }`}
+                    {...register("date", {
+                      required: "Please select the date",
+                    })}
                   />
                 </div>
+                <ErrorMessage
+                  errors={errors}
+                  name="date"
+                  render={() => (
+                    <p
+                      className="text-[12px] text-red-500  pt-[0.3rem]  pl-[0.5rem]"
+                      key="date"
+                    >
+                      Please select the date
+                    </p>
+                  )}
+                />
               </div>
-              <div className="flex flex-col gap-[0.4rem] ">
-                <label className="font-bold">Upload New Files (Optional)</label>
+
+              <div className="flex flex-col gap-[0.4rem]  ">
+                <label className="font-bold">Upload Files (Optional)</label>
                 <input
                   type="file"
-                  name="project_file"
-                  {...register("project_file", {
+                  name="job_file"
+                  {...register("job_file", {
                     onChange: (e) => {
                       const innerNewFiles = Array.from(e.target.files);
                       const filteredFiles = innerNewFiles.filter(
@@ -288,49 +197,17 @@ export const RevisionPopup = ({
                   Select Files
                 </label>
 
-                <div className="flex gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                  <span>Uploaded Files:</span>
-                </div>
-                <div className="flex flex-wrap  gap-x-7 gap-y-2">
-                  {selectedFiles?.length < 1 ? (
-                    <p className="font-[500] text-[14px] pl-[2rem]">
-                      No previous files
-                    </p>
-                  ) : (
-                    selectedFiles?.map((file, index) => (
-                      <div
-                        key={file.id}
-                        className="flex gap-[0.5rem] items-center text-[14px]"
-                      >
-                        <Document />
-                        <p className="font-[500]">{file.split("/").pop()}</p>
-
-                        <button
-                          type="button"
-                          className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
-                          onClick={() => {
-                            setDeletedFiles([...deletedFiles, file]);
-                            setSelectedFiles(
-                              selectedFiles.filter((_, i) => i !== index)
-                            );
-                          }}
-                        >
-                          <TrashIcon />
-                          {/* {fetchingFile && index === downloadId
-                        ? "Loading"
-                        : "Download"} */}
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
                 <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
-                  <span>New Files:</span>
-                  <div className="flex gap-x-7 flex-wrap gap-y-2">
-                    {newFiles?.length > 0 &&
-                      Array.from(newFiles).map((file, index) => (
+                  <span>Uploaded Files:</span>
+                  <div className="flex gap-x-7 gap-y-2 flex-wrap">
+                    {selectedFiles?.length < 1 ? (
+                      <p className="font-[500] text-[14px] pl-[2rem]">
+                        No previous files
+                      </p>
+                    ) : (
+                      Array.from(selectedFiles).map((file, index) => (
                         <div
-                          key={file.id}
+                          key={`${file.name}-${file.lastModified}`}
                           className="flex gap-[0.5rem] items-center text-[14px]"
                         >
                           <Document />
@@ -338,48 +215,98 @@ export const RevisionPopup = ({
 
                           <button
                             type="button"
-                            className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                            className="flex items-center text-[12px] cursor-pointer font-[500] gap-[0.2rem] hover:underline"
                             onClick={() => {
-                              setNewFiles(
-                                newFiles.filter((file, i) => i !== index)
+                              setDeletedFiles([...deletedFiles, file]);
+                              setSelectedFiles(
+                                selectedFiles.filter((_, i) => i !== index)
                               );
                             }}
                           >
                             <TrashIcon />
                           </button>
                         </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 pl-[0.1rem] text-[14px] flex-wrap ">
+                  <span>New Files:</span>
+                  <div className="flex gap-x-7 gap-y-2 flex-wrap">
+                    {newFiles?.length > 0 &&
+                      Array.from(newFiles).map((file, index) => (
+                        <div>
+                          <div className="flex gap-[0.5rem] items-center text-[14px]">
+                            <Document />
+                            <p className="font-[500]">{file.name}</p>
+
+                            <button
+                              type="button"
+                              className="flex items-center text-[12px] font-[500] gap-[0.2rem] hover:underline"
+                              onClick={() => {
+                                setNewFiles(
+                                  newFiles.filter((_, i) => i !== index)
+                                );
+                              }}
+                            >
+                              <TrashIcon />
+                            </button>
+                          </div>
+                          <div className="text-[12px]">
+                            Size: {(file.size / 1024).toFixed(2)} KB
+                          </div>
+                        </div>
                       ))}
                   </div>
                 </div>
               </div>
             </div>
+            <div className="flex flex-col gap-[1rem]">
+              <div className="flex flex-col gap-[0.4rem]">
+                <label className="font-bold">Cloud Link (Optional)</label>
+                <Input
+                  placeholder={Model.cloudLink.placeholder}
+                  type={Model.cloudLink.type}
+                  name={Model.cloudLink.name}
+                  register={register}
+                  errors={errors}
+                  required={false}
+                />
+              </div>
 
-            <div className="flex flex-col  gap-[0.4rem]">
-              <label htmlFor="additional-req" className="font-bold">
-                Additional Requirements (Optional)
-              </label>
-              <textarea
-                name="additional_info"
-                id="additional-req"
-                className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[100px] max-h-[290px]"
-                {...register("additional_info", {})}
-              ></textarea>
+              <div className="flex flex-col  gap-[0.4rem]">
+                <label htmlFor="additional-req" className="font-bold">
+                  Additional Requirements (Optional)
+                </label>
+                <textarea
+                  name="additional_info"
+                  id="additional-req"
+                  className="w-full p-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-transparent min-h-[130px] max-h-[290px]"
+                  {...register("additional_info", {})}
+                ></textarea>
+              </div>
             </div>
 
-            <div className="flex gap-3 justify-end items-center col-span-2">
-              <button
-                className="bg-delete rounded-lg px-[30px] py-[10px] text-light"
-                type="button"
-                onClick={() => setRevisionFlag(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
-                disabled={disabledSubmit}
-              >
-                Submit
-              </button>
+            <div className="w-full  col-span-2  ">
+              <div className="flex gap-3 justify-end items-center">
+                <button
+                  className="bg-delete rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  type="button"
+                  // disabled={EditJobSuccess}
+                  onClick={() => navigate(-1)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  disabled={
+                    !isDirty &&
+                    selectedFiles.length === SingleJobData?.files?.length
+                  }
+                >
+                  Submit
+                </button>
+              </div>
             </div>
           </form>
         </div>

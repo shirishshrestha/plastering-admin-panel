@@ -71,10 +71,7 @@ export const ArchivedProjects = () => {
     [searchParams]
   );
 
-  const date = useMemo(
-    () => searchParams.get("created_date") || "",
-    [searchParams]
-  );
+  const date = useMemo(() => searchParams.get("date") || "", [searchParams]);
 
   const { data: ArchivedProjectsData, isPending: ArchivedProjectsPending } =
     useGetArchivedProjects(
@@ -143,13 +140,13 @@ export const ArchivedProjects = () => {
         </FilterDrawer>
         <div>
           <div
-            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer font-[500] "
             onClick={() => {
               navigate("/projectbooks");
             }}
           >
             <GoBack />
-            Go Back
+            Go to Project Books
           </div>
           <div className="flex items-center py-[0.5rem] justify-between">
             <h2 className="font-bold text-[1.4rem] text-start">

@@ -139,7 +139,7 @@ const Projects = () => {
         </FilterDrawer>
         <div>
           <div
-            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer"
+            className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer font-[500] "
             onClick={() => {
               navigate("/projectbooks");
             }}
