@@ -60,7 +60,13 @@ export function FilterDrawer({ children, setSearchParams, dateName = "" }) {
 
   const handleFilterClear = () => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.delete("page");
+    if (
+      newParams.has("status") ||
+      newParams.has("date") ||
+      newParams.has("project_type")
+    ) {
+      newParams.delete("page");
+    }
     if (newParams.has("status")) {
       newParams.delete("status");
     }

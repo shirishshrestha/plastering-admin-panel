@@ -13,17 +13,11 @@ import {
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 import { useGetJobById } from "../hooks/query/useGetJobById";
 
-export const RevisionPopup = ({
-  setRevisionFlag,
-  setDisabledFlag,
-  disabledFlag,
-}) => {
-  const { id } = useParams();
-
+export const RevisionPopup = ({ handleRevision, id }) => {
   const { data: SingleJobData, isPending: RevJobPending } = useGetJobById(
     "jobById",
     id,
-    "/clientProjects/viewJob"
+    "/clientProjects"
   );
 
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -56,10 +50,6 @@ export const RevisionPopup = ({
       mutationFn: (data) => requestRevision(data, id),
       onSuccess: (data) => {
         notifySuccess("Revision request sent successfully");
-        setTimeout(() => {
-          setRevisionFlag(false);
-          setDisabledFlag({ ...disabledFlag, revisionFlag: true });
-        }, 2000);
       },
       onError: (error) => {
         notifyError("Something went wrong ");
@@ -293,9 +283,9 @@ export const RevisionPopup = ({
                   className="bg-delete rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400 disabled:cursor-not-allowed"
                   type="button"
                   // disabled={EditJobSuccess}
-                  onClick={() => navigate(-1)}
+                  onClick={() => handleRevision()}
                 >
-                  Cancel
+                  Close
                 </button>
                 <button
                   className="bg-primary rounded-lg px-[30px] py-[10px] text-light disabled:bg-gray-400 disabled:cursor-not-allowed"
@@ -304,7 +294,7 @@ export const RevisionPopup = ({
                     selectedFiles.length === SingleJobData?.files?.length
                   }
                 >
-                  Submit
+                  Request Revision
                 </button>
               </div>
             </div>

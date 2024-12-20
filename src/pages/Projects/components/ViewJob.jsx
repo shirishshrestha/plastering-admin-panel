@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   acceptProject,
   downloadFile,
-  getProjectById,
   requestCancellation,
   sendEmailToClient,
 } from "../../../api/Projects/ProjectsApiSlice";
@@ -23,6 +22,7 @@ import { RevisionPopup } from "./RevisionPopup";
 import { Document, Download, GoBack } from "../../../assets/icons/SvgIcons";
 import useAuth from "../../../hooks/useAuth";
 import { useGetJobById } from "../hooks/query/useGetJobById";
+import { useToggle } from "../../../hooks/useToggle";
 
 const ViewJob = () => {
   const navigate = useNavigate();
@@ -31,8 +31,8 @@ const ViewJob = () => {
   const role = getRoleFromLocalStorage();
   const user_id = getIdFromLocalStorage();
 
+  const [revisionFlag, handleRevision] = useToggle();
   const [cancellationFlag, setCancellationFlag] = useState(false);
-  const [revisionFlag, setRevisionFlag] = useState(false);
   const [sendEmailFlag, setSendEmailFlag] = useState(false);
 
   const { confirmationShow, setConfirmationShow } = useAuth();
@@ -135,7 +135,7 @@ const ViewJob = () => {
 
       {revisionFlag && (
         <RevisionPopup
-          setRevisionFlag={setRevisionFlag}
+          handleRevision={handleRevision}
           setDisabledFlag={setDisabledFlag}
           disabledFlag={disabledFlag}
         />
@@ -270,7 +270,7 @@ const ViewJob = () => {
               {role === "client" && (
                 <button
                   className="button w-full justify-center disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  onClick={() => setRevisionFlag(true)}
+                  onClick={() => handleRevision()}
                   disabled={
                     disabledFlag.revisionFlag || disabledFlag.cancellationFlag
                   }
