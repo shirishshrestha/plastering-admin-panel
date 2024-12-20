@@ -5,6 +5,7 @@ export const CancelProjectConfirmation = ({
   handleProceedClick,
   handleCancelToggle,
   cancelLoading,
+  cancelInfo,
 }) => {
   const handleCancelClick = () => {
     handleCancelToggle();
@@ -27,7 +28,7 @@ export const CancelProjectConfirmation = ({
             <span className="font-semibold"> {projectName} </span>?
           </p>
           <p className="text-[14px] font-[500] leading-[21px] tracking-[0.5%] text-center">
-            This action will move the project to archived projects.
+            {cancelInfo}
           </p>
         </div>
 

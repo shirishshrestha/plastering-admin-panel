@@ -261,7 +261,7 @@ export const ArchivedProjects = () => {
                     <td>
                       <div className="flex gap-[0.7rem]">
                         <button
-                          className="bg-accent flex gap-[0.5rem] text-[0.9rem] font-semibold px-[20px] py-[5px] text-light rounded-lg "
+                          className="bg-accent flex gap-[0.5rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
                           onClick={() =>
                             navigate(`/projectbooks/jobBook/${item.id}`, {
                               replace: false,

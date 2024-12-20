@@ -125,6 +125,7 @@ export const ActiveProjects = () => {
             handleCancelToggle={handleCancelToggle}
             handleProceedClick={handleProceedClick}
             cancelLoading={deletePending}
+            cancelInfo="This action will move the project to archived projects."
           />
         )}
         {ActiveProjectsPending && <Loader />}

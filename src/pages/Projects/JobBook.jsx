@@ -12,6 +12,7 @@ import {
   TrashIcon,
 } from "../../assets/icons/SvgIcons";
 import {
+  CancelProjectConfirmation,
   CustomToastContainer,
   DeleteConfirmation,
   EmptyData,
@@ -27,6 +28,7 @@ import { useGetJobs } from "./hooks/query/useGetJobs";
 import { useToggle } from "../../hooks/useToggle";
 import { useDeleteJob } from "./hooks/mutation/useDeleteJob";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
+import { RevisionPopup } from "./components/RevisionPopup";
 
 const tableHead = [
   "ID",
@@ -38,15 +40,18 @@ const tableHead = [
 ];
 
 const JobBook = () => {
-  const navigate = useNavigate();
   const role = getRoleFromLocalStorage();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { openDrawer } = useAuth();
 
   const [jobId, setJobId] = useState();
   const [jobName, setJobName] = useState();
+
   const [deleteConfirationShow, handleDeleteToggle] = useToggle();
+  const [cancelConfirationShow, handleCancelToggle] = useToggle();
+  const [revisionFlag, handleRevision] = useToggle();
 
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
@@ -104,6 +109,8 @@ const JobBook = () => {
     DeleteJob(jobId);
   };
 
+  const handleCancelProceedClick = () => {};
+
   return (
     <>
       <section className="mt-[.5rem] pb-[1rem]">
@@ -115,6 +122,22 @@ const JobBook = () => {
             handleProceedClick={handleProceedClick}
             deleteLoading={DeleteJobPending}
           />
+        )}
+
+        {cancelConfirationShow && (
+          <CancelProjectConfirmation
+            projectName={jobName}
+            handleProceedClick={handleCancelProceedClick}
+            handleCancelToggle={handleCancelToggle}
+            cancelLoading={DeleteJobPending}
+            cancelInfo={
+              "Your cancellation request will be sent to the admin for approval."
+            }
+          />
+        )}
+
+        {revisionFlag && (
+          <RevisionPopup handleRevision={handleRevision} id={jobId} />
         )}
 
         <FilterDrawer
@@ -152,7 +175,13 @@ const JobBook = () => {
                 setSearchParams={setSearchParams}
                 placeholder={"Search by job name"}
               />
-              <Link to={`/projectbooks/addJob/${id}`}>
+              <Link
+                to={
+                  role === "admin"
+                    ? `/projectbooks/addJob/${id}`
+                    : `/clientProjects/addJob/${id}`
+                }
+              >
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
                   Add New Job <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>
@@ -215,7 +244,7 @@ const JobBook = () => {
                     <td>
                       <div className="flex gap-[0.7rem]">
                         <button
-                          className="p-[5px] rounded-md bg-viewBackground"
+                          className="bg-accent flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
                           onClick={() =>
                             navigate(
                               role === "admin"
@@ -224,31 +253,52 @@ const JobBook = () => {
                             )
                           }
                         >
-                          <EyeIcon strokeColor="#3e84f4" />
+                          View
                         </button>
-                        <button
-                          className="p-[5px] rounded-md bg-editBackground"
-                          onClick={() =>
-                            navigate(
-                              role === "admin"
-                                ? `/projectbooks/editJob/${job.id}`
-                                : `/clientProjects/editJob/${job.id}`
-                            )
-                          }
-                        >
-                          <EditIcon color="#8c62ff" />
-                        </button>
+                        {role === "client" && (
+                          <>
+                            <button
+                              className="bg-edit flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
+                              onClick={() => {
+                                handleRevision();
+                                setJobId(job.id);
+                              }}
+                            >
+                              Revision
+                            </button>
+                            <button
+                              className="bg-delete flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
+                              onClick={() => {
+                                handleCancelToggle();
+                                setJobName(job.job_name);
+                                setJobId(job.id);
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        )}
                         {role === "admin" && (
-                          <button
-                            className="p-[5px] rounded-md bg-deleteBackground"
-                            onClick={() => {
-                              handleDeleteToggle();
-                              setJobName(job.job_name);
-                              setJobId(job.id);
-                            }}
-                          >
-                            <TrashIcon />
-                          </button>
+                          <>
+                            <button
+                              className="bg-edit flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
+                              onClick={() =>
+                                navigate(`/projectbooks/editJob/${job.id}`)
+                              }
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="bg-delete flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
+                              onClick={() => {
+                                handleDeleteToggle();
+                                setJobName(job.job_name);
+                                setJobId(job.id);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </>
                         )}
                       </div>
                     </td>
