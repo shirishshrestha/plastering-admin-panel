@@ -10,7 +10,7 @@ import {
   LogoLoader,
   LogoutConfirmation,
 } from "../../components";
-import { curve, logo, spiral, square } from "../../assets/images";
+import { logo } from "../../assets/images";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import { useCallback, useMemo } from "react";
@@ -19,7 +19,7 @@ import { useGetProjects } from "../Projects/hooks/query/useGetProjects";
 import { Tooltip } from "flowbite-react";
 
 const tableHead = [
-  "Project Book",
+  "Client",
   "Project Name",
   "Project Location",
   "Project Type",
@@ -192,6 +192,7 @@ export const Dashboard = () => {
                       {item.project_book.title ? (
                         item.project_book.title.length > 25 ? (
                           <Tooltip
+                            className="max-w-[300px]"
                             content={item.project_book.title}
                           >{`${item.project_book.title.slice(
                             0,
@@ -208,10 +209,10 @@ export const Dashboard = () => {
                     <td className="py-[1rem] pl-[0.5rem]">
                       {item.name ? (
                         item.name.length > 25 ? (
-                          <Tooltip content={item.name}>{`${item.name.slice(
-                            0,
-                            25
-                          )}...`}</Tooltip>
+                          <Tooltip
+                            className="max-w-[300px]"
+                            content={item.name}
+                          >{`${item.name.slice(0, 25)}...`}</Tooltip>
                         ) : (
                           item.name
                         )
@@ -222,10 +223,10 @@ export const Dashboard = () => {
 
                     <td className="py-[1rem]">
                       {item.address.length > 30 ? (
-                        <Tooltip content={item.address}>{`${item.address.slice(
-                          0,
-                          30
-                        )}...`}</Tooltip>
+                        <Tooltip
+                          className="max-w-[300px]"
+                          content={item.address}
+                        >{`${item.address.slice(0, 30)}...`}</Tooltip>
                       ) : (
                         item.address
                       )}

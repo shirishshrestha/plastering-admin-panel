@@ -115,7 +115,7 @@ const Clients = () => {
                 <td className="py-[1rem] pl-[1rem] pr-[1rem]">{user.id}</td>
                 <td className="py-[1rem] pl-[0.5rem]">
                   {user.name && user.name.length > 20 ? (
-                    <Tooltip content={user.name}>
+                    <Tooltip className="max-w-[300px]" content={user.name}>
                       {`${user.name.slice(0, 20)}...`}
                     </Tooltip>
                   ) : (
@@ -125,7 +125,7 @@ const Clients = () => {
                 <td className="py-[1rem] pl-[0.5rem]">{user.username} </td>
                 <td className="py-[1rem]">
                   {user.email && user.email.length > 25 ? (
-                    <Tooltip content={user.email}>
+                    <Tooltip className="max-w-[300px]" content={user.email}>
                       {`${user.email.slice(0, 25)}...`}
                     </Tooltip>
                   ) : (

@@ -262,7 +262,10 @@ const JobBook = () => {
                     <td className="py-[1rem] pl-[0.5rem]">
                       {job.job_name ? (
                         job.job_name.length > 30 ? (
-                          <Tooltip content={job.job_name}>
+                          <Tooltip
+                            className="max-w-[300px]"
+                            content={job.job_name}
+                          >
                             {`${job.job_name.slice(0, 30)}...`}
                           </Tooltip>
                         ) : (
@@ -275,7 +278,10 @@ const JobBook = () => {
                     <td className="py-[1rem]">
                       {job.description ? (
                         job.description.length > 35 ? (
-                          <Tooltip content={job.description}>
+                          <Tooltip
+                            className="max-w-[300px]"
+                            content={job.description}
+                          >
                             {`${job.description.slice(0, 35)}...`}
                           </Tooltip>
                         ) : (
@@ -345,6 +351,11 @@ const JobBook = () => {
                               Delete
                             </button>
                           </>
+                        )}
+                        {role === "admin" && (
+                          <button className="bg-accent flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg">
+                            Assign Estimator
+                          </button>
                         )}
                       </div>
                     </td>
