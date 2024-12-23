@@ -131,7 +131,10 @@ const BusinessDirectory = () => {
                       {" "}
                       {estimator.business_name &&
                       estimator.business_name.length > 20 ? (
-                        <Tooltip content={estimator.business_name}>
+                        <Tooltip
+                          className="max-w-[300px]"
+                          content={estimator.business_name}
+                        >
                           {`${estimator.business_name.slice(0, 20)}...`}
                         </Tooltip>
                       ) : (
@@ -143,7 +146,10 @@ const BusinessDirectory = () => {
                     </td>
                     <td className="py-[1rem]">
                       {estimator.email && estimator.email.length > 25 ? (
-                        <Tooltip content={estimator.email}>
+                        <Tooltip
+                          className="max-w-[300px]"
+                          content={estimator.email}
+                        >
                           {`${estimator.email.slice(0, 25)}...`}
                         </Tooltip>
                       ) : (

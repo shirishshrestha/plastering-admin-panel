@@ -269,7 +269,10 @@ const Projects = () => {
                     <td className="py-[1rem] pl-[0.5rem]">
                       {item.name ? (
                         item.name.length > 20 ? (
-                          <Tooltip content={item.name}>
+                          <Tooltip
+                            className="max-w-[300px]"
+                            content={item.name}
+                          >
                             {`${item.name.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
@@ -282,7 +285,10 @@ const Projects = () => {
                     <td className="py-[1rem]">
                       {item.address ? (
                         item.address.length > 20 ? (
-                          <Tooltip content={item.address}>
+                          <Tooltip
+                            className="max-w-[300px]"
+                            content={item.address}
+                          >
                             {`${item.address.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
@@ -296,7 +302,10 @@ const Projects = () => {
                     <td className="py-[1rem]">
                       {item.additional_requirements ? (
                         item.additional_requirements.length > 20 ? (
-                          <Tooltip content={item.additional_requirements}>
+                          <Tooltip
+                            className="max-w-[300px]"
+                            content={item.additional_requirements}
+                          >
                             {`${item.additional_requirements.slice(0, 20)}...`}
                           </Tooltip>
                         ) : (
