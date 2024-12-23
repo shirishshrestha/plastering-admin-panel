@@ -30,6 +30,10 @@ import useAuth from "../../../hooks/useAuth";
 import { useGetActiveProjects } from "../hooks/query/useGetActiveProjects";
 import { useToggle } from "../../../hooks/useToggle";
 
+/**
+ * Table headers for the active projects table.
+ * @constant {string[]} tableHead
+ */
 const tableHead = [
   "P. Id",
   "Project Name",
@@ -42,6 +46,13 @@ const tableHead = [
   "Actions",
 ];
 
+/**
+ * ActiveProjects component displays a list of active projects.
+ * It allows users to search, filter, and manage projects including adding,
+ * editing, and deleting them.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 export const ActiveProjects = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -55,6 +66,7 @@ export const ActiveProjects = () => {
 
   const { openDrawer } = useAuth();
 
+  // Memoized values for current page, search term, project type, and date from url search params.
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
     [searchParams]
@@ -72,6 +84,7 @@ export const ActiveProjects = () => {
 
   const date = useMemo(() => searchParams.get("date") || "", [searchParams]);
 
+  // Fetch active projects data
   const { data: ActiveProjectsData, isPending: ActiveProjectsPending } =
     useGetActiveProjects(
       "activeProjects",
@@ -82,6 +95,9 @@ export const ActiveProjects = () => {
       date
     );
 
+  /**
+   * Configuration object for pagination controls
+   */
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
@@ -105,6 +121,10 @@ export const ActiveProjects = () => {
     },
   });
 
+  /**
+   * Updates the current page number in the search parameters.
+   * @param {number} newPageNumber - The new page number to set.
+   */
   const updatePageNumber = (newPageNumber) => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());

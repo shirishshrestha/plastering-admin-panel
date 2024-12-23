@@ -102,7 +102,7 @@ export default function Sidebar({ sidebarToggle }) {
                   showText ? "block" : "hidden"
                 }`}
               >
-                Assigned Projects
+                Assigned Jobs
               </span>
             </NavLink>
           ) : (

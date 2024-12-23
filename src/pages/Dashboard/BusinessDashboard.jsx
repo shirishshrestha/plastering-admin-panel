@@ -1,18 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Calendar, TotalProjects } from "../../assets/icons/SvgIcons";
 import {
   DoughnutChart,
   EmptyData,
   LogoLoader,
-  LogoutConfirmation,
 } from "../../components";
-import {
-  clientDashboard,
-  curve,
-  logo,
-  spiral,
-  square,
-} from "../../assets/images";
+import { logo } from "../../assets/images";
 import {
   getIdFromLocalStorage,
   getNameFromLocalStorage,
@@ -22,9 +15,6 @@ import {
   getProjectsStatus,
   getUserProjects,
 } from "../../api/Projects/ProjectsApiSlice";
-import useAuth from "../../hooks/useAuth";
-import useLogout from "../../hooks/useLogout";
-import { useCallback } from "react";
 
 const tableHead = [
   "Project Name",
@@ -36,21 +26,7 @@ const tableHead = [
 export const BusinessDashboard = () => {
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
-
-  const { logout } = useLogout();
-
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
+  const navigate = useNavigate();
 
   const {
     isPending: projectPending,
@@ -106,13 +82,6 @@ export const BusinessDashboard = () => {
   return (
     <section className="pt-[1rem]">
       {(projectPending || projectStatusPending) && <LogoLoader />}
-
-      {logoutConfirationShow && (
-        <LogoutConfirmation
-          handleLogoutClick={handleLogout}
-          setLogoutConfirationShow={setLogoutConfirationShow}
-        />
-      )}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1rem] w-full h-full">
         <div className="w-full h-full flex flex-col justify-center">
           <div className="w-full bg-white rounded-lg shadow-lg py-[1rem] px-[2rem] relative overflow-hidden">
@@ -126,32 +95,6 @@ export const BusinessDashboard = () => {
               <figure className="w-[140px] relative z-10">
                 <img src={logo} alt="dashboard" className="object-cover" />
               </figure>
-              <img
-                src={square}
-                alt="square"
-                className="absolute left-[-5%] bottom-[80%]"
-              />
-              <img
-                src={square}
-                alt="square"
-                className="absolute left-[-12%] top-[80%]"
-              />
-              <img
-                src={curve}
-                alt="curve"
-                className="absolute rotate-90 right-[-10%] top-[40%]"
-              />
-              <img
-                src={curve}
-                alt="curve"
-                className="absolute rotate-90 right-[40%] top-[55%]"
-              />
-
-              <img
-                src={spiral}
-                alt="spiral"
-                className="absolute  right-[-1%] top-[-8%] h-[40px]"
-              />
             </div>
           </div>
           <div className="grid grid-cols-[1fr,1fr] gap-[0.5rem] justify-center mt-[1.5rem] text-[14px]">

@@ -17,6 +17,13 @@ import { useGetJobById } from "../hooks/query/useGetJobById";
 import { useEditJob } from "../hooks/mutation/useEditJob";
 import { getRoleFromLocalStorage } from "../../../utils/Storage/StorageUtils";
 
+/**
+ * EditJob component allows users to edit an existing job.
+ * It retrieves job details, displays them in a form, and allows
+ * for updates to fields like job name, description, files, etc.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 export const EditJob = () => {
   const role = getRoleFromLocalStorage();
   const navigate = useNavigate();
@@ -32,17 +39,21 @@ export const EditJob = () => {
   const [newFiles, setNewFiles] = useState([]);
   const [deletedFiles, setDeletedFiles] = useState([]);
 
+  // Fetch job data by ID
   const { data: JobData, isPending: JobDataPending } = useGetJobById(
     "jobByIdEditJob",
     id,
     role === "admin" ? "/projectbooks/editJob" : "/clientProjects/editJob"
   );
+
+  // Mutation for editing a job
   const {
     mutate: EditJob,
     isPending: EditJobPending,
     isSuccess: EditJobSuccess,
   } = useEditJob("userJobs", JobData?.project?.id, setNewFiles);
 
+  // Reset form fields when job data is fetched
   useEffect(() => {
     if (JobData) {
       reset({
@@ -61,6 +72,9 @@ export const EditJob = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
+  /**
+   * Handles user logout, clears the local storage, and navigates to the login page.
+   */
   const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
@@ -71,6 +85,12 @@ export const EditJob = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
+  /**
+   * Form submission handler for editing a job.
+   * Prepares and sends the job data using FormData.
+   *
+   * @param {Object} data - Form data collected from the input fields.
+   */
   const editJobForm = (data) => {
     const formData = new FormData();
 
@@ -80,15 +100,20 @@ export const EditJob = () => {
     formData.append("description", data.additional_info || "");
     formData.append("status", data.status);
 
+    // This is used to indicate that the request is for an update
     formData.append("_method", "PUT");
+
+    // Append new files to the FormData
     Array.from(newFiles).forEach((file) => {
       formData.append("files[]", file);
     });
 
+    // Append old files (files to keep) based on the selected files
     Array.from(selectedFiles).forEach((file) => {
       formData.append("old_files[]", file.name);
     });
 
+    // Append deleted files to the FormData
     Array.from(deletedFiles).forEach((file) => {
       formData.append("deleted_files[]", file.name);
     });

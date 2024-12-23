@@ -14,6 +14,12 @@ import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
 import { useCallback } from "react";
 
+/**
+ * AddProject component allows users to create a new project.
+ * It provides a form with fields for project details and handles submission to create the project.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 export const AddProject = () => {
   const role = getRoleFromLocalStorage();
   const { id: user_id } = useParams();
@@ -40,6 +46,9 @@ export const AddProject = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
+  /**
+   * Handles user logout, clearing local storage and navigating to the login page.
+   */
   const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
@@ -50,12 +59,19 @@ export const AddProject = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
+  // Mutation for adding a new project
   const {
     mutate: AddProject,
     isPending: addProjectPending,
     isSuccess: AddProjectSuccess,
   } = useAddProject(reset, "userTotalProjects", user_id);
 
+  /**
+   * Form submission handler for adding a new project.
+   * Prepares the form data and calls the mutation to create the project.
+   *
+   * @param {Object} data - The form data collected from the input fields.
+   */
   const addProjectForm = (data) => {
     const formData = new FormData();
 

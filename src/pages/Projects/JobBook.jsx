@@ -30,6 +30,10 @@ import { useDeleteJob } from "./hooks/mutation/useDeleteJob";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import { RevisionPopup } from "./components/RevisionPopup";
 
+/**
+ * Table header data for the job listing.
+ * @type {Array<string>}
+ */
 const tableHead = [
   "ID",
   "Job Name",
@@ -39,8 +43,19 @@ const tableHead = [
   "Actions",
 ];
 
+/**
+ * JobBook component is responsible for displaying a list of jobs and their details.
+ * It handles pagination, search filters, and job deletion with confirmation.
+ *
+ * @returns {JSX.Element} The JobBook component.
+ */
 const JobBook = () => {
+  /**
+   * Retrieves the user role from local storage.
+   * @type {string}
+   */
   const role = getRoleFromLocalStorage();
+
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -53,6 +68,7 @@ const JobBook = () => {
   const [cancelConfirationShow, handleCancelToggle] = useToggle();
   const [revisionFlag, handleRevision] = useToggle();
 
+  // Memoized current page number, search item, status, date based on search parameters
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
     [searchParams]
@@ -73,6 +89,12 @@ const JobBook = () => {
     [searchParams]
   );
 
+  /**
+   * Fetches job data based on search parameters and current page.
+   *
+   * @param {Object} params - The query parameters for fetching jobs.
+   * @returns {Object} The job data and pending state.
+   */
   const { data: JobData, isPending: JobPending } = useGetJobs(
     "userJobs",
     id,
@@ -82,6 +104,12 @@ const JobBook = () => {
     status
   );
 
+  /**
+   * Mutation hook to delete a job.
+   *
+   * @param {string} jobId - The job ID to delete.
+   * @returns {Object} The mutation functions for deleting a job.
+   */
   const { mutate: DeleteJob, isPending: DeleteJobPending } = useDeleteJob(
     "userJobs",
     handleDeleteToggle,
@@ -89,6 +117,15 @@ const JobBook = () => {
     currentPage
   );
 
+  /**
+   * Pagination props for controlling pagination behavior.
+   *
+   * @type {Object}
+   * @property {number} pageNumber - The current page number.
+   * @property {number} lastPage - The last page number.
+   * @property {Function} nextClick - Function to navigate to the next page.
+   * @property {Function} prevClick - Function to navigate to the previous page.
+   */
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
@@ -99,12 +136,21 @@ const JobBook = () => {
     [currentPage, JobData]
   );
 
+  /**
+   * Updates the page number in the search params.
+   *
+   * @param {number} newPageNumber - The new page number to set in the URL.
+   */
   const updatePageNumber = (newPageNumber) => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());
     setSearchParams(updatedParams);
   };
 
+  /**
+   * Handles the action when the user proceeds with job deletion.
+   *
+   */
   const handleProceedClick = () => {
     DeleteJob(jobId);
   };

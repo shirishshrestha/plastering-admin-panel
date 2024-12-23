@@ -18,6 +18,13 @@ import {
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 import { useAddJob } from "../hooks/mutation/useAddJob";
 
+/**
+ * AddJob component allows users to add a new job related to a project.
+ * It includes a form for collecting job details such as name, requirements,
+ * upload files, and a due date.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 export const AddJob = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -42,6 +49,9 @@ export const AddJob = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
+  /**
+   * Handles user logout and clears the local storage.
+   */
   const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
@@ -52,6 +62,7 @@ export const AddJob = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
+  // Mutation for adding a job
   const {
     mutate: AddJob,
     isPending: AddJobPending,
@@ -60,6 +71,12 @@ export const AddJob = () => {
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
+  /**
+   * Form submission handler for adding a job.
+   * Prepares and sends the job data using FormData.
+   *
+   * @param {Object} data - Form data collected from the input fields.
+   */
   const addJobForm = (data) => {
     const formData = new FormData();
 
@@ -70,12 +87,14 @@ export const AddJob = () => {
     formData.append("status", "pending");
     formData.append("description", data.additional_info || "");
 
+    // Append selected files to the formData
     if (selectedFiles.length > 0) {
       Array.from(selectedFiles).forEach((file) => {
         formData.append("file[]", file);
       });
     }
 
+    // Invoke the mutation to add the job
     AddJob(formData);
   };
 
