@@ -42,6 +42,12 @@ const doughnutBorderColor = [
   "rgba(255, 99, 132, 1)",
 ];
 
+/**
+ * ProjectBooks component displays the list of project books and their status.
+ * It handles pagination, search, logout, and viewing individual project details.
+ *
+ * @returns {JSX.Element} The ProjectBooks component.
+ */
 export const ProjectBooks = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,6 +56,7 @@ export const ProjectBooks = () => {
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Memoized current page number, search item, status, date based on search parameters
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
     [searchParams]
@@ -77,21 +84,6 @@ export const ProjectBooks = () => {
     openDrawer,
   } = useAuth();
 
-  // queries
-  const { data: ProjectBooks, isPending: ProjectBooksPending } =
-    useGetProjectBooks(
-      "projectBooks",
-      "/projectbooks",
-      createdDate,
-      status,
-      currentPage,
-      searchItem
-    );
-  const { data: RecentProjectBooks, isPending: recentProjectsBookPending } =
-    useGetProjectBooks("recentProjectBooks", "/projectbooks", "", "", 1, "");
-  const { data: TotalProjectStatusData, isPending: projectStatusPending } =
-    useGetProjectBookStatus("totalProjectBookStatus", "/projectbooks");
-
   const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
@@ -101,6 +93,33 @@ export const ProjectBooks = () => {
     });
   }, [setAuth, setLogoutConfirationShow, logout, navigate]);
 
+  // Queries to fetch project book data and related status data
+  /**
+   * Fetches project books based on search parameters.
+   * @type {Object}
+   */
+  const { data: ProjectBooks, isPending: ProjectBooksPending } =
+    useGetProjectBooks(
+      "projectBooks",
+      "/projectbooks",
+      createdDate,
+      status,
+      currentPage,
+      searchItem
+    );
+
+  const { data: RecentProjectBooks, isPending: recentProjectsBookPending } =
+    useGetProjectBooks("recentProjectBooks", "/projectbooks", "", "", 1, "");
+
+  const { data: TotalProjectStatusData, isPending: projectStatusPending } =
+    useGetProjectBookStatus("totalProjectBookStatus", "/projectbooks");
+
+  /**
+   * Navigates to the projects page for a specific user.
+   *
+   * @param {string} user_id - The ID of the user whose projects to view.
+   * @returns {void}
+   */
   const handleViewProjects = useCallback(
     (user_id) => {
       navigate(`projects/${user_id}`);
@@ -124,6 +143,10 @@ export const ProjectBooks = () => {
     },
   ];
 
+  /**
+   * Pagination properties for controlling pagination behavior.
+   *
+   */
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
@@ -134,6 +157,11 @@ export const ProjectBooks = () => {
     [currentPage, ProjectBooks]
   );
 
+  /**
+   * Updates the page number in the search params and triggers a re-render.
+   *
+   * @param {number} newPageNumber - The new page number to set in the URL.
+   */
   const updatePageNumber = (newPageNumber) => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());

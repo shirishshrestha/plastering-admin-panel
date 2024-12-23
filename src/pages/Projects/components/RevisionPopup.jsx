@@ -13,7 +13,18 @@ import {
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
 import { useGetJobById } from "../hooks/query/useGetJobById";
 
+/**
+ * RevisionPopup component allows users to request revisions for a job.
+ * It displays the current job details in a form, allowing the user to
+ * update information and select files for inclusion in the revision request.
+ *
+ * @param {Object} props - Component props.
+ * @param {Function} props.handleRevision - Callback function to handle the revision.
+ * @param {string} props.id - ID of the job to be revised.
+ * @returns {JSX.Element} The rendered component.
+ */
 export const RevisionPopup = ({ handleRevision, id }) => {
+  // Fetches single job data based on the provided job ID
   const { data: SingleJobData, isPending: RevJobPending } = useGetJobById(
     "jobById",
     id,
@@ -31,6 +42,7 @@ export const RevisionPopup = ({ handleRevision, id }) => {
     reset,
   } = useForm();
 
+  // Effect to reset form fields when job data is fetched
   useEffect(() => {
     if (SingleJobData) {
       reset({
@@ -45,6 +57,7 @@ export const RevisionPopup = ({ handleRevision, id }) => {
     }
   }, [SingleJobData, reset]);
 
+  // Mutation to request a revision of the project
   const { mutate: RevisionProject, isPending: RevisionProjectPending } =
     useMutation({
       mutationFn: (data) => requestRevision(data, id),
@@ -56,6 +69,12 @@ export const RevisionPopup = ({ handleRevision, id }) => {
       },
     });
 
+  /**
+   * Form submission handler for requesting a job revision.
+   * Collects and sends the job data via FormData.
+   *
+   * @param {Object} data - The form data submitted by the user.
+   */
   const revisionJobForm = (data) => {
     const formData = new FormData();
 

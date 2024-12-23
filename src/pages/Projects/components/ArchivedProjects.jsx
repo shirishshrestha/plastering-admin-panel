@@ -40,6 +40,11 @@ const tableHead = [
   "Actions",
 ];
 
+/**
+ * ArchivedProjects component displays a paginated table of archived projects with filtering and search capabilities.
+ * Allows users to view, edit, and delete archived projects.
+ * @returns {JSX.Element} Archived projects table with filtering and actions
+ */
 export const ArchivedProjects = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,6 +56,7 @@ export const ArchivedProjects = () => {
 
   const { openDrawer } = useAuth();
 
+  // Memoized URL params for filtering and pagination
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
     [searchParams]
@@ -73,6 +79,9 @@ export const ArchivedProjects = () => {
 
   const date = useMemo(() => searchParams.get("date") || "", [searchParams]);
 
+  /**
+   * Query for fetching projects
+   */
   const { data: ArchivedProjectsData, isPending: ArchivedProjectsPending } =
     useGetArchivedProjects(
       "archivedProjects",
@@ -84,6 +93,9 @@ export const ArchivedProjects = () => {
       date
     );
 
+  /**
+   * Configuration object for pagination controls
+   */
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
@@ -94,6 +106,9 @@ export const ArchivedProjects = () => {
     [currentPage, ArchivedProjectsData]
   );
 
+  /**
+   * Mutation for deleting a project
+   */
   const { mutate: DeleteProject, isPending: deletePending } = useMutation({
     mutationFn: () => deleteProject(projectId),
     onSuccess: () => {
@@ -106,12 +121,19 @@ export const ArchivedProjects = () => {
     },
   });
 
+  /**
+   * Updates the page number in URL search params
+   * @param {number} newPageNumber - New page number to set
+   */
   const updatePageNumber = (newPageNumber) => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());
     setSearchParams(updatedParams);
   };
 
+  /**
+   * Handles project deletion confirmation
+   */
   const handleProceedClick = () => {
     DeleteProject();
   };

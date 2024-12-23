@@ -14,10 +14,20 @@ import useAuth from "../../hooks/useAuth";
 import { useGetSingleProject } from "./hooks/query/useGetSingleProject";
 import { useEditProject } from "./hooks/mutation/useEditProject";
 
+/**
+ * EditProject component is responsible for rendering the form to edit a project.
+ * It fetches the existing project data, pre-populates the form, and handles project editing and logout logic.
+ *
+ * @returns {JSX.Element} The EditProject component.
+ */
 export const EditProject = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  /**
+   * Fetches single project data using `useGetSingleProject` hook.
+   * The hook returns the project data and a loading state (`isPending`).
+   */
   const { data: SingleProjectData, isPending: viewProjectPending } =
     useGetSingleProject("singleProject", id);
 
@@ -28,6 +38,11 @@ export const EditProject = () => {
     reset,
   } = useForm();
 
+  /**
+   * Resets the form when SingleProjectData changes, pre-populating the form with existing project data.
+   *
+   * @param {Object} SingleProjectData - The project data to pre-populate the form.
+   */
   useEffect(() => {
     if (SingleProjectData) {
       reset({
@@ -44,6 +59,12 @@ export const EditProject = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
+  /**
+   * Handles the logout process by clearing authentication data, local storage,
+   * and navigating to the login page.
+   *
+   * @returns {void}
+   */
   const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
@@ -54,6 +75,13 @@ export const EditProject = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
+  /**
+   * Mutates the project using `useEditProject` hook to send edited project data to the backend.
+   *
+   * @param {string} "userTotalProjects" - The identifier for the project mutation.
+   * @param {string} id - The project ID.
+   * @param {string} SingleProjectData?.project_book.user.id - The user ID associated with the project.
+   */
   const {
     mutate: EditProject,
     isPending: editProjectPending,
@@ -64,10 +92,19 @@ export const EditProject = () => {
     SingleProjectData?.project_book.user.id
   );
 
+  /**
+   * Handles form submission to update the project.
+   *
+   * @param {Object} data - The form data to be sent to the backend for project editing.
+   * @returns {void}
+   */
   const editProjectForm = (data) => {
     EditProject(data);
   };
 
+  /**
+   * Navigates the user back to the previous page when the cancel button is clicked.
+   */
   const handleProjectCancel = () => {
     navigate(-1);
   };

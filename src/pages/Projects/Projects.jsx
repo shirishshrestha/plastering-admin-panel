@@ -1,3 +1,7 @@
+/**
+ * @file Projects.jsx
+ * @description Component for displaying and managing a list of projects with features like filtering, pagination, and actions.
+ */
 import {
   Link,
   useNavigate,
@@ -24,6 +28,10 @@ import useAuth from "../../hooks/useAuth";
 import { useGetUserTotalProjects } from "./hooks/query/useGetUserTotalProjects";
 import { useToggle } from "../../hooks/useToggle";
 
+/**
+ * Table header labels for the projects list.
+ * @constant {string[]}
+ */
 const tableHead = [
   "P. Id",
   "Project Name",
@@ -36,40 +44,67 @@ const tableHead = [
   "Actions",
 ];
 
+/**
+ * Projects Component
+ * @description Displays a list of projects with features like search, filter, pagination, and actions to view or modify projects.
+ * @returns {JSX.Element} The rendered Projects component.
+ */
 const Projects = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // State variables
   const [projectId, setProjectId] = useState();
   const [projectName, setProjectName] = useState();
   const [cancelConfirmation, handleCancelToggle] = useToggle();
 
   const { openDrawer } = useAuth();
 
+  /**
+   * Current page number derived from search parameters.
+   * Defaults to 1 if no "page" parameter is found.
+   */
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
     [searchParams]
   );
 
+  /**
+   * Search term for filtering projects, derived from search parameters.
+   */
   const searchItem = useMemo(
     () => searchParams.get("search") || "",
     [searchParams]
   );
 
+  /**
+   * Project type filter derived from search parameters.
+   */
   const projectType = useMemo(
     () => searchParams.get("project_type") || "",
     [searchParams]
   );
 
+  /**
+   * Status filter derived from search parameters.
+   */
   const status = useMemo(
     () => searchParams.get("status") || "",
     [searchParams]
   );
 
+  /**
+   * Date filter derived from search parameters.
+   */
   const date = useMemo(() => searchParams.get("date") || "", [searchParams]);
 
+  /**
+   * Fetch total projects data using a custom hook.
+   * Includes support for pagination and filtering.
+   * @returns {object} Projects data and loading status.
+   */
   const { data: TotalProjects, isPending: TotalProjectsPending } =
     useGetUserTotalProjects(
       "userTotalProjects",
@@ -82,6 +117,9 @@ const Projects = () => {
       status
     );
 
+  /**
+   * Pagination properties for managing navigation between pages.
+   */
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
@@ -92,6 +130,10 @@ const Projects = () => {
     [currentPage, TotalProjects]
   );
 
+  /**
+   * Mutation to delete a project by ID.
+   * Provides success and error handling for the deletion process.
+   */
   const { mutate: DeleteProject, isPending: deletePending } = useMutation({
     mutationFn: () => deleteProject(projectId),
     onSuccess: () => {
@@ -104,12 +146,21 @@ const Projects = () => {
     },
   });
 
+  /**
+   * Updates the page number in the search parameters.
+   * Ensures the page navigation updates the URL query string.
+   * @param {number} newPageNumber - New page number to set.
+   */
   const updatePageNumber = (newPageNumber) => {
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set("page", newPageNumber.toString());
     setSearchParams(updatedParams);
   };
 
+  /**
+   * Handles the proceed button click in the cancel confirmation modal.
+   * Triggers the delete mutation for the selected project.
+   */
   const handleProceedClick = () => {
     // DeleteProject();
   };
@@ -117,6 +168,7 @@ const Projects = () => {
   return (
     <>
       <section className="mt-[.5rem] pb-[1rem]">
+        {/* Render cancel confirmation modal if triggered */}
         {cancelConfirmation && (
           <CancelProjectConfirmation
             projectName={projectName}
@@ -125,7 +177,11 @@ const Projects = () => {
             cancelLoading={deletePending}
           />
         )}
+
+        {/* Show loader while data is being fetched */}
         {TotalProjectsPending && <Loader />}
+
+        {/* Filter drawer for applying search and filter criteria */}
         <FilterDrawer setSearchParams={setSearchParams} dateName={"start date"}>
           <FilterDrawer.Status
             options={[
@@ -137,6 +193,7 @@ const Projects = () => {
           <FilterDrawer.ProjectType />
           <FilterDrawer.RegisteredDate />
         </FilterDrawer>
+
         <div>
           <div
             className="flex w-fit items-center gap-[0.2rem] text-[14px] cursor-pointer font-[500] "
@@ -267,7 +324,7 @@ const Projects = () => {
                           <EditIcon color="#8c62ff" />
                         </button>
                         <button
-                          className="bg-accent flex gap-[0.5rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
+                          className="bg-accent flex gap-[0.5rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg"
                           onClick={() =>
                             navigate(`/projectbooks/jobBook/${item.id}`)
                           }

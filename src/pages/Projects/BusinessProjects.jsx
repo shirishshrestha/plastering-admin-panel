@@ -35,6 +35,7 @@ import { useToggle } from "../../hooks/useToggle";
 import UploadEstimate from "./components/UploadEstimate";
 import EditEstimate from "./components/EditEstimate";
 import { useCallback } from "react";
+import useLogout from "../../hooks/useLogout";
 
 const tableHead = [
   "Project Name",
@@ -72,22 +73,9 @@ export const BusinessProjects = () => {
 
   const user_id = getIdFromLocalStorage();
 
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = parseInt(searchParams.get("page") || 1, 10);
-
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const {
     isPending,
@@ -173,12 +161,7 @@ export const BusinessProjects = () => {
         <section>
           {isPending && <Loader />}
           {projectStatusPending && <Loader />}
-          {logoutConfirationShow && (
-            <LogoutConfirmation
-              handleLogoutClick={handleLogout}
-              setLogoutConfirationShow={setLogoutConfirationShow}
-            />
-          )}
+
           <div className="grid grid-cols-2">
             <div>
               <div className=" mx-auto  bg-white shadow-lg rounded-lg">

@@ -40,6 +40,12 @@ const tableHead = [
   "Action",
 ];
 
+/**
+ * ClientProjects component displays a list of projects associated with a client.
+ * It includes functionality for searching, filtering, and pagination.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 export const ClientProjects = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,6 +54,7 @@ export const ClientProjects = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Memoized current page number, search item, project type, date based on search parameters
   const currentPage = useMemo(
     () => parseInt(searchParams.get("page") || "1", 10),
     [searchParams]
@@ -75,6 +82,9 @@ export const ClientProjects = () => {
     openDrawer,
   } = useAuth();
 
+  /**
+   * Handles user logout, clearing local storage and navigating to the login page.
+   */
   const { logout } = useLogout();
   const handleLogout = useCallback(() => {
     setAuth({});
@@ -86,6 +96,7 @@ export const ClientProjects = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
+  // Fetching user projects
   const { data: RecentProjectData, isPending: RecentProjectsPending } =
     useGetUserTotalProjects(
       "userRecentProjects",
@@ -108,6 +119,7 @@ export const ClientProjects = () => {
   const { data: ProjectStatusData, isPending: projectStatusPending } =
     useGetUserProjectStatus("userProjectStatus");
 
+  // Memoized pagination props
   const paginationProps = useMemo(
     () => ({
       pageNumber: currentPage,
@@ -117,6 +129,16 @@ export const ClientProjects = () => {
     }),
     [currentPage, ProjectData]
   );
+
+  /**
+   * Updates the page number in the search parameters for pagination.
+   * @param {number} newPageNumber - The new page number to set.
+   */
+  const updatePageNumber = (newPageNumber) => {
+    const updatedParams = new URLSearchParams(searchParams);
+    updatedParams.set("page", newPageNumber.toString());
+    setSearchParams(updatedParams);
+  };
 
   const doughnutData = [
     {

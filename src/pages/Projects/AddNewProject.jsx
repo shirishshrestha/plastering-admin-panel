@@ -14,6 +14,13 @@ import { useAddProject } from "./hooks/mutation/useAddProject";
 import { useGetClientsName } from "../Clients/hooks/query/useGetClientsName";
 import { useCallback, useState } from "react";
 
+/**
+ * AddNewProject component allows users to create a new project.
+ * It provides a form with fields for project details, selects a client,
+ * and handles submission to create the project.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 export const AddNewProject = () => {
   const [userId, setUserId] = useState();
   const navigate = useNavigate();
@@ -34,6 +41,7 @@ export const AddNewProject = () => {
     },
   });
 
+  // Fetch clients
   const { data: ClientNameData, isPending: ClientNamePending } =
     useGetClientsName("projectClientsName");
 
@@ -42,6 +50,9 @@ export const AddNewProject = () => {
   const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
     useAuth();
 
+  /**
+   * Handles user logout, clearing local storage and navigating to the login page.
+   */
   const handleLogout = useCallback(() => {
     setAuth({});
     localStorage.clear();
@@ -52,12 +63,19 @@ export const AddNewProject = () => {
     });
   }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
+  // Mutation for adding a new project
   const {
     mutate: AddProject,
     isPending: addProjectPending,
     isSuccess: AddProjectSuccess,
   } = useAddProject(reset, "userTotalProjects", userId);
 
+  /**
+   * Form submission handler for adding a new project.
+   * Prepares the form data and calls the mutation to create the project.
+   *
+   * @param {Object} data - The form data collected from the input fields.
+   */
   const addProjectForm = (data) => {
     setUserId(data.registered_client);
     const formData = new FormData();
