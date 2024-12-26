@@ -58,3 +58,41 @@ export const deleteJob = async (job_id) => {
     throw error;
   }
 };
+
+export const requestRevision = async (cancelReason, job_id) => {
+  try {
+    const response = await instance.post(`/cancellations/request/${job_id}`, {
+      reason: cancelReason,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getJobCancellationRequests = async () => {
+  try {
+    const response = await instance.get(`/cancellations`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const acceptCancellationRequest = async (request_id) => {
+  try {
+    const response = await instance.put(`/cancellations/${request_id}/accept`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const rejectCancellationRequest = async (request_id) => {
+  try {
+    const response = await instance.put(`/cancellations/${request_id}/reject`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

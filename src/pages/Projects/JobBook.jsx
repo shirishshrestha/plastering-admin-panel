@@ -29,6 +29,8 @@ import { useToggle } from "../../hooks/useToggle";
 import { useDeleteJob } from "./hooks/mutation/useDeleteJob";
 import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import { RevisionPopup } from "./components/RevisionPopup";
+import { FormProvider, useForm } from "react-hook-form";
+import { useRequestCancellation } from "./hooks/mutation/useRequestCancellation";
 
 /**
  * Table header data for the job listing.
@@ -56,6 +58,8 @@ const JobBook = () => {
    */
   const role = getRoleFromLocalStorage();
 
+  const methods = useForm();
+
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -65,7 +69,7 @@ const JobBook = () => {
   const [jobName, setJobName] = useState();
 
   const [deleteConfirationShow, handleDeleteToggle] = useToggle();
-  const [cancelConfirationShow, handleCancelToggle] = useToggle();
+  const [cancelConfirmationShow, handleCancelToggle] = useToggle();
   const [revisionFlag, handleRevision] = useToggle();
 
   // Memoized current page number, search item, status, date based on search parameters
@@ -147,6 +151,11 @@ const JobBook = () => {
     setSearchParams(updatedParams);
   };
 
+  const {
+    mutate: RequestJobCancellation,
+    isPending: RequestJobCancellationPending,
+  } = useRequestCancellation(jobId, handleCancelToggle, methods.reset);
+
   /**
    * Handles the action when the user proceeds with job deletion.
    *
@@ -155,12 +164,14 @@ const JobBook = () => {
     DeleteJob(jobId);
   };
 
-  const handleCancelProceedClick = () => {};
+  const handleCancelProceedClick = (data) => {
+    RequestJobCancellation(data.cancelReason);
+  };
 
   return (
     <>
       <section className="mt-[.5rem] pb-[1rem]">
-        {JobPending && <Loader />}
+        {(JobPending || RequestJobCancellationPending) && <Loader />}
         {deleteConfirationShow && (
           <DeleteConfirmation
             deleteName={jobName}
@@ -170,16 +181,24 @@ const JobBook = () => {
           />
         )}
 
-        {cancelConfirationShow && (
-          <CancelProjectConfirmation
-            projectName={jobName}
-            handleProceedClick={handleCancelProceedClick}
-            handleCancelToggle={handleCancelToggle}
-            cancelLoading={DeleteJobPending}
-            cancelInfo={
-              "Your cancellation request will be sent to the admin for approval."
-            }
-          />
+        {cancelConfirmationShow && (
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(handleCancelProceedClick)}>
+              <CancelProjectConfirmation
+                projectName={jobName}
+                handleCancelToggle={handleCancelToggle}
+                cancelLoading={DeleteJobPending}
+                cancelInfo={
+                  "Your cancellation request will be sent to the admin for approval."
+                }
+                cancelReason={true}
+                register={methods.register}
+                errors={methods.formState.errors}
+                isDirty={methods.formState.isDirty}
+                reset={methods.reset}
+              />
+            </form>
+          </FormProvider>
         )}
 
         {revisionFlag && (
@@ -319,12 +338,13 @@ const JobBook = () => {
                               Revision
                             </button>
                             <button
-                              className="bg-delete flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg "
+                              className="bg-delete flex items-center gap-[0.3rem] text-[0.8rem] font-semibold px-[10px] py-[5px] text-light rounded-lg disabled:cursor-not-allowed disabled:bg-gray-400 "
                               onClick={() => {
                                 handleCancelToggle();
                                 setJobName(job.job_name);
                                 setJobId(job.id);
                               }}
+                              disabled={job.status === "cancelled"}
                             >
                               Cancel
                             </button>

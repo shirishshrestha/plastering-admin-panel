@@ -43,7 +43,7 @@ export const ProtectedAdminRoute = ({ children }) => {
   return auth?.role === "admin" || (role && role === "admin") ? (
     children
   ) : (
-    <Navigate to="/" />
+    <Navigate to="/unauthorized" />
   );
 };
 
@@ -53,7 +53,7 @@ export const ProtectedBusinessRoute = ({ children }) => {
   const role = getRoleFromLocalStorage();
 
   return auth?.role === "estimator" || (role && role === "estimator") ? (
-    <Navigate to="/" />
+    <Navigate to="/unauthorized" />
   ) : (
     children
   );
@@ -67,6 +67,18 @@ export const ProtectedClientRoute = ({ children }) => {
   return auth?.role === "client" || (role && role === "client") ? (
     children
   ) : (
-    <Navigate to="/" />
+    <Navigate to="/unauthorized" />
+  );
+};
+
+export const ProtectedEstimatorRoute = ({ children }) => {
+  const { auth } = useAuth();
+
+  const role = getRoleFromLocalStorage();
+
+  return auth?.role === "estimator" || (role && role === "estimator") ? (
+    children
+  ) : (
+    <Navigate to="/unauthorized" />
   );
 };

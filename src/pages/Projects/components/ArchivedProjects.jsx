@@ -112,8 +112,19 @@ export const ArchivedProjects = () => {
   const { mutate: DeleteProject, isPending: deletePending } = useMutation({
     mutationFn: () => deleteProject(projectId),
     onSuccess: () => {
-      queryClient.invalidateQueries("projects");
       notifySuccess("Project deleted successfully");
+
+      // Adjust pagination if the last job on a page is deleted and the current page is greater than 1
+      if (
+        ArchivedProjectsData?.archived_projects?.data?.length === 1 &&
+        currentPage > 1
+      ) {
+        const params = new URLSearchParams(searchParams);
+        params.set("page", currentPage - 1);
+        setSearchParams(params);
+      }
+
+      queryClient.invalidateQueries("projects");
       setDeleteConfirationShow(false);
     },
     onError: () => {
@@ -179,8 +190,7 @@ export const ArchivedProjects = () => {
                 to={`/projectbooks/addProject/${ArchivedProjects?.user_id}`}
               >
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
-                  Add New Project{" "}
-                  <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
+                  Add Project <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>
               </Link>
             </div>

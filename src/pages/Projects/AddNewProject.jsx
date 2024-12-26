@@ -1,18 +1,10 @@
 import { useForm } from "react-hook-form";
-import {
-  Input,
-  Loader,
-  LogoutConfirmation,
-  Model,
-  CustomToastContainer,
-} from "../../components";
+import { Input, Loader, Model, CustomToastContainer } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import useLogout from "../../hooks/useLogout";
-import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
 import { useGetClientsName } from "../Clients/hooks/query/useGetClientsName";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 /**
  * AddNewProject component allows users to create a new project.
@@ -44,24 +36,6 @@ export const AddNewProject = () => {
   // Fetch clients
   const { data: ClientNameData, isPending: ClientNamePending } =
     useGetClientsName("projectClientsName");
-
-  const { logout } = useLogout();
-
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  /**
-   * Handles user logout, clearing local storage and navigating to the login page.
-   */
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   // Mutation for adding a new project
   const {
@@ -95,12 +69,6 @@ export const AddNewProject = () => {
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
         {addProjectPending && <Loader />}
 
-        {logoutConfirationShow && (
-          <LogoutConfirmation
-            handleLogoutClick={handleLogout}
-            setLogoutConfirationShow={setLogoutConfirationShow}
-          />
-        )}
         <div>
           <h2 className="font-bold text-[1.2rem]">Add New Project</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">

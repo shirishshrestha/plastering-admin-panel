@@ -2,17 +2,12 @@ import { useForm } from "react-hook-form";
 import {
   Input,
   Loader,
-  LogoutConfirmation,
   Model,
   CustomToastContainer,
 } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { getRoleFromLocalStorage } from "../../utils/Storage/StorageUtils";
-import useLogout from "../../hooks/useLogout";
-import useAuth from "../../hooks/useAuth";
 import { useAddProject } from "./hooks/mutation/useAddProject";
-import { useCallback } from "react";
 
 /**
  * AddProject component allows users to create a new project.
@@ -21,7 +16,6 @@ import { useCallback } from "react";
  * @returns {JSX.Element} The rendered component.
  */
 export const AddProject = () => {
-  const role = getRoleFromLocalStorage();
   const { id: user_id } = useParams();
   const navigate = useNavigate();
 
@@ -40,24 +34,6 @@ export const AddProject = () => {
       terms: false,
     },
   });
-
-  const { logout } = useLogout();
-
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  /**
-   * Handles user logout, clearing local storage and navigating to the login page.
-   */
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   // Mutation for adding a new project
   const {
@@ -89,13 +65,6 @@ export const AddProject = () => {
     <>
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
         {addProjectPending && <Loader />}
-
-        {logoutConfirationShow && (
-          <LogoutConfirmation
-            handleLogoutClick={handleLogout}
-            setLogoutConfirationShow={setLogoutConfirationShow}
-          />
-        )}
         <div>
           <h2 className="font-bold text-[1.2rem]">Add Project</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">

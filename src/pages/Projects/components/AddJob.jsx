@@ -1,18 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useCallback, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import useLogout from "../../../hooks/useLogout";
-import useAuth from "../../../hooks/useAuth";
-import { addProject } from "../../../api/Projects/ProjectsApiSlice";
-import { queryClient } from "../../../utils/Query/Query";
-import { notifyError, notifySuccess } from "../../../components/Toast/Toast";
+import { useState } from "react";
 import {
   CustomToastContainer,
   Input,
   Loader,
-  LogoutConfirmation,
   Model,
 } from "../../../components";
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
@@ -43,24 +36,6 @@ export const AddJob = () => {
       job_file: [],
     },
   });
-
-  const { logout } = useLogout();
-
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  /**
-   * Handles user logout and clears the local storage.
-   */
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   // Mutation for adding a job
   const {
@@ -103,12 +78,6 @@ export const AddJob = () => {
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
         {AddJobPending && <Loader />}
 
-        {logoutConfirationShow && (
-          <LogoutConfirmation
-            handleLogoutClick={handleLogout}
-            setLogoutConfirationShow={setLogoutConfirationShow}
-          />
-        )}
         <div>
           <h2 className="font-bold text-[1.2rem]">Add Job</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">

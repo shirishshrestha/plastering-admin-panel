@@ -211,8 +211,7 @@ const Projects = () => {
             <div className="flex gap-[1rem]">
               <Link to={`/projectbooks/addProject/${TotalProjects?.user_id}`}>
                 <button className="bg-[#FF5733] flex gap-[0.5rem] font-semibold px-[30px] py-[10px] text-light rounded-lg ">
-                  Add New Project{" "}
-                  <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
+                  Add Project <PlusIcon svgColor={"#f0fbff"} size={"size-6"} />
                 </button>
               </Link>
             </div>
