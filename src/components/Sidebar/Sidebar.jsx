@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { logo } from "../../assets/images";
 import {
   Business,
+  CancelArchiveIcon,
   DashboardSvg,
   ProjectsSvg,
   Users,
@@ -129,26 +130,48 @@ export default function Sidebar({ sidebarToggle }) {
           )}
 
           {role === "admin" && (
-            <NavLink
-              to="/business"
-              className={({ isActive }) =>
-                `${
-                  isActive ? "bg-light text-primary sidebar-menu" : ""
-                } flex items-center gap-[0.5rem] rounded-lg p-[0.7rem] ${
-                  sidebarToggle ? "w-full" : "w-fit"
-                } `
-              }
-              title="Business Directory"
-            >
-              <Business />
-              <span
-                className={`transition-all duration-300 w-fit ${
-                  showText ? "block" : "hidden"
-                }`}
+            <>
+              <NavLink
+                to="/business"
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "bg-light text-primary sidebar-menu" : ""
+                  } flex items-center gap-[0.5rem] rounded-lg p-[0.7rem] ${
+                    sidebarToggle ? "w-full" : "w-fit"
+                  } `
+                }
+                title="Business Directory"
               >
-                Business Directory
-              </span>
-            </NavLink>
+                <Business />
+                <span
+                  className={`transition-all duration-300 w-fit ${
+                    showText ? "block" : "hidden"
+                  }`}
+                >
+                  Business Directory
+                </span>
+              </NavLink>
+              <NavLink
+                to="/cancel-requests"
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "bg-light text-primary sidebar-menu" : ""
+                  } flex items-center gap-[0.5rem] rounded-lg p-[0.7rem] ${
+                    sidebarToggle ? "w-full" : "w-fit"
+                  } `
+                }
+                title="Job Cancellation Requests"
+              >
+                <CancelArchiveIcon />
+                <span
+                  className={`transition-all duration-300 w-fit ${
+                    showText ? "block" : "hidden"
+                  }`}
+                >
+                  Job Cancellations
+                </span>
+              </NavLink>
+            </>
           )}
         </nav>
       </div>

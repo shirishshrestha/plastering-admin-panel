@@ -26,7 +26,6 @@ export const useDeleteJob = (key, handleDeleteToggle, JobData, currentPage) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (job_id) => deleteJob(job_id),
     onSuccess: (response) => {
-      console.log();
       notifySuccess("Job deleted successfully");
 
       // Adjust pagination if the last job on a page is deleted and the current page is greater than 1
@@ -35,6 +34,7 @@ export const useDeleteJob = (key, handleDeleteToggle, JobData, currentPage) => {
         params.set("page", currentPage - 1);
         setSearchParams(params);
       }
+
       queryClient.invalidateQueries(key);
       handleDeleteToggle();
     },

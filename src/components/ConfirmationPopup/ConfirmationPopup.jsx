@@ -1,9 +1,6 @@
-export const ConfirmationPopup = ({
-  handleAcceptSubmission,
-  setSubmissionConfirmationShow,
-}) => {
+export const ConfirmationPopup = ({ handleAcceptSubmission, handleToggle }) => {
   const handleCancelClick = () => {
-    setSubmissionConfirmationShow(false);
+    handleToggle();
   };
 
   return (
@@ -20,13 +17,13 @@ export const ConfirmationPopup = ({
         </div>
         <div className="flex gap-[14px]">
           <button
-            className="bg-primary rounded-lg px-[30px] py-[10px] text-light"
+            className="bg-primary font-[500] rounded-lg px-[30px] py-[10px] text-light"
             onClick={handleCancelClick}
           >
             Cancel
           </button>
           <button
-            className="bg-secondary rounded-lg px-[30px] py-[10px] text-primary"
+            className="bg-secondary font-[500] rounded-lg px-[30px] py-[10px] text-primary"
             onClick={handleAcceptSubmission}
           >
             Yes, Proceed

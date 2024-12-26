@@ -25,6 +25,8 @@ import { AddNewProject } from "./Projects/AddNewProject";
 import { ActiveProjects } from "./Projects/components/ActiveProjects";
 import { ActiveClientProjects } from "./Clients/ActiveClientProjects";
 import { ArchivedClientProjects } from "./Clients/ArchivedClientProjects";
+import UnauthorizedPage from "./Unauthorized/UnauthorizedPage";
+import JobCancellationRequests from "./JobCancellationRequests/JobCancellationRequests";
 
 export {
   Dashboard,
@@ -54,4 +56,6 @@ export {
   ActiveProjects,
   ActiveClientProjects,
   ArchivedClientProjects,
+  UnauthorizedPage,
+  JobCancellationRequests,
 };

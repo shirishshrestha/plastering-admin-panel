@@ -9,7 +9,6 @@ import {
   EmptyData,
   FilterDrawer,
   Loader,
-  LogoutConfirmation,
   Pagination,
   SearchInput,
 } from "../../components";
@@ -21,8 +20,7 @@ import {
 } from "react-router-dom";
 import { getIdFromLocalStorage } from "../../utils/Storage/StorageUtils";
 import useAuth from "../../hooks/useAuth";
-import { useCallback, useMemo } from "react";
-import useLogout from "../../hooks/useLogout";
+import { useMemo } from "react";
 import { useGetUserTotalProjects } from "../Projects/hooks/query/useGetUserTotalProjects";
 import { useGetUserProjectStatus } from "../Dashboard/hooks/query/useGetUserProjectStatus";
 import { Tooltip } from "flowbite-react";
@@ -68,23 +66,7 @@ export const ActiveClientProjects = () => {
     [searchParams]
   );
 
-  const {
-    setLogoutConfirationShow,
-    logoutConfirationShow,
-    setAuth,
-    openDrawer,
-  } = useAuth();
-
-  const { logout } = useLogout();
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
+  const { openDrawer } = useAuth();
 
   const {
     data: RecentActiveProjectData,
@@ -154,12 +136,7 @@ export const ActiveClientProjects = () => {
         {(ActiveProjectPending ||
           RecentActiveProjectsPending ||
           projectStatusPending) && <Loader />}
-        {logoutConfirationShow && (
-          <LogoutConfirmation
-            handleLogoutClick={handleLogout}
-            setLogoutConfirationShow={setLogoutConfirationShow}
-          />
-        )}
+
         <FilterDrawer
           setSearchParams={setSearchParams}
           dateName={"required by date"}

@@ -19,12 +19,14 @@ import {
   EditJob,
   EditProject,
   JobBook,
+  JobCancellationRequests,
   Login,
   PageNotFound,
   ProfilePage,
   ProjectBooks,
   Projects,
   Signup,
+  UnauthorizedPage,
   ViewBusiness,
   ViewJob,
 } from "../pages";
@@ -32,13 +34,13 @@ import ProtectedRoute, {
   ProtectedAdminRoute,
   ProtectedBusinessRoute,
   ProtectedClientRoute,
+  ProtectedEstimatorRoute,
   ProtectedLoginSignupRoute,
 } from "./ProtectedRoute";
 import { getRoleFromLocalStorage } from "../utils/Storage/StorageUtils";
 import useAuth from "../hooks/useAuth";
 import { BusinessDashboard } from "../pages/Dashboard/BusinessDashboard";
 import BusinessDirectory from "../pages/BusinessDirectory/BusinessDirectory";
-import { useMemo } from "react";
 
 const role = getRoleFromLocalStorage();
 
@@ -79,7 +81,11 @@ export const dynamicRoutes = (auth) => {
         },
         {
           path: "/assignedProjects",
-          element: <BusinessProjects />,
+          element: (
+            <ProtectedEstimatorRoute>
+              <BusinessProjects />
+            </ProtectedEstimatorRoute>
+          ),
         },
         {
           path:
@@ -158,7 +164,11 @@ export const dynamicRoutes = (auth) => {
             },
             {
               path: "editJob/:id",
-              element: <EditJob />,
+              element: (
+                <ProtectedAdminRoute>
+                  <EditJob />
+                </ProtectedAdminRoute>
+              ),
             },
             {
               path: "viewJob/:id",
@@ -198,6 +208,14 @@ export const dynamicRoutes = (auth) => {
             },
           ],
         },
+        {
+          path: "cancel-requests",
+          element: [
+            <ProtectedAdminRoute>
+              <JobCancellationRequests />
+            </ProtectedAdminRoute>,
+          ],
+        },
       ],
     },
     {
@@ -227,6 +245,10 @@ export const dynamicRoutes = (auth) => {
     {
       path: "*",
       element: <PageNotFound />,
+    },
+    {
+      path: "/unauthorized",
+      element: <UnauthorizedPage />,
     },
   ];
 };

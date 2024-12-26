@@ -124,6 +124,15 @@ export const deleteProject = async (id) => {
   }
 };
 
+export const cancelProject = async (id) => {
+  try {
+    const response = await instance.put(`/projects/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const addProject = async (project) => {
   try {
     const response = await instance.post("/projects", project);

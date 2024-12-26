@@ -1,15 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useCallback, useEffect, useState } from "react";
-import useLogout from "../../../hooks/useLogout";
-import useAuth from "../../../hooks/useAuth";
-
+import { useEffect, useState } from "react";
 import {
   CustomToastContainer,
   Input,
   Loader,
-  LogoutConfirmation,
   Model,
 } from "../../../components";
 import { Document, TrashIcon } from "../../../assets/icons/SvgIcons";
@@ -66,24 +62,7 @@ export const EditJob = () => {
       });
       setSelectedFiles(JobData?.files);
     }
-  }, [JobData, reset]);
-
-  const { logout } = useLogout();
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  /**
-   * Handles user logout, clears the local storage, and navigates to the login page.
-   */
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
+  }, [JobData]);
 
   /**
    * Form submission handler for editing a job.
@@ -126,12 +105,6 @@ export const EditJob = () => {
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
         {(EditJobPending || JobDataPending) && <Loader />}
 
-        {logoutConfirationShow && (
-          <LogoutConfirmation
-            handleLogoutClick={handleLogout}
-            setLogoutConfirationShow={setLogoutConfirationShow}
-          />
-        )}
         <div>
           <h2 className="font-bold text-[1.2rem]">Edit Job</h2>
           <div className="flex gap-[0.5rem] items-center text-[14px] font-[500] pt-[0.2rem]">

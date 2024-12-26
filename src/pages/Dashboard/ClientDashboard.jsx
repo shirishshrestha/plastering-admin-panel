@@ -1,23 +1,15 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Calendar,
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
-import {
-  DoughnutChart,
-  EmptyData,
-  LogoLoader,
-  LogoutConfirmation,
-} from "../../components";
+import { DoughnutChart, EmptyData, LogoLoader } from "../../components";
 import { logo } from "../../assets/images";
 import {
   getIdFromLocalStorage,
   getNameFromLocalStorage,
 } from "../../utils/Storage/StorageUtils";
-import useAuth from "../../hooks/useAuth";
-import useLogout from "../../hooks/useLogout";
-import { useCallback } from "react";
 import { useGetUserProjectStatus } from "./hooks/query/useGetUserProjectStatus";
 import { useGetUserTotalProjects } from "../Projects/hooks/query/useGetUserTotalProjects";
 
@@ -31,21 +23,6 @@ const tableHead = [
 export const ClientDashboard = () => {
   const userName = getNameFromLocalStorage();
   const user_id = getIdFromLocalStorage();
-  const navigate = useNavigate();
-
-  const { logout } = useLogout();
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const { data: ProjectData, isPending: ProjectPending } =
     useGetUserTotalProjects("userDashboardProjects", "/", user_id, 1);
@@ -88,12 +65,6 @@ export const ClientDashboard = () => {
     <section className="pt-[1rem]">
       {(ProjectPending || projectStatusPending) && <LogoLoader />}
 
-      {logoutConfirationShow && (
-        <LogoutConfirmation
-          handleLogoutClick={handleLogout}
-          setLogoutConfirationShow={setLogoutConfirationShow}
-        />
-      )}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1rem] w-full h-full">
         <div className="w-full h-full flex flex-col justify-center">
           <div className="w-full bg-white rounded-lg shadow-lg py-[1rem] px-[2rem] relative overflow-hidden">

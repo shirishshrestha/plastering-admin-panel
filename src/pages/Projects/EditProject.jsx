@@ -2,15 +2,12 @@ import { useForm } from "react-hook-form";
 import {
   EditInput,
   Loader,
-  LogoutConfirmation,
   Model,
   CustomToastContainer,
 } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
-import { useCallback, useEffect } from "react";
-import useLogout from "../../hooks/useLogout";
-import useAuth from "../../hooks/useAuth";
+import { useEffect } from "react";
 import { useGetSingleProject } from "./hooks/query/useGetSingleProject";
 import { useEditProject } from "./hooks/mutation/useEditProject";
 
@@ -54,27 +51,6 @@ export const EditProject = () => {
     }
   }, [SingleProjectData, reset]);
 
-  const { logout } = useLogout();
-
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
-
-  /**
-   * Handles the logout process by clearing authentication data, local storage,
-   * and navigating to the login page.
-   *
-   * @returns {void}
-   */
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
-
   /**
    * Mutates the project using `useEditProject` hook to send edited project data to the backend.
    *
@@ -114,12 +90,6 @@ export const EditProject = () => {
       <section className="bg-white shadow-lg rounded-lg p-[1.5rem]">
         {(editProjectPending || viewProjectPending) && <Loader />}
 
-        {logoutConfirationShow && (
-          <LogoutConfirmation
-            handleLogoutClick={handleLogout}
-            setLogoutConfirationShow={setLogoutConfirationShow}
-          />
-        )}
         <div>
           <h2 className="font-bold text-[1.2rem]">
             Edit Project - {SingleProjectData?.name}

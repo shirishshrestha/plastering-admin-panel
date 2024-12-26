@@ -1,19 +1,12 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Calendar,
   CompletedProjects,
   TotalProjects,
 } from "../../assets/icons/SvgIcons";
-import {
-  DoughnutChart,
-  EmptyData,
-  LogoLoader,
-  LogoutConfirmation,
-} from "../../components";
+import { DoughnutChart, EmptyData, LogoLoader } from "../../components";
 import { logo } from "../../assets/images";
-import useLogout from "../../hooks/useLogout";
-import useAuth from "../../hooks/useAuth";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useGetTotalProjectStatus } from "../Projects/hooks/query/useGetTotalProjectStatus";
 import { useGetProjects } from "../Projects/hooks/query/useGetProjects";
 import { Tooltip } from "flowbite-react";
@@ -28,12 +21,7 @@ const tableHead = [
 ];
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useLogout();
-
-  const { setLogoutConfirationShow, logoutConfirationShow, setAuth } =
-    useAuth();
 
   const { data: TotalProjectStatusData, isPending: projectStatusPending } =
     useGetTotalProjectStatus("dashboardProjectStatus", location.pathname);
@@ -43,16 +31,6 @@ export const Dashboard = () => {
     1,
     ""
   );
-
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-
-    logout(() => {
-      navigate("/login");
-    });
-  }, [navigate, setAuth, setLogoutConfirationShow, logout]);
 
   const doughnutData = useMemo(() => {
     return [
@@ -80,12 +58,6 @@ export const Dashboard = () => {
 
   return (
     <section className="pt-[1rem]">
-      {logoutConfirationShow && (
-        <LogoutConfirmation
-          handleLogoutClick={handleLogout}
-          setLogoutConfirationShow={setLogoutConfirationShow}
-        />
-      )}
       {(projectPending || projectStatusPending) && <LogoLoader />}
       <div className="grid grid-cols-[1.3fr,0.7fr] gap-[1.2rem] w-full h-full">
         <div className="w-full h-full flex flex-col gap-[1rem] justify-center">

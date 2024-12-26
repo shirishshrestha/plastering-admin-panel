@@ -8,7 +8,6 @@ import {
   DoughnutChart,
   EmptyData,
   Loader,
-  LogoutConfirmation,
   Pagination,
   CustomToastContainer,
   FilterDrawer,
@@ -24,7 +23,6 @@ import {
 import { DeleteConfirmation } from "../../components/DeleteConfirmationBox/DeleteConfirmationBox";
 import { useCallback, useMemo, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import useLogout from "../../hooks/useLogout";
 import { useGetProjectBooks } from "./hooks/query/useGetProjectBooks";
 import { useGetProjectBookStatus } from "./hooks/query/useGetProjectBookStatus";
 
@@ -51,7 +49,6 @@ const doughnutBorderColor = [
 export const ProjectBooks = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useLogout();
   const [projectName, setProjectName] = useState("");
   const [deleteConfirationShow, setDeleteConfirationShow] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -77,21 +74,7 @@ export const ProjectBooks = () => {
     [searchParams]
   );
 
-  const {
-    setLogoutConfirationShow,
-    logoutConfirationShow,
-    setAuth,
-    openDrawer,
-  } = useAuth();
-
-  const handleLogout = useCallback(() => {
-    setAuth({});
-    localStorage.clear();
-    setLogoutConfirationShow(false);
-    logout(() => {
-      navigate("/login");
-    });
-  }, [setAuth, setLogoutConfirationShow, logout, navigate]);
+  const { openDrawer } = useAuth();
 
   // Queries to fetch project book data and related status data
   /**
@@ -178,12 +161,6 @@ export const ProjectBooks = () => {
               setDeleteConfirationShow={setDeleteConfirationShow}
               handleProceedClick={handleProceedClick}
               deleteLoading={deletePending}
-            />
-          )}
-          {logoutConfirationShow && (
-            <LogoutConfirmation
-              handleLogoutClick={handleLogout}
-              setLogoutConfirationShow={setLogoutConfirationShow}
             />
           )}
 
